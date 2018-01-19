@@ -132,7 +132,7 @@ function data_filter_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to data_filter_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+data_filter
 
 % --- Executes on button press in data_plot_pushbutton.
 function data_plot_pushbutton_Callback(hObject, eventdata, handles)
@@ -257,7 +257,7 @@ function link_analy_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to link_analy_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+link_analysis
 
 % --- Executes on button press in plot_pushbutton.
 function plot_pushbutton_Callback(hObject, eventdata, handles)
