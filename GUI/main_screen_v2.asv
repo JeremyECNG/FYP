@@ -174,7 +174,7 @@ function map_pushbutton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 country = (get(handles.country_popupmenu, 'UserData'));
-if (isempty(country))
+if (country == null)
     country = 'Grenada';
 end
 grenada = 'Grenada';
@@ -196,7 +196,7 @@ elseif (stlucia == country)
     sel = 3;
 elseif (stvincent == country)
     sel = 4;
-elseif (stkitts == country)
+elseif (stkitts== country)
     sel = 5;
 elseif (trinidad == country)
     sel = 6;
@@ -236,7 +236,7 @@ function node_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to node_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-node_config
+
 
 % --- Executes on button press in node_place_pushbutton.
 function node_place_pushbutton_Callback(hObject, eventdata, handles)
@@ -250,7 +250,7 @@ function link_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to link_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-link_config
+
 
 % --- Executes on button press in link_analy_pushbutton.
 function link_analy_pushbutton_Callback(hObject, eventdata, handles)
