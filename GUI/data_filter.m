@@ -22,7 +22,7 @@ function varargout = data_filter(varargin)
 
 % Edit the above text to modify the response to help data_filter
 
-% Last Modified by GUIDE v2.5 19-Jan-2018 15:17:06
+% Last Modified by GUIDE v2.5 29-Jan-2018 04:27:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -96,28 +96,28 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in filter_tw_radiobutton.
-function filter_tw_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to filter_tw_radiobutton (see GCBO)
+% --- Executes on button press in height_above_radiobutton.
+function height_above_radiobutton_Callback(hObject, eventdata, handles)
+% hObject    handle to height_above_radiobutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of filter_tw_radiobutton
+% Hint: get(hObject,'Value') returns toggle state of height_above_radiobutton
 
 
-% --- Executes on selection change in cz_popupmenu.
-function cz_popupmenu_Callback(hObject, eventdata, handles)
-% hObject    handle to cz_popupmenu (see GCBO)
+% --- Executes on selection change in coast_popupmenu.
+function coast_popupmenu_Callback(hObject, eventdata, handles)
+% hObject    handle to coast_popupmenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: contents = cellstr(get(hObject,'String')) returns cz_popupmenu contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from cz_popupmenu
+% Hints: contents = cellstr(get(hObject,'String')) returns coast_popupmenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from coast_popupmenu
 
 
 % --- Executes during object creation, after setting all properties.
-function cz_popupmenu_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to cz_popupmenu (see GCBO)
+function coast_popupmenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to coast_popupmenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -278,3 +278,53 @@ function cancel_filter_pushbutton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 close(data_filter)
+
+
+
+function height_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to height_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of height_edit as text
+%        str2double(get(hObject,'String')) returns contents of height_edit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function height_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to height_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in filter_height_checkbox.
+function filter_height_checkbox_Callback(hObject, eventdata, handles)
+% hObject    handle to filter_height_checkbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of filter_height_checkbox
+
+
+% --- Executes on button press in filter_coast_checkbox.
+function filter_coast_checkbox_Callback(hObject, eventdata, handles)
+% hObject    handle to filter_coast_checkbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of filter_coast_checkbox
+
+
+% --- Executes on button press in radiobutton7.
+function radiobutton7_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton7

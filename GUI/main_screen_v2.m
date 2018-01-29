@@ -184,21 +184,23 @@ stvincent = 'St. Vincent';
 stkitts = 'St. Kitts';
 trinidad = 'Trinidad & Tobago'; 
 
-% if (strcmp('Grenada',country))
-%     sel = 1;
+if (strcmp(grenada,country))
+     sel = 1;
 % if ('Grenada' == country)
 %     sel = 1;
-if (grenada == country)
-    sel = 1;
-elseif (dominica == country)
-    sel = 2;
-elseif (stlucia == country)
+% if (grenada == country)
+%     sel = 1;
+% elseif (dominica == country)
+%     sel = 2;
+elseif (strcmp(dominica,country))
+     sel = 2;
+elseif (strcmp(stlucia,country))
     sel = 3;
-elseif (stvincent == country)
+elseif (strcmp(stvincent,country))
     sel = 4;
-elseif (stkitts == country)
+elseif (strcmp(stkitts,country))
     sel = 5;
-elseif (trinidad == country)
+elseif (strcmp(trinidad,country))
     sel = 6;
 else 
     sel = 7;
@@ -207,21 +209,34 @@ end
 handles.datacursor = datacursormode;
 datacursormode off
 
+% cla(handles.map,'reset');
 switch sel
     case 1 
-        plot(handles.map, -61.679071,12.116586,'Marker','s','MarkerSize',10)
+%         plot(handles.map, -61.679071,12.116586,'Marker','s','MarkerSize',10)
+        set(handles.map, 'XLim', [-62.2,-61.2]);
+        set(handles.map, 'YLim', [11.7,12.5]);
     case 2
-        plot(handles.map, -61.371071,15.415086,'Marker','s','MarkerSize',10)
+%         plot(handles.map, -61.371071,15.415086,'Marker','s','MarkerSize',10)
+        set(handles.map, 'XLim', [-62,-60.8]);
+        set(handles.map, 'YLim', [14.9,15.8]);
     case 3
-        plot(handles.map, -60.978971,13.909486,'Marker','s','MarkerSize',10)
+%         plot(handles.map, -60.978971,13.909486,'Marker','s','MarkerSize',10)
+        set(handles.map, 'XLim', [-61.6,-60.3]);
+        set(handles.map, 'YLim', [13.4,14.4]);
     case 4
-        plot(handles.map, -61.287271,12.984386,'Marker','s','MarkerSize',10)
+%         plot(handles.map, -61.287271,12.984386,'Marker','s','MarkerSize',10)
+        set(handles.map, 'XLim', [-61.8,-60.6]);
+        set(handles.map, 'YLim', [12.8,13.7]);
     case 5
-        plot(handles.map, -62.783071,17.357886,'Marker','s','MarkerSize',10)
+%         plot(handles.map, -62.783071,17.357886,'Marker','s','MarkerSize',10)
+        set(handles.map, 'XLim', [-63.2,-62.3]);
+        set(handles.map, 'YLim', [17,17.8]);
     case 6
-        plot(handles.map, -61.399471,10.641586,'Marker','s','MarkerSize',10)
+%         plot(handles.map, -61.399471,10.641586,'Marker','s','MarkerSize',10)
+        set(handles.map, 'XLim', [-62.5,-60]);
+        set(handles.map, 'YLim', [9.5,12]);
     otherwise
-        errordlg('Country not Found')
+        errordlg('Country not Found', 'Country Error')
         return;
 end
 
