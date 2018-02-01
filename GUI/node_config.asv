@@ -22,7 +22,7 @@ function varargout = node_config(varargin)
 
 % Edit the above text to modify the response to help node_config
 
-% Last Modified by GUIDE v2.5 31-Jan-2018 21:48:13
+% Last Modified by GUIDE v2.5 31-Jan-2018 21:33:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -355,10 +355,11 @@ function save_node_pushbutton_Callback(hObject, eventdata, handles)
 % savenode(sav_node_con)
 
 %Node Name
-sav_node_con.node_name = getappdata(0,'node_name');
+
 
 %Node Type
-sav_node_con.node_type = getappdata(0,'node_typ');
+
+
         
 %Node Location 
 sav_node_con.node_location.placement_type = getappdata(0,'nodeplace_typ');
@@ -399,10 +400,9 @@ close(node_config)
 function savenode(sav_node_con)
 
 %Node Name
-node_con.node_name = sav_node_con.node_name ;
 
 %Node Type
-node_con.node_type = sav_node_con.node_type;
+
 
 %Node Location 
 
@@ -431,19 +431,18 @@ node_con.equipment_params.rx_cable_loss = sav_node_con.equipment_params.rx_cable
 
 save('nodesave.mat','node_con')
 
-function node_name_edit_Callback(hObject, eventdata, handles)
-% hObject    handle to node_name_edit (see GCBO)
+function edit23_Callback(hObject, eventdata, handles)
+% hObject    handle to edit23 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of node_name_edit as text
-%        str2double(get(hObject,'String')) returns contents of node_name_edit as a double
-nodename = str2double(get(handles.node_name_edit, 'String'));
-setappdata(0, 'node_name', nodename);
+% Hints: get(hObject,'String') returns contents of edit23 as text
+%        str2double(get(hObject,'String')) returns contents of edit23 as a double
+
 
 % --- Executes during object creation, after setting all properties.
-function node_name_edit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to node_name_edit (see GCBO)
+function edit23_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit23 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -527,18 +526,18 @@ function node_type_selection_SelectionChangedFcn(hObject, eventdata, handles)
 
 switch eventdata.Source.SelectedObject.Tag
     
-    case 'tower_radiobutton'
+    case 'coordinates_radiobutton'
         
-        nodetyp = 'Tower Mounted';
-        setappdata(0, 'node_typ', nodetyp);
+        nodeplacetyp = 'Specify Co-ordinates';
+        setappdata(0, 'nodeplace_typ', nodeplacetyp);
         
-    case 'mobile_radiobutton'
+    case 'mouse_radiobutton'
         
-        nodetyp = 'Mobile at Sea';
-        setappdata(0, 'node_typ', nodetyp);
+        nodeplacetyp = 'Mouse Placement';
+        setappdata(0, 'nodeplace_typ', nodeplacetyp);
         
     otherwise
-        errordlg('Error Selecting Node Type', 'Node Type Selection')
+        errordlg('Error Selecting Location Source', 'Location Selection')
     return;
 end
         

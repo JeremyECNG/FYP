@@ -12,6 +12,7 @@ node_location.lati = 0;
 node_location.longi = 0;
 
 %equipment parameters 
+equipment_params.technology = string;
 equipment_params.noise_fig = 0;
 equipment_params.tx_pwr = 0;
 equipment_params.rx_pwr = 0;

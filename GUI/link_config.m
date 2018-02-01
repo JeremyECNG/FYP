@@ -22,7 +22,7 @@ function varargout = link_config(varargin)
 
 % Edit the above text to modify the response to help link_config
 
-% Last Modified by GUIDE v2.5 26-Jan-2018 17:04:09
+% Last Modified by GUIDE v2.5 30-Jan-2018 16:29:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,6 +54,11 @@ function link_config_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for link_config
 handles.output = hObject;
+
+set(handles.up_freq_edit,'Enable','off') 
+set(handles.uplink_text,'Enable','off')
+set(handles.down_freq_edit,'Enable','on')
+set(handles.downlink_text,'Enable','on') 
 
 % Update handles structure
 guidata(hObject, handles);
@@ -460,3 +465,30 @@ function edit14_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes when selected object is changed in system_paramters_selection.
+function system_paramters_selection_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in system_paramters_selection 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+switch eventdata.Source.SelectedObject.Tag
+    
+    case 'downlink_radiobutton'
+        set(handles.up_freq_edit,'Enable','off') 
+        set(handles.uplink_text,'Enable','off')
+        set(handles.down_freq_edit,'Enable','on')
+        set(handles.downlink_text,'Enable','on') 
+    case 'uplink_radiobutton'
+        set(handles.up_freq_edit,'Enable','on') 
+        set(handles.uplink_text,'Enable','on')
+        set(handles.down_freq_edit,'Enable','off')
+        set(handles.downlink_text,'Enable','off') 
+    otherwise
+        errordlg('Error Selecting Link Direction', 'Direction Selection')
+    return;
+end
+        
+
+guidata(handles.figure1, handles);
