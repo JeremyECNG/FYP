@@ -60,7 +60,9 @@ set(handles.latitude_edit,'Enable','on')
 set(handles.longitude_text,'Enable','on')
 set(handles.latitude_text,'Enable','on') 
 
-node_datastructures
+save_counter = 0;
+setappdata(0, 'savecounter', save_counter);
+%node_datastructures
 %testscript
 %global testvar;
 % Update handles structure
@@ -354,18 +356,38 @@ function save_node_pushbutton_Callback(hObject, eventdata, handles)
 % sav_node_con.equipment_params.tx_ant_gain = tx_antgain;
 % savenode(sav_node_con)
 
+type_flag = get(handles.node_type_selection, 'UserData');
+location_flag = get(handles.node_location_selection, 'UserData');
+
+
+
+
+% nodeplace_typ = 'Specify Co-ordinates';
+% sav_node_con.node_type = 'Tower Mounted';
+
 %Node Name
 sav_node_con.node_name = getappdata(0,'node_name');
 
 %Node Type
-sav_node_con.node_type = getappdata(0,'node_typ');
-        
+if 1 == type_flag
+    sav_node_con.node_type = getappdata(0,'node_typ');
+else
+    sav_node_con.node_type = 'Tower Mounted';
+end
 %Node Location 
-sav_node_con.node_location.placement_type = getappdata(0,'nodeplace_typ');
+if 1 == location_flag;
+    sav_node_con.node_location.placement_type = getappdata(0,'nodeplace_typ');
+    
+    if strcmp(sav_node_con.node_location.placement_type,'Mouse Placement')
+    sav_node_con.node_location.lati = 0;
 
-sav_node_con.node_location.lati = getappdata(0,'lat_itude');
+    sav_node_con.node_location.longi = 0;
+    end
+else
+    sav_node_con.node_location.placement_type = 'Specify Co-ordinates';
+end
 
-sav_node_con.node_location.longi = getappdata(0,'long_itude');
+
 
 %Equipment Paramters
 sav_node_con.equipment_params.technology = getappdata(0,'node_tech');
@@ -384,13 +406,24 @@ sav_node_con.equipment_params.tx_cable_loss = getappdata(0,'txcab_loss');
 
 sav_node_con.equipment_params.rx_cable_loss = getappdata(0,'rxcab_loss');
 
-savenode(sav_node_con)
 
-% testvar = getappdata(0, 'testvar2')
-% savetest(testvar)
-f = 0;
-% getappdata(hObject.String, 'testvar');
-close(node_config)
+
+set(handles.node_type_selection, 'UserData', 0);
+set(handles.node_location_selection, 'UserData', 0);
+
+
+if isempty(sav_node_con.node_name)||isempty(sav_node_con.node_location.lati)||isempty(sav_node_con.node_location.longi)||isempty(sav_node_con.equipment_params.technology)||isempty(sav_node_con.equipment_params.noise_fig)||isempty(sav_node_con.equipment_params.tx_pwr)||isempty(sav_node_con.equipment_params.rx_pwr)||isempty(sav_node_con.equipment_params.tx_ant_gain)||isempty(sav_node_con.equipment_params.rx_ant_gain)||isempty(sav_node_con.equipment_params.tx_cable_loss)||isempty(sav_node_con.equipment_params.rx_cable_loss)
+   
+    errordlg('Please fill all fields', 'Save')
+    
+else
+    
+    savenode(sav_node_con)
+    close(node_config)
+    
+end
+
+
 
 % function savetest(num)
 % savar.test = num
@@ -398,38 +431,55 @@ close(node_config)
 
 function savenode(sav_node_con)
 
+
+save_counter = getappdata(0, 'savecounter');
+
+if exist('nodesave.mat')
+    load('nodesave.mat')
+    if exist('save_ind')
+        save_counter = save_ind;
+    end
+end
+save_counter = save_counter + 1;
+
+%Saving Index
+save_ind = save_counter;
+
 %Node Name
-node_con.node_name = sav_node_con.node_name ;
+node_con(save_counter).node_name = sav_node_con.node_name ;
 
 %Node Type
-node_con.node_type = sav_node_con.node_type;
+node_con(save_counter).node_type = sav_node_con.node_type;
 
 %Node Location 
 
-node_con.node_location.placement_type = sav_node_con.node_location.placement_type;
+node_con(save_counter).node_location.placement_type = sav_node_con.node_location.placement_type;
 
-node_con.node_location.lati = sav_node_con.node_location.lati;
+node_con(save_counter).node_location.lati = sav_node_con.node_location.lati;
 
-node_con.node_location.longi = sav_node_con.node_location.longi;
+node_con(save_counter).node_location.longi = sav_node_con.node_location.longi;
 
 %Equipment Paramters
-node_con.equipment_params.technology = sav_node_con.equipment_params.technology;
+node_con(save_counter).equipment_params.technology = sav_node_con.equipment_params.technology;
 
-node_con.equipment_params.noise_fig = sav_node_con.equipment_params.noise_fig;
+node_con(save_counter).equipment_params.noise_fig = sav_node_con.equipment_params.noise_fig;
 
-node_con.equipment_params.tx_pwr = sav_node_con.equipment_params.tx_pwr;
+node_con(save_counter).equipment_params.tx_pwr = sav_node_con.equipment_params.tx_pwr;
 
-node_con.equipment_params.rx_pwr = sav_node_con.equipment_params.rx_pwr;
+node_con(save_counter).equipment_params.rx_pwr = sav_node_con.equipment_params.rx_pwr;
 
-node_con.equipment_params.tx_ant_gain = sav_node_con.equipment_params.tx_ant_gain;
+node_con(save_counter).equipment_params.tx_ant_gain = sav_node_con.equipment_params.tx_ant_gain;
 
-node_con.equipment_params.rx_ant_gain = sav_node_con.equipment_params.rx_ant_gain;
+node_con(save_counter).equipment_params.rx_ant_gain = sav_node_con.equipment_params.rx_ant_gain;
 
-node_con.equipment_params.tx_cable_loss = sav_node_con.equipment_params.tx_cable_loss;
+node_con(save_counter).equipment_params.tx_cable_loss = sav_node_con.equipment_params.tx_cable_loss;
 
-node_con.equipment_params.rx_cable_loss = sav_node_con.equipment_params.rx_cable_loss;
+node_con(save_counter).equipment_params.rx_cable_loss = sav_node_con.equipment_params.rx_cable_loss;
 
-save('nodesave.mat','node_con')
+
+save('nodesave.mat','node_con','save_ind')
+
+
 
 function node_name_edit_Callback(hObject, eventdata, handles)
 % hObject    handle to node_name_edit (see GCBO)
@@ -438,7 +488,7 @@ function node_name_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of node_name_edit as text
 %        str2double(get(hObject,'String')) returns contents of node_name_edit as a double
-nodename = str2double(get(handles.node_name_edit, 'String'));
+nodename = get(handles.node_name_edit, 'String');
 setappdata(0, 'node_name', nodename);
 
 % --- Executes during object creation, after setting all properties.
@@ -489,6 +539,8 @@ function node_location_selection_SelectionChangedFcn(hObject, eventdata, handles
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+set(handles.node_location_selection, 'UserData', 1);
+        
 switch eventdata.Source.SelectedObject.Tag
     
     case 'coordinates_radiobutton'
@@ -524,6 +576,8 @@ function node_type_selection_SelectionChangedFcn(hObject, eventdata, handles)
 % hObject    handle to the selected object in node_type_selection 
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+set(handles.node_type_selection, 'UserData', 1);
 
 switch eventdata.Source.SelectedObject.Tag
     
