@@ -60,6 +60,33 @@ set(handles.latitude_edit,'Enable','on')
 set(handles.longitude_text,'Enable','on')
 set(handles.latitude_text,'Enable','on') 
 
+%Node Name
+setappdata(0,'node_name',string.empty);
+
+%Node Location 
+    
+setappdata(0,'lat_itude',double.empty);
+
+setappdata(0,'long_itude',double.empty);
+
+%Equipment Paramters
+setappdata(0,'node_tech',string.empty);
+
+setappdata(0,'noise_fig',double.empty);
+
+setappdata(0,'tx_power',double.empty);
+
+setappdata(0,'rx_power',double.empty);
+
+setappdata(0,'txant_gain',double.empty);
+
+setappdata(0,'rxant_gain',double.empty);
+
+setappdata(0,'txcab_loss',double.empty);
+
+setappdata(0,'rxcab_loss',double.empty);
+
+
 save_counter = 0;
 setappdata(0, 'savecounter', save_counter);
 %node_datastructures
@@ -361,6 +388,10 @@ location_flag = get(handles.node_location_selection, 'UserData');
 
 
 
+if exist('nodesave.mat')
+    load('nodesave.mat')
+end
+
 
 % nodeplace_typ = 'Specify Co-ordinates';
 % sav_node_con.node_type = 'Tower Mounted';
@@ -385,6 +416,10 @@ if 1 == location_flag;
     end
 else
     sav_node_con.node_location.placement_type = 'Specify Co-ordinates';
+    
+    sav_node_con.node_location.lati = getappdata(0,'lat_itude');
+
+    sav_node_con.node_location.longi = getappdata(0,'long_itude');
 end
 
 
@@ -412,10 +447,29 @@ set(handles.node_type_selection, 'UserData', 0);
 set(handles.node_location_selection, 'UserData', 0);
 
 
-if isempty(sav_node_con.node_name)||isempty(sav_node_con.node_location.lati)||isempty(sav_node_con.node_location.longi)||isempty(sav_node_con.equipment_params.technology)||isempty(sav_node_con.equipment_params.noise_fig)||isempty(sav_node_con.equipment_params.tx_pwr)||isempty(sav_node_con.equipment_params.rx_pwr)||isempty(sav_node_con.equipment_params.tx_ant_gain)||isempty(sav_node_con.equipment_params.rx_ant_gain)||isempty(sav_node_con.equipment_params.tx_cable_loss)||isempty(sav_node_con.equipment_params.rx_cable_loss)
+
+save_slots_used = numel(node_con);
+    
+for name_ind = 1:save_slots_used
+    if strcmp(getappdata(0,'node_name'), node_con(name_ind).node_name)
+        name_conflict_flag = 1;
+        setappdata(0,'nameflag',name_conflict_flag)
+        %errordlg('A node of this name already exists please change the name of your entry', 'Name Conflict')
+    end  
+end
+
+if  getappdata(0,'nameflag') == 1
    
+    errordlg('A node of this name already exists please change the name of your entry', 'Name Conflict')
+    setappdata(0,'nameflag',0)
+    
+elseif  isempty(sav_node_con.node_name)||isempty(sav_node_con.node_location.lati)||isempty(sav_node_con.node_location.longi)||isempty(sav_node_con.equipment_params.technology)||isempty(sav_node_con.equipment_params.noise_fig)||isempty(sav_node_con.equipment_params.tx_pwr)||isempty(sav_node_con.equipment_params.rx_pwr)||isempty(sav_node_con.equipment_params.tx_ant_gain)||isempty(sav_node_con.equipment_params.rx_ant_gain)||isempty(sav_node_con.equipment_params.tx_cable_loss)||isempty(sav_node_con.equipment_params.rx_cable_loss)
+        
     errordlg('Please fill all fields', 'Save')
     
+elseif  isnan(sav_node_con.node_location.lati)||isnan(sav_node_con.node_location.longi)||isnan(sav_node_con.equipment_params.noise_fig)||isnan(sav_node_con.equipment_params.tx_pwr)||isnan(sav_node_con.equipment_params.rx_pwr)||isnan(sav_node_con.equipment_params.tx_ant_gain)||isnan(sav_node_con.equipment_params.rx_ant_gain)||isnan(sav_node_con.equipment_params.tx_cable_loss)||isnan(sav_node_con.equipment_params.rx_cable_loss)
+        
+    errordlg('Please fill all fields with valid content', 'Save')
 else
     
     savenode(sav_node_con)
