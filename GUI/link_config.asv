@@ -716,14 +716,9 @@ sav_link_con.receiver.rx_bandwidth = getappdata(0,'link_rxbw');
 %
 if exist('linksave.mat')
     load('linksave.mat')
-    
-    save_slots_used = numel(link_con);
-    
-else
-    save_slots_used = 0;
 end
 
-
+save_slots_used = numel(link_con);
     
 for name_ind = 1:save_slots_used
     if strcmp(getappdata(0,'link_nam'), link_con(name_ind).link_name)
@@ -738,14 +733,14 @@ if  getappdata(0,'linknameflag') == 1
     errordlg('A link of this name already exists please change the name of your entry', 'Name Conflict')
     setappdata(0,'linknameflag',0)
     
-% elseif  isempty(sav_node_con.node_name)||isempty(sav_node_con.node_location.lati)
-%         
-%     errordlg('Please fill all fields', 'Save')
-% 
-%     
-% elseif  isnan(sav_node_con.node_location.lati)||isnan(sav_node_con.node_location.longi)
-%         
-%     errordlg('Please fill all fields with valid content', 'Save')
+elseif  isempty(sav_node_con.node_name)||isempty(sav_node_con.node_location.lati)
+        
+    errordlg('Please fill all fields', 'Save')
+
+    
+elseif  isnan(sav_node_con.node_location.lati)||isnan(sav_node_con.node_location.longi)
+        
+    errordlg('Please fill all fields with valid content', 'Save')
 else
     
     savelink(sav_link_con)

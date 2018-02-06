@@ -22,7 +22,7 @@ function varargout = main_screen_v5(varargin)
 
 % Edit the above text to modify the response to help main_screen_v5
 
-% Last Modified by GUIDE v2.5 30-Jan-2018 15:31:17
+% Last Modified by GUIDE v2.5 05-Feb-2018 12:10:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,11 +58,22 @@ handles.output = hObject;
 set(handles.node_popupmenu,'Enable','on') 
 set(handles.link_popupmenu,'Enable','off')
 
-set(handles.prx_equip_radiobutton,'Enable','off') 
-set(handles.prx_comp_radiobutton,'Enable','off') 
-set(handles.prx_popupmenu,'Enable','off')
-set(handles.prx_text,'Enable','off')
+% set(handles.prx_equip_radiobutton,'Enable','off') 
+% set(handles.prx_comp_radiobutton,'Enable','off') 
+% set(handles.prx_popupmenu,'Enable','off')
+% set(handles.prx_text,'Enable','off')
         
+if exist('nodesave.mat')
+    load('nodesave.mat')
+     node_choices= {node_con.node_name};   
+%     for nodein = 1:save_ind
+%     node_choices(nodein) = node_con(nodein).node_name;
+%     end
+
+% setappdata(0,'nodes_list',node_choices)
+set(handles.node_popupmenu, 'String', node_choices);
+set(handles.node_popupmenu, 'Value', 1);
+end
 
 % Update handles structure
 guidata(hObject, handles);
@@ -256,19 +267,34 @@ function node_popupmenu_Callback(hObject, eventdata, handles)
 % f.test = 0;
 % loadtest(f)
 % 
-% g = 0;
+ g = 0;
 
-
-% function loadtest(numb)
-% 
-% fileName = 'testsave.mat';
-% 
-% if exist(fileName)
-%     load(fileName)
-% %     num = savar.test;
-%     set(numb.test, 'test', savar.test);
-%     h = 0;
+   %sindisnd
+   
+% function setnodepop()
+%         
+% if exist('nodesave.mat')
+%     load('nodesave.mat')
+%      node_choices= {node_con.node_name}   ;   
+% %     for nodein = 1:save_ind
+% %     node_choices(nodein) = node_con(nodein).node_name;
+% %     end
+% set(handles.node_popupmenu, 'String', node_choices);
+% set(handles.node_popupmenu, 'Value', 1);
 % end
+        
+
+% 
+% if exist('nodesave.mat')
+%     load('nodesave.mat')
+%             
+%     for nodein = 1:save_ind
+%     node_choices(save_ind) = node_con(save_ind).node_name;
+%     end
+% set(handles.node_popupmenu, 'String', node_choices);
+% end
+
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -528,3 +554,37 @@ end
         
 
 guidata(handles.figure1, handles);
+
+
+% --- Executes on button press in pushbutton5.
+function pushbutton5_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton6.
+function pushbutton6_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over node_popupmenu.
+function node_popupmenu_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to node_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+f = 0;
+
+
+% --- Executes on key press with focus on node_popupmenu and none of its controls.
+function node_popupmenu_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to node_popupmenu (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.UICONTROL)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+f = 0;

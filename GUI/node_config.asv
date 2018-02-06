@@ -406,13 +406,19 @@ else
     sav_node_con.node_type = 'Tower Mounted';
 end
 %Node Location 
-if 1 == location_flag;
+if 1 == location_flag
     sav_node_con.node_location.placement_type = getappdata(0,'nodeplace_typ');
     
     if strcmp(sav_node_con.node_location.placement_type,'Mouse Placement')
     sav_node_con.node_location.lati = 0;
 
     sav_node_con.node_location.longi = 0;
+    
+    else
+        
+            sav_node_con.node_location.lati = getappdata(0,'lat_itude');
+
+    sav_node_con.node_location.longi = getappdata(0,'long_itude');
     end
 else
     sav_node_con.node_location.placement_type = 'Specify Co-ordinates';
@@ -466,14 +472,24 @@ if  getappdata(0,'nameflag') == 1
 elseif  isempty(sav_node_con.node_name)||isempty(sav_node_con.node_location.lati)||isempty(sav_node_con.node_location.longi)||isempty(sav_node_con.equipment_params.technology)||isempty(sav_node_con.equipment_params.noise_fig)||isempty(sav_node_con.equipment_params.tx_pwr)||isempty(sav_node_con.equipment_params.rx_pwr)||isempty(sav_node_con.equipment_params.tx_ant_gain)||isempty(sav_node_con.equipment_params.rx_ant_gain)||isempty(sav_node_con.equipment_params.tx_cable_loss)||isempty(sav_node_con.equipment_params.rx_cable_loss)
         
     errordlg('Please fill all fields', 'Save')
+    %(isempty(sav_node_con.node_location.lati)&&(strcmp('Specify Co-ordinates',sav_node_con.node_location.placement_type)))
     
-elseif  isnan(sav_node_con.node_name)||isnan(sav_node_con.node_location.lati)||isnan(sav_node_con.node_location.longi)||isnan(sav_node_con.equipment_params.technology)||isnan(sav_node_con.equipment_params.noise_fig)||isnan(sav_node_con.equipment_params.tx_pwr)||isnan(sav_node_con.equipment_params.rx_pwr)||isnan(sav_node_con.equipment_params.tx_ant_gain)||isnan(sav_node_con.equipment_params.rx_ant_gain)||isnan(sav_node_con.equipment_params.tx_cable_loss)||isnan(sav_node_con.equipment_params.rx_cable_loss)
+elseif  isnan(sav_node_con.node_location.lati)||isnan(sav_node_con.node_location.longi)||isnan(sav_node_con.equipment_params.noise_fig)||isnan(sav_node_con.equipment_params.tx_pwr)||isnan(sav_node_con.equipment_params.rx_pwr)||isnan(sav_node_con.equipment_params.tx_ant_gain)||isnan(sav_node_con.equipment_params.rx_ant_gain)||isnan(sav_node_con.equipment_params.tx_cable_loss)||isnan(sav_node_con.equipment_params.rx_cable_loss)
         
     errordlg('Please fill all fields with valid content', 'Save')
 else
     
     savenode(sav_node_con)
     close(node_config)
+    
+%     if exist('nodesave.mat')
+%         load('nodesave.mat')
+%         node_choices= {node_con.node_name}   ;   
+% 
+%         setappdata(0, 'nodepop_String', node_choices);
+% 
+%         setappdata(0, 'nodepop_Value', 1);
+%     end
     
 end
 

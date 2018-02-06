@@ -22,7 +22,7 @@ function varargout = main_screen_v5(varargin)
 
 % Edit the above text to modify the response to help main_screen_v5
 
-% Last Modified by GUIDE v2.5 29-Jan-2018 12:32:57
+% Last Modified by GUIDE v2.5 05-Feb-2018 12:10:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,6 +55,26 @@ function main_screen_v5_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for main_screen_v5
 handles.output = hObject;
 
+set(handles.node_popupmenu,'Enable','on') 
+set(handles.link_popupmenu,'Enable','off')
+
+% set(handles.prx_equip_radiobutton,'Enable','off') 
+% set(handles.prx_comp_radiobutton,'Enable','off') 
+% set(handles.prx_popupmenu,'Enable','off')
+% set(handles.prx_text,'Enable','off')
+        
+if exist('nodesave.mat')
+    load('nodesave.mat')
+     node_choices= {node_con.node_name};   
+%     for nodein = 1:save_ind
+%     node_choices(nodein) = node_con(nodein).node_name;
+%     end
+
+% setappdata(0,'nodes_list',node_choices)
+set(handles.node_popupmenu, 'String', node_choices);
+set(handles.node_popupmenu, 'Value', 1);
+end
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -85,13 +105,15 @@ function configure_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to configure_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% if 
-%     
-%     link_config
-%     
-% elseif
-%     
-%     node_config
+
+newnode = (get(handles.new_node_radiobutton, 'Value'));
+newlink = (get(handles.new_link_radiobutton, 'Value'));
+
+if (1 == newlink )
+    link_config 
+elseif (1 == newnode) 
+     node_config
+end
 
 % --- Executes on button press in new_node_radiobutton.
 function new_node_radiobutton_Callback(hObject, eventdata, handles)
@@ -101,6 +123,7 @@ function new_node_radiobutton_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of new_node_radiobutton
 
+%set(handles.new_node_radiobutton, 'UserData', handles.new_node_radiobutton.Value);
 
 % --- Executes on button press in new_link_radiobutton.
 function new_link_radiobutton_Callback(hObject, eventdata, handles)
@@ -123,6 +146,7 @@ function country_popupmenu_Callback(hObject, eventdata, handles)
 contents = cellstr(get(hObject,'String'));
 country = contents{get(hObject,'Value')};
 set(handles.country_popupmenu, 'UserData', country);
+
 
 % --- Executes during object creation, after setting all properties.
 function country_popupmenu_CreateFcn(hObject, eventdata, handles)
@@ -218,6 +242,7 @@ function link_popupmenu_Callback(hObject, eventdata, handles)
 %        contents{get(hObject,'Value')} returns selected item from link_popupmenu
 
 
+
 % --- Executes during object creation, after setting all properties.
 function link_popupmenu_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to link_popupmenu (see GCBO)
@@ -239,6 +264,37 @@ function node_popupmenu_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns node_popupmenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from node_popupmenu
+% f.test = 0;
+% loadtest(f)
+% 
+ g = 0;
+
+   %sindisnd
+   
+% function setnodepop()
+%         
+% if exist('nodesave.mat')
+%     load('nodesave.mat')
+%      node_choices= {node_con.node_name}   ;   
+% %     for nodein = 1:save_ind
+% %     node_choices(nodein) = node_con(nodein).node_name;
+% %     end
+% set(handles.node_popupmenu, 'String', node_choices);
+% set(handles.node_popupmenu, 'Value', 1);
+% end
+        
+
+% 
+% if exist('nodesave.mat')
+%     load('nodesave.mat')
+%             
+%     for nodein = 1:save_ind
+%     node_choices(save_ind) = node_con(save_ind).node_name;
+%     end
+% set(handles.node_popupmenu, 'String', node_choices);
+% end
+
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -262,6 +318,15 @@ function load_node_radiobutton_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of load_node_radiobutton
 
+% set(handles.node_popupmenu,'Enable','on') 
+% set(handles.link_popupmenu,'Enable','off')
+% 
+% guidata(handles.figure1, handles);
+
+
+
+
+
 
 % --- Executes on button press in load_link_radiobutton.
 function load_link_radiobutton_Callback(hObject, eventdata, handles)
@@ -271,6 +336,10 @@ function load_link_radiobutton_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of load_link_radiobutton
 
+% set(handles.link_popupmenu,'Enable','on')
+% set(handles.node_popupmenu,'Enable','off') 
+%  
+% guidata(handles.figure1, handles);
 
 % --- Executes on button press in towers_checkbox.
 function towers_checkbox_Callback(hObject, eventdata, handles)
@@ -435,3 +504,87 @@ function prx_popupmenu_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes when selected object is changed in load_selection.
+function load_selection_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in load_selection 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+switch eventdata.Source.SelectedObject.Tag
+    
+    case 'load_link_radiobutton'
+        set(handles.link_popupmenu,'Enable','on')
+        set(handles.node_popupmenu,'Enable','off') 
+    case 'load_node_radiobutton'
+        set(handles.node_popupmenu,'Enable','on') 
+        set(handles.link_popupmenu,'Enable','off')
+    otherwise
+        errordlg('Error Selecting Loading Source', 'Load Selection')
+    return;
+end
+        
+
+guidata(handles.figure1, handles);
+
+
+% --- Executes when selected object is changed in range_selection.
+function range_selection_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in range_selection 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+switch eventdata.Source.SelectedObject.Tag
+    
+    case 'los_radiobutton'
+        set(handles.prx_equip_radiobutton,'Enable','off') 
+        set(handles.prx_comp_radiobutton,'Enable','off') 
+        set(handles.prx_popupmenu,'Enable','off')
+        set(handles.prx_text,'Enable','off')
+    case 'pwr_lim_radiobutton'
+        set(handles.prx_equip_radiobutton,'Enable','on') 
+        set(handles.prx_comp_radiobutton,'Enable','on') 
+        set(handles.prx_popupmenu,'Enable','on')
+        set(handles.prx_text,'Enable','on')
+    otherwise
+        errordlg('Error Selecting Range Type', 'Range Selection')
+    return;
+end
+        
+
+guidata(handles.figure1, handles);
+
+
+% --- Executes on button press in pushbutton5.
+function pushbutton5_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton6.
+function pushbutton6_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over node_popupmenu.
+function node_popupmenu_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to node_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+f = 0;
+
+
+% --- Executes on key press with focus on node_popupmenu and none of its controls.
+function node_popupmenu_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to node_popupmenu (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.UICONTROL)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)
+f = 0;
