@@ -22,7 +22,7 @@ function varargout = link_config(varargin)
 
 % Edit the above text to modify the response to help link_config
 
-% Last Modified by GUIDE v2.5 05-Feb-2018 12:56:39
+% Last Modified by GUIDE v2.5 07-Feb-2018 14:54:39
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -95,6 +95,14 @@ set(handles.node2_popupmenu, 'String', 'Select');
 set(handles.node2_popupmenu, 'Value', 1);
 
 
+setappdata(0, 'node_one', 'Select');
+setappdata(0, 'node_two', 'Select');
+setappdata(0, 'link_service', 'Select');
+setappdata(0, 'link_ber', 'Select');
+setappdata(0, 'link_tech', 'Select');
+setappdata(0, 'link_pl', 'Select');
+setappdata(0, 'link_modsch', 'Select');
+setappdata(0, 'link_coding', 'Select');
 setappdata(0, 'link_direc', 'Downlink');
 
 save_counter_link = 0;
@@ -104,7 +112,7 @@ setappdata(0, 'linksavecounter', save_counter_link);
 guidata(hObject, handles);
 
 % UIWAIT makes link_config wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+% uiwait(handles.figure_link);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -140,7 +148,7 @@ function rec_band_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of rec_band_edit as text
 %        str2double(get(hObject,'String')) returns contents of rec_band_edit as a double
-linkrxbw = get(handles.down_freq_edit, 'String');
+linkrxbw = str2double(get(handles.rec_band_edit, 'String'));
 setappdata(0, 'link_rxbw', linkrxbw);
 
 % --- Executes during object creation, after setting all properties.
@@ -164,7 +172,7 @@ function temp_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of temp_edit as text
 %        str2double(get(hObject,'String')) returns contents of temp_edit as a double
-linktemp = get(handles.down_freq_edit, 'String');
+linktemp = str2double(get(handles.temp_edit, 'String'));
 setappdata(0, 'link_temp', linktemp);
 
 % --- Executes during object creation, after setting all properties.
@@ -188,7 +196,7 @@ function down_freq_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of down_freq_edit as text
 %        str2double(get(hObject,'String')) returns contents of down_freq_edit as a double
-linkdownfreq = get(handles.down_freq_edit, 'String');
+linkdownfreq = str2double(get(handles.down_freq_edit, 'String'));
 setappdata(0, 'link_downfreq', linkdownfreq);
 
 % --- Executes during object creation, after setting all properties.
@@ -212,7 +220,7 @@ function up_freq_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of up_freq_edit as text
 %        str2double(get(hObject,'String')) returns contents of up_freq_edit as a double
-linkupfreq = get(handles.down_freq_edit, 'String');
+linkupfreq = str2double(get(handles.up_freq_edit, 'String'));
 setappdata(0, 'link_upfreq', linkupfreq);
 
 % --- Executes during object creation, after setting all properties.
@@ -274,15 +282,15 @@ end
 switch linkservice
     case 'Conversational Voice'
 %         ber = {10^-3,10^-2};
-        ber = {'10^-2','10^-3'};
+        ber = {'Select','10^-2','10^-3'};
         set(handles.ber_popupmenu, 'String', ber);
     case 'Emergency Messaging Data'
 %         ber = {10^-5,6*10^-8};
-        ber = {'10^-5','6*10^-8'};
+        ber = {'Select','10^-5','6*10^-8'};
         set(handles.ber_popupmenu, 'String', ber);
     case 'Vessel Tracking Data (IoT)'
 %         ber = {10^-5};
-        ber = {'10^-5'};
+        ber = {'Select','10^-5'};
         set(handles.ber_popupmenu, 'String', ber);
         set(handles.ber_popupmenu, 'Value', 1);
     otherwise
@@ -392,24 +400,33 @@ end
 switch linktech
     case 'DSC'
 
-        mods = {'FSK'};
+        mods = {'Select', 'FSK'};
         set(handles.mod_sch_popupmenu, 'String', mods);
         set(handles.mod_sch_popupmenu, 'Value', 1);
+        set(handles.code_rate_popupmenu, 'String', 'Select');
+        set(handles.code_rate_popupmenu, 'Value', 1);
         
     case 'LTE-A'
 
-        mods = {'QPSK','16QAM','64QAM','256QAM'};
+        mods = {'Select','QPSK','16QAM','64QAM','256QAM'};
         set(handles.mod_sch_popupmenu, 'String', mods);
+        set(handles.mod_sch_popupmenu, 'Value', 1);
+        set(handles.code_rate_popupmenu, 'String', 'Select');
+        set(handles.code_rate_popupmenu, 'Value', 1);        
         
     case 'NWR'
 
-        mods = {'FSK'};
+        mods = {'Select','FSK'};
         set(handles.mod_sch_popupmenu, 'String', mods);
         set(handles.mod_sch_popupmenu, 'Value', 1);
+        set(handles.code_rate_popupmenu, 'String', 'Select');
+        set(handles.code_rate_popupmenu, 'Value', 1);        
         
     otherwise
         set(handles.mod_sch_popupmenu, 'String', 'Select');
         set(handles.mod_sch_popupmenu, 'Value', 1);
+        set(handles.code_rate_popupmenu, 'String', 'Select');
+        set(handles.code_rate_popupmenu, 'Value', 1);
 end
 
 % --- Executes during object creation, after setting all properties.
@@ -433,7 +450,7 @@ function fading_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of fading_edit as text
 %        str2double(get(hObject,'String')) returns contents of fading_edit as a double
-linkfading = get(handles.down_freq_edit, 'String');
+linkfading = str2double(get(handles.fading_edit, 'String'));
 setappdata(0, 'link_fading', linkfading);
 
 % --- Executes during object creation, after setting all properties.
@@ -457,7 +474,7 @@ function interf_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of interf_edit as text
 %        str2double(get(hObject,'String')) returns contents of interf_edit as a double
-linkinterf = get(handles.down_freq_edit, 'String');
+linkinterf = str2double(get(handles.interf_edit, 'String'));
 setappdata(0, 'link_interf', linkinterf);
 
 % --- Executes during object creation, after setting all properties.
@@ -513,25 +530,25 @@ setappdata(0, 'link_modsch', linkmodsch);
 switch linkmodsch
     case 'QPSK'
 
-        coders = {'1/2','3/4'};
+        coders = {'Select','1/2','3/4'};
         set(handles.code_rate_popupmenu, 'String', coders);
         set(handles.code_rate_popupmenu, 'Value', 1);
         
     case '16QAM'
 
-        coders = {'1/2','3/4'};
+        coders = {'Select','1/2','3/4'};
         set(handles.code_rate_popupmenu, 'String', coders);
         set(handles.code_rate_popupmenu, 'Value', 1);
         
     case '64QAM'
 
-        coders = {'2/3','3/4','5/6'};
+        coders = {'Select','2/3','3/4','5/6'};
         set(handles.code_rate_popupmenu, 'String', coders);
         set(handles.code_rate_popupmenu, 'Value', 1);
         
     case '256QAM'
 
-        coders = {'3/4','5/6'};
+        coders = {'Select','3/4','5/6'};
         set(handles.code_rate_popupmenu, 'String', coders);
         set(handles.code_rate_popupmenu, 'Value', 1);
         
@@ -684,6 +701,11 @@ sav_link_con.node_selection.node1 = getappdata(0,'node_one');
 
 sav_link_con.node_selection.node2 = getappdata(0,'node_two');
 
+%Link Service
+sav_link_con.node_selection.service = getappdata(0,'link_service');
+
+sav_link_con.node_selection.ber = getappdata(0,'link_ber');
+
 %Link System Paramters
 sav_link_con.system_params.mod_sch = getappdata(0,'link_modsch');
 
@@ -738,14 +760,17 @@ if  getappdata(0,'linknameflag') == 1
     errordlg('A link of this name already exists please change the name of your entry', 'Name Conflict')
     setappdata(0,'linknameflag',0)
     
-% elseif  isempty(sav_node_con.node_name)||isempty(sav_node_con.node_location.lati)
-%         
-%     errordlg('Please fill all fields', 'Save')
-% 
-%     
-% elseif  isnan(sav_node_con.node_location.lati)||isnan(sav_node_con.node_location.longi)
-%         
-%     errordlg('Please fill all fields with valid content', 'Save')
+elseif isempty(sav_link_con.link_name)||isempty(sav_link_con.system_params.freq)||isempty(sav_link_con.channel.fading_margin)||isempty(sav_link_con.channel.interference_margin)||isempty(sav_link_con.receiver.temperature)||isempty(sav_link_con.receiver.rx_bandwidth)
+        
+    errordlg('Please fill all fields', 'Save')
+
+elseif isnan(sav_link_con.system_params.freq)||isnan(sav_link_con.channel.fading_margin)||isnan(sav_link_con.channel.interference_margin )||isnan(sav_link_con.receiver.temperature)||isnan(sav_link_con.receiver.rx_bandwidth)
+        
+    errordlg('Please fill all fields with valid content', 'Save')
+    
+elseif strcmp('Select',sav_link_con.technology)||strcmp('Select',sav_link_con.node_selection.node1)||strcmp('Select',sav_link_con.node_selection.node2)||strcmp('Select',sav_link_con.node_selection.service)||strcmp('Select',sav_link_con.node_selection.ber)||strcmp('Select',sav_link_con.system_params.mod_sch)||strcmp('Select',sav_link_con.system_params.code_rate)||strcmp('Select',sav_link_con.channel.path_loss_model)
+        
+    errordlg('Please make all necessary selections', 'Save')
 else
     
     savelink(sav_link_con)
@@ -780,6 +805,11 @@ link_con(save_counter_link).technology = sav_link_con.technology;
 link_con(save_counter_link).node_selection.node1 = sav_link_con.node_selection.node1;
 
 link_con(save_counter_link).node_selection.node2 = sav_link_con.node_selection.node2;
+
+%Link Service
+link_con(save_counter_link).node_service.service = sav_link_con.node_selection.service;
+
+link_con(save_counter_link).node_service.ber = sav_link_con.node_selection.ber;
 
 %Link System Paramters
 link_con(save_counter_link).system_params.mod_sch = sav_link_con.system_params.mod_sch;
@@ -860,4 +890,4 @@ switch eventdata.Source.SelectedObject.Tag
 end
         
 
-guidata(handles.figure1, handles);
+guidata(handles.figure_link, handles);

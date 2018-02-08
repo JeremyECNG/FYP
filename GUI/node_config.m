@@ -22,7 +22,7 @@ function varargout = node_config(varargin)
 
 % Edit the above text to modify the response to help node_config
 
-% Last Modified by GUIDE v2.5 31-Jan-2018 21:48:13
+% Last Modified by GUIDE v2.5 07-Feb-2018 14:46:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -96,7 +96,7 @@ setappdata(0, 'savecounter', save_counter_link);
 guidata(hObject, handles);
 
 % UIWAIT makes node_config wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+% uiwait(handles.figure_node);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -491,6 +491,14 @@ else
 %         setappdata(0, 'nodepop_Value', 1);
 %     end
     
+%     if exist('nodesave.mat')
+%         load('nodesave.mat')
+%          node_choices= {node_con.node_name};   
+%     set(handles.node_popupmenu, 'String', node_choices);
+%     set(handles.node_popupmenu, 'Value', 1);
+%     end
+
+
 end
 
 
@@ -638,7 +646,7 @@ end
         
 
 
-guidata(handles.figure1, handles);
+guidata(handles.figure_node, handles);
 
 
 % --- Executes when selected object is changed in node_type_selection.

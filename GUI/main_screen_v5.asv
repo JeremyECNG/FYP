@@ -22,7 +22,7 @@ function varargout = main_screen_v5(varargin)
 
 % Edit the above text to modify the response to help main_screen_v5
 
-% Last Modified by GUIDE v2.5 05-Feb-2018 12:10:50
+% Last Modified by GUIDE v2.5 08-Feb-2018 12:08:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,15 +65,22 @@ set(handles.link_popupmenu,'Enable','off')
         
 if exist('nodesave.mat')
     load('nodesave.mat')
-     node_choices= {node_con.node_name};   
-%     for nodein = 1:save_ind
-%     node_choices(nodein) = node_con(nodein).node_name;
-%     end
+      node_choices= {node_con.node_name}; 
 
+
+%     for nodein = 1:save_ind
+%     node_choices(nodein + 1) = node_con(nodein).node_name;
+%     end
+%     node_choices(1) = 'Select';
+    
 % setappdata(0,'nodes_list',node_choices)
 set(handles.node_popupmenu, 'String', node_choices);
 set(handles.node_popupmenu, 'Value', 1);
 end
+
+setappdata(0, 'node_selec', 'Select');
+
+setappdata(0,'disp_flag',0)
 
 % Update handles structure
 guidata(hObject, handles);
@@ -110,10 +117,14 @@ newnode = (get(handles.new_node_radiobutton, 'Value'));
 newlink = (get(handles.new_link_radiobutton, 'Value'));
 
 if (1 == newlink )
-    link_config 
+    link_config('main_screen_v5',handles.figure1) 
 elseif (1 == newnode) 
-     node_config
+     node_config('main_screen_v5',handles.figure1) 
 end
+
+guidata(handles.figure1, handles);
+
+
 
 % --- Executes on button press in new_node_radiobutton.
 function new_node_radiobutton_Callback(hObject, eventdata, handles)
@@ -146,6 +157,8 @@ function country_popupmenu_Callback(hObject, eventdata, handles)
 contents = cellstr(get(hObject,'String'));
 country = contents{get(hObject,'Value')};
 set(handles.country_popupmenu, 'UserData', country);
+
+guidata(handles.figure1, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -230,6 +243,7 @@ xlabel(handles.map,'Longitude')
 ylabel(handles.map,'Latitude')
 grid(handles.map,'on')
 plot_google_map('Axis',handles.map,'maptype','satellite');
+hold on
 guidata(handles.output, handles);
 
 % --- Executes on selection change in link_popupmenu.
@@ -240,7 +254,9 @@ function link_popupmenu_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns link_popupmenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from link_popupmenu
-
+contents = cellstr(get(hObject,'String'));
+linkselec = contents{get(hObject,'Value')};
+setappdata(0, 'link_selec', linkselec);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -264,10 +280,10 @@ function node_popupmenu_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns node_popupmenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from node_popupmenu
-% f.test = 0;
-% loadtest(f)
-% 
- g = 0;
+
+contents = cellstr(get(hObject,'String'));
+nodeselec = contents{get(hObject,'Value')};
+setappdata(0, 'node_selec', nodeselec);
 
    %sindisnd
    
@@ -348,7 +364,29 @@ function towers_checkbox_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of towers_checkbox
+towers_on = get(hObject,'Value');
 
+if 1 == towers_on 
+    if exist('towers.mat')
+        load('towers.mat')
+        if exist('tower_tnt')
+
+%             geoshow(tower_tnt,'DisplayType','point')
+% plot(tower_tnt.Lon,tower_tnt.Lat)
+% geoshow(tower_tnt.Lat,tower_tnt.Lon,'DisplayType', 'surface')   
+ plotm(tower_tnt.Lat,tower_tnt.Lon)   
+        end
+
+    else
+        errordlg('No Tower Data Found', 'Tower Data Set Selection')
+        return;
+    end
+    
+else 
+    clear tower_tnt
+end
+
+guidata(handles.figure1, handles);
 
 % --- Executes on button press in gmdss_checkbox.
 function gmdss_checkbox_Callback(hObject, eventdata, handles)
@@ -401,6 +439,8 @@ function tower_filter_pushbutton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 data_filter
+
+guidata(handles.figure1, handles);
 
 % --- Executes on button press in ber_checkbox.
 function ber_checkbox_Callback(hObject, eventdata, handles)
@@ -516,10 +556,12 @@ switch eventdata.Source.SelectedObject.Tag
     
     case 'load_link_radiobutton'
         set(handles.link_popupmenu,'Enable','on')
-        set(handles.node_popupmenu,'Enable','off') 
+        set(handles.node_popupmenu,'Enable','off')
+        setappdata(0,'disp_flag',1)
     case 'load_node_radiobutton'
         set(handles.node_popupmenu,'Enable','on') 
         set(handles.link_popupmenu,'Enable','off')
+        setappdata(0,'disp_flag',0)
     otherwise
         errordlg('Error Selecting Loading Source', 'Load Selection')
     return;
@@ -556,19 +598,70 @@ end
 guidata(handles.figure1, handles);
 
 
-% --- Executes on button press in pushbutton5.
-function pushbutton5_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton5 (see GCBO)
+% --- Executes on button press in display_pushbutton.
+function display_pushbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to display_pushbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+display_flag =  getappdata(0,'disp_flag',0);
+
+switch display_flag
+    
+    case 0
+        
+        nodesel = getappdata(0, 'node_selec');
+
+        switch  nodesel
+
+            case 'Select'
+
+            errordlg('No Node Selected', 'Node Edit')
+            return;
+
+            otherwise
+
+                node_display
+
+        end
+        
+    case 1
+        
+                linksel = getappdata(0, 'link_selec');
+
+        switch  linksel
+
+            case 'Select'
+
+            errordlg('No Link Selected', 'Link Edit')
+            return;
+
+            otherwise
+
+                link_display
+
+        end
+end
+
+% --- Executes on button press in edit_pushbutton.
+function edit_pushbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
-% --- Executes on button press in pushbutton6.
-function pushbutton6_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton6 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
+% nodesel = getappdata(0, 'node_selec');
+% 
+% switch  nodesel
+%     
+%     case 'Select'
+%         
+%     errordlg('No Node Selected', 'Node Edit')
+%     return;
+%         
+%     otherwise
+%         
+%         node_edit
+%         
+% end
 
 % --- If Enable == 'on', executes on mouse press in 5 pixel border.
 % --- Otherwise, executes on mouse press in 5 pixel border or over node_popupmenu.
