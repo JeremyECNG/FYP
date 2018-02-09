@@ -22,7 +22,7 @@ function varargout = link_display(varargin)
 
 % Edit the above text to modify the response to help link_display
 
-% Last Modified by GUIDE v2.5 08-Feb-2018 14:29:42
+% Last Modified by GUIDE v2.5 08-Feb-2018 19:14:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,39 +56,46 @@ function link_display_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 
 
-link_selection = getappdata(0, 'link_selec');
-
+% link_selection = getappdata(0, 'link_selec');
+% 
+% 
+% if exist('linksave.mat')
+%     load('linksave.mat')
+%             
+%     for linkin = 1:save_ind_link
+%         if strcmp(link_selection,link_con(linkin).link_name)
+%             
+%             item_num = linkin;
+%     
+%         end
+%     
+%     end
+% end
+% 
+% set(handles.link_name_text, 'String',link_con(item_num).link_name );
+% set(handles.link_tech_text, 'String',link_con(item_num).technology );
+% set(handles.node1_text, 'String',link_con(item_num).node_selection.node1);
+% set(handles.node2_text, 'String',link_con(item_num).node_selection.node2);
+% set(handles.service_text, 'String',link_con(item_num).node_service.service);
+% set(handles.ber_text, 'String',link_con(item_num).node_service.ber);
+% set(handles.modulation_text, 'String',link_con(item_num).system_params.mod_sch);
+% set(handles.coding_text, 'String',link_con(item_num).system_params.code_rate  );
+% set(handles.link_direc_text, 'String',link_con(item_num).system_params.link_direction);
+% set(handles.link_freq_text, 'String',link_con(item_num).system_params.freq);
+% set(handles.path_loss_mod_text, 'String',link_con(item_num).channel.path_loss_model);
+% set(handles.fading_margin_text, 'String',link_con(item_num).channel.fading_margin);
+% set(handles.interf_margin_text, 'String',link_con(item_num).channel.interference_margin);
+% set(handles.temp_text, 'String',link_con(item_num).receiver.temperature);
+% set(handles.rx_bw_text, 'String',link_con(item_num).receiver.rx_bandwidth);
 
 if exist('linksave.mat')
     load('linksave.mat')
-            
-    for linkin = 1:save_ind_link
-        if strcmp(link_selection,link_con(linkin).link_name)
-            
-            item_num = linkin;
-    
-        end
-    
-    end
+      link_choices= {link_con.link_name}; 
+
+
+set(handles.link_sel_popupmenu, 'String', link_choices);
+set(handles.link_sel_popupmenu, 'Value', 1);
 end
-
-set(handles.link_name_text, 'String',link_con(item_num).link_name );
-set(handles.link_tech_text, 'String',link_con(item_num).technology );
-set(handles.node1_text, 'String',link_con(item_num).node_selection.node1);
-set(handles.node2_text, 'String',link_con(item_num).node_selection.node2);
-set(handles.service_text, 'String',link_con(item_num).node_service.service);
-set(handles.ber_text, 'String',link_con(item_num).node_service.ber);
-set(handles.modulation_text, 'String',link_con(item_num).system_params.mod_sch);
-set(handles.coding_text, 'String',link_con(item_num).system_params.code_rate  );
-set(handles.link_direc_text, 'String',link_con(item_num).system_params.link_direction);
-set(handles.link_freq_text, 'String',link_con(item_num).system_params.freq);
-set(handles.path_loss_mod_text, 'String',link_con(item_num).channel.path_loss_model);
-set(handles.fading_margin_text, 'String',link_con(item_num).channel.fading_margin);
-set(handles.interf_margin_text, 'String',link_con(item_num).channel.interference_margin);
-set(handles.temp_text, 'String',link_con(item_num).receiver.temperature);
-set(handles.rx_bw_text, 'String',link_con(item_num).receiver.rx_bandwidth);
-
-
 
 
 % Update handles structure
@@ -121,3 +128,57 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on selection change in link_sel_popupmenu.
+function link_sel_popupmenu_Callback(hObject, eventdata, handles)
+% hObject    handle to link_sel_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns link_sel_popupmenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from link_sel_popupmenu
+contents = cellstr(get(hObject,'String'));
+link_selection = contents{get(hObject,'Value')};
+setappdata(0, 'link_selec', link_selection);
+
+if exist('linksave.mat')
+    load('linksave.mat')
+            
+    for linkin = 1:save_ind_link
+        if strcmp(link_selection,link_con(linkin).link_name)
+            
+            item_num = linkin;
+    
+        end
+    
+    end
+end
+
+set(handles.link_name_text, 'String',link_con(item_num).link_name );
+set(handles.link_tech_text, 'String',link_con(item_num).technology );
+set(handles.node1_text, 'String',link_con(item_num).node_selection.node1);
+set(handles.node2_text, 'String',link_con(item_num).node_selection.node2);
+set(handles.service_text, 'String',link_con(item_num).node_service.service);
+set(handles.ber_text, 'String',link_con(item_num).node_service.ber);
+set(handles.modulation_text, 'String',link_con(item_num).system_params.mod_sch);
+set(handles.coding_text, 'String',link_con(item_num).system_params.code_rate  );
+set(handles.link_direc_text, 'String',link_con(item_num).system_params.link_direction);
+set(handles.link_freq_text, 'String',link_con(item_num).system_params.freq);
+set(handles.path_loss_mod_text, 'String',link_con(item_num).channel.path_loss_model);
+set(handles.fading_margin_text, 'String',link_con(item_num).channel.fading_margin);
+set(handles.interf_margin_text, 'String',link_con(item_num).channel.interference_margin);
+set(handles.temp_text, 'String',link_con(item_num).receiver.temperature);
+set(handles.rx_bw_text, 'String',link_con(item_num).receiver.rx_bandwidth);
+
+% --- Executes during object creation, after setting all properties.
+function link_sel_popupmenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to link_sel_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

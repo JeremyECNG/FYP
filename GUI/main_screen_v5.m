@@ -22,7 +22,7 @@ function varargout = main_screen_v5(varargin)
 
 % Edit the above text to modify the response to help main_screen_v5
 
-% Last Modified by GUIDE v2.5 08-Feb-2018 12:08:07
+% Last Modified by GUIDE v2.5 09-Feb-2018 12:07:32
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,46 +55,51 @@ function main_screen_v5_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for main_screen_v5
 handles.output = hObject;
 
-set(handles.node_popupmenu,'Enable','on') 
-set(handles.link_popupmenu,'Enable','off')
+% set(handles.node_popupmenu,'Enable','on') 
+% set(handles.link_popupmenu,'Enable','off')
 
 % set(handles.prx_equip_radiobutton,'Enable','off') 
 % set(handles.prx_comp_radiobutton,'Enable','off') 
 % set(handles.prx_popupmenu,'Enable','off')
 % set(handles.prx_text,'Enable','off')
-        
-if exist('nodesave.mat')
-    load('nodesave.mat')
-      node_choices= {node_con.node_name}; 
+     
+%Take this from here and use it buddy dont forget
+
+% if exist('nodesave.mat')
+%     load('nodesave.mat')
+%       node_choices= {node_con.node_name}; 
+% 
+% 
+% %     for nodein = 1:save_ind
+% %     node_choices(nodein + 1) = node_con(nodein).node_name;
+% %     end
+% %     node_choices(1) = 'Select';
+%     
+% % setappdata(0,'nodes_list',node_choices)
+% set(handles.node_popupmenu, 'String', node_choices);
+% set(handles.node_popupmenu, 'Value', 1);
+% end
 
 
-%     for nodein = 1:save_ind
-%     node_choices(nodein + 1) = node_con(nodein).node_name;
-%     end
-%     node_choices(1) = 'Select';
-    
-% setappdata(0,'nodes_list',node_choices)
-set(handles.node_popupmenu, 'String', node_choices);
-set(handles.node_popupmenu, 'Value', 1);
-end
+% if exist('linksave.mat')
+%     load('linksave.mat')
+%       link_choices= {link_con.link_name}; 
+% 
+% 
+% %     for nodein = 1:save_ind
+% %     node_choices(nodein + 1) = node_con(nodein).node_name;
+% %     end
+% %     node_choices(1) = 'Select';
+%     
+% % setappdata(0,'nodes_list',node_choices)
+% set(handles.link_popupmenu, 'String', link_choices);
+% set(handles.link_popupmenu, 'Value', 1);
+% end
 
-
-if exist('linksave.mat')
-    load('linksave.mat')
-      link_choices= {link_con.link_name}; 
-
-
-%     for nodein = 1:save_ind
-%     node_choices(nodein + 1) = node_con(nodein).node_name;
-%     end
-%     node_choices(1) = 'Select';
-    
-% setappdata(0,'nodes_list',node_choices)
-set(handles.link_popupmenu, 'String', link_choices);
-set(handles.link_popupmenu, 'Value', 1);
-end
-
-setappdata(0, 'node_selec', 'Select');
+% setappdata(0, 'node_selec', 'Select');
+setappdata(0,'range_type',0)
+setappdata(0,'tput_on',0)
+setappdata(0,'throughput_flag',1)
 
 setappdata(0,'disp_flag',0)
 
@@ -121,7 +126,85 @@ function run_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to run_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+tput_range = getappdata(0,'tput_on');
+tput_value =  getappdata(0,'throughput_flag')
+if 1 == tput_range 
+    
+    switch tput_value
+        
+        case 0 %Full Range
+            
+        case 1 %75% Range
+            
+        case 2 %50 Range
+            
+        case 3 %25 Range
+            
+    end
+    
+end
 
+range_sel =      getappdata(0,'range_type');
+display_flag =  getappdata(0,'disp_flag');
+R = 6.378*(10^6); %R is in meters 
+
+switch range_sel
+    
+    case 0 %LOS
+        
+         switch display_flag
+    
+             case 0 %node
+
+%Resume coding here
+
+                user_n_sel = getappdata(0, 'user_node_selection');
+                
+                if exist('nodesave.mat')
+                    load('nodesave.mat')
+
+                    for nodein = 1:save_ind
+                        if strcmp(user_n_sel,node_con(nodein).node_name)
+
+                            nod_num = nodein;
+
+                        end
+
+                    end
+                end
+                
+                 if strcmp(node_con(nod_num).node_type,'Mobile at Sea')
+                     
+                     h_ves = 2; %Vessel selected to be maximum 2m 
+                     
+                     d_losh = (sqrt(2*R*h_ves))/(10^3); %answer in km
+                     
+                     range_plot(node_con(nod_num).node_location.longi  ,node_con(nod_num).node_location.lati  ,d_losh,handles.map)
+                     
+                 elseif strcmp(node_con(nod_num).node_type,'Tower Mounted')
+                     
+                     
+                 end
+        
+             case 1 %link
+        
+                user_l_sel = getappdata(0, 'user_link_selection');
+         end
+
+        
+
+    case 1 %Power Limited 
+        
+end
+
+
+function circ = range_plot(x,y,r,ax)
+hold on
+ang = 0:pi/50:2*pi;
+xunit = r * cos(ang) + x;
+yunit = r * sin(ang) + y;
+circ = plot(ax,xunit, yunit, 'r', 'LineWidth',3); 
+hold off
 
 % --- Executes on button press in configure_pushbutton.
 function configure_pushbutton_Callback(hObject, eventdata, handles)
@@ -270,9 +353,9 @@ function link_popupmenu_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns link_popupmenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from link_popupmenu
-contents = cellstr(get(hObject,'String'));
-linkselec = contents{get(hObject,'Value')};
-setappdata(0, 'link_selec', linkselec);
+% contents = cellstr(get(hObject,'String'));
+% linkselec = contents{get(hObject,'Value')};
+% setappdata(0, 'link_selec', linkselec);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -297,9 +380,9 @@ function node_popupmenu_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns node_popupmenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from node_popupmenu
 
-contents = cellstr(get(hObject,'String'));
-nodeselec = contents{get(hObject,'Value')};
-setappdata(0, 'node_selec', nodeselec);
+% contents = cellstr(get(hObject,'String'));
+% nodeselec = contents{get(hObject,'Value')};
+% setappdata(0, 'node_selec', nodeselec);
 
    %sindisnd
    
@@ -387,10 +470,20 @@ if 1 == towers_on
         load('towers.mat')
         if exist('tower_tnt')
 
-            geoshow(tower_tnt,'DisplayType','point')
-% plot(tower_tnt.Lon,tower_tnt.Lat)
-% geoshow(tower_tnt.Lat,tower_tnt.Lon,'DisplayType', 'surface')   
+%              jgeoshow(tower_tnt,'DisplayType','point')
+%            geoshow(handles.map,tower_tnt,'DisplayType','point')
+         %  geoshow(handles.map,10.6763,-61.5303,'DisplayType','point')
+%             axesm('mapprojection','mercator')
+%               geoshow(handles.map,tower_tnt,'DisplayType','point') 
+lon_var = [tower_tnt.Lon];
+lat_var = [tower_tnt.Lat];
+ plot(handles.map,lon_var,lat_var,'r*')
+ 
+% geoshow(tower_tnt.Lat,tower_tnt.Lon,'DisplayType', 'surface') 
 % plotm(tower_tnt.Lat,tower_tnt.Lon)   
+ %scatterplot(tower_tnt.Lat,tower_tnt.Lon) 
+%   scatter(tower_tnt.Lat,tower_tnt.Lon) 
+%plot(tower_tnt.Lat,tower_tnt.Lon,'*')
         end
 
     else
@@ -474,7 +567,9 @@ function throughput_checkbox_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of throughput_checkbox
+throughput_on = get(hObject,'Value');
 
+setappdata(0,'tput_on',1)
 
 % --- Executes on button press in full_radiobutton.
 function full_radiobutton_Callback(hObject, eventdata, handles)
@@ -571,12 +666,12 @@ function load_selection_SelectionChangedFcn(hObject, eventdata, handles)
 switch eventdata.Source.SelectedObject.Tag
     
     case 'load_link_radiobutton'
-        set(handles.link_popupmenu,'Enable','on')
-        set(handles.node_popupmenu,'Enable','off')
+%         set(handles.link_popupmenu,'Enable','on')
+%         set(handles.node_popupmenu,'Enable','off')
         setappdata(0,'disp_flag',1)
     case 'load_node_radiobutton'
-        set(handles.node_popupmenu,'Enable','on') 
-        set(handles.link_popupmenu,'Enable','off')
+%         set(handles.node_popupmenu,'Enable','on') 
+%         set(handles.link_popupmenu,'Enable','off')
         setappdata(0,'disp_flag',0)
     otherwise
         errordlg('Error Selecting Loading Source', 'Load Selection')
@@ -596,15 +691,16 @@ function range_selection_SelectionChangedFcn(hObject, eventdata, handles)
 switch eventdata.Source.SelectedObject.Tag
     
     case 'los_radiobutton'
-        set(handles.prx_equip_radiobutton,'Enable','off') 
-        set(handles.prx_comp_radiobutton,'Enable','off') 
-        set(handles.prx_popupmenu,'Enable','off')
-        set(handles.prx_text,'Enable','off')
+%         set(handles.prx_equip_radiobutton,'Enable','off') 
+%         set(handles.prx_comp_radiobutton,'Enable','off') 
+%         set(handles.prx_popupmenu,'Enable','off')
+%         set(handles.prx_text,'Enable','off')
+
     case 'pwr_lim_radiobutton'
-        set(handles.prx_equip_radiobutton,'Enable','on') 
-        set(handles.prx_comp_radiobutton,'Enable','on') 
-        set(handles.prx_popupmenu,'Enable','on')
-        set(handles.prx_text,'Enable','on')
+%         set(handles.prx_equip_radiobutton,'Enable','on') 
+%         set(handles.prx_comp_radiobutton,'Enable','on') 
+%         set(handles.prx_popupmenu,'Enable','on')
+%         set(handles.prx_text,'Enable','on')
     otherwise
         errordlg('Error Selecting Range Type', 'Range Selection')
     return;
@@ -619,44 +715,58 @@ function display_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to display_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-display_flag =  getappdata(0,'disp_flag');
-
-switch display_flag
+ display_flag =  getappdata(0,'disp_flag');
+ 
+ switch display_flag
     
-    case 0
+    case 0 %node
         
-        nodesel = getappdata(0, 'node_selec');
+        node_display 
 
-        switch  nodesel
 
-            case 'Select'
-
-            errordlg('No Node Selected', 'Node Edit')
-            return;
-
-            otherwise
-
-                node_display
-
-        end
         
-    case 1
+    case 1 %link
         
-                linksel = getappdata(0, 'link_selec');
+        link_display
+ end
 
-        switch  linksel
-
-            case 'Select'
-
-            errordlg('No Link Selected', 'Link Edit')
-            return;
-
-            otherwise
-
-                link_display
-
-        end
-end
+% 
+% switch display_flag
+%     
+%     case 0
+%         
+%         nodesel = getappdata(0, 'node_selec');
+% 
+%         switch  nodesel
+% 
+%             case 'Select'
+% 
+%             errordlg('No Node Selected', 'Node Edit')
+%             return;
+% 
+%             otherwise
+% 
+%              node_display   
+% 
+%         end
+%         
+%     case 1
+%         
+%                 linksel = getappdata(0, 'link_selec');
+% 
+%         switch  linksel
+% 
+%             case 'Select'
+% 
+%             errordlg('No Link Selected', 'Link Edit')
+%             return;
+% 
+%             otherwise
+% 
+%                 link_display
+% 
+%         end
+% end
 
 % --- Executes on button press in edit_pushbutton.
 function edit_pushbutton_Callback(hObject, eventdata, handles)
@@ -697,3 +807,77 @@ function node_popupmenu_KeyPressFcn(hObject, eventdata, handles)
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handles    structure with handles and user data (see GUIDATA)
 f = 0;
+
+
+% --- Executes when selected object is changed in range_uibuttongroup.
+function range_uibuttongroup_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in range_uibuttongroup 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+switch eventdata.Source.SelectedObject.Tag
+    
+    case 'LOS to Horizon Limited'
+%         set(handles.link_popupmenu,'Enable','on')
+%         set(handles.node_popupmenu,'Enable','off')
+        setappdata(0,'range_type',0)
+    case 'Power Limited'
+%         set(handles.node_popupmenu,'Enable','on') 
+%         set(handles.link_popupmenu,'Enable','off')
+        setappdata(0,'range_type',1)
+    otherwise
+        errordlg('Error Selecting Range Type', 'Range Type Selection')
+    return;
+end
+
+% --- Executes when selected object is changed in throughput_uibuttongroup.
+function throughput_uibuttongroup_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in throughput_uibuttongroup 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+switch eventdata.Source.SelectedObject.Tag
+    
+    case 'Full Range'
+
+        setappdata(0,'throughput_flag',1)
+        
+    case '75% Range'
+
+        setappdata(0,'throughput_flag',2)
+        
+    case '50% Range'
+
+        setappdata(0,'throughput_flag',3)
+        
+    case '25% Range'
+
+        setappdata(0,'throughput_flag',4)
+        
+
+    otherwise
+        errordlg('Error Selecting Range', 'Throughput Range Selection')
+    return;
+end
+
+
+% --- Executes on button press in select_pushbutton.
+function select_pushbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to select_pushbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+ display_flag =  getappdata(0,'disp_flag');
+ 
+ switch display_flag
+    
+    case 0 %node
+        
+        node_select 
+
+
+        
+    case 1 %link
+        
+        link_select
+ end

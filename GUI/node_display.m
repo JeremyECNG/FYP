@@ -22,7 +22,7 @@ function varargout = node_display(varargin)
 
 % Edit the above text to modify the response to help node_display
 
-% Last Modified by GUIDE v2.5 08-Feb-2018 13:31:55
+% Last Modified by GUIDE v2.5 08-Feb-2018 17:58:43
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,35 +56,44 @@ function node_display_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 
 
-node_selection = getappdata(0, 'node_selec');
-
+% node_selection = getappdata(0, 'node_selec');
+% 
+% 
+% if exist('nodesave.mat')
+%     load('nodesave.mat')
+%             
+%     for nodein = 1:save_ind
+%         if strcmp(node_selection,node_con(nodein).node_name)
+%             
+%             item_num = nodein;
+%     
+%         end
+%     
+%     end
+% end
+% 
+% set(handles.node_name_text, 'String',node_con(item_num).node_name );
+% set(handles.node_type_text, 'String',node_con(item_num).node_type );
+% set(handles.node_location_sel_text, 'String', node_con(item_num).node_location.placement_type);
+% set(handles.longitude_text, 'String', node_con(item_num).node_location.lati);
+% set(handles.latitude_text, 'String', node_con(item_num).node_location.longi);
+% set(handles.technology_text, 'String', node_con(item_num).equipment_params.technology);
+% set(handles.noise_fig_text, 'String', node_con(item_num).equipment_params.noise_fig);
+% set(handles.tx_pwr_text, 'String', node_con(item_num).equipment_params.tx_pwr);
+% set(handles.rx_pwr_text, 'String', node_con(item_num).equipment_params.rx_pwr);
+% set(handles.tx_ant_gain_text, 'String', node_con(item_num).equipment_params.tx_ant_gain);
+% set(handles.rx_ant_gain_text, 'String', node_con(item_num).equipment_params.rx_ant_gain);
+% set(handles.tx_cable_losses_text, 'String', node_con(item_num).equipment_params.tx_cable_loss);
+% set(handles.rx_cable_losses_text, 'String', node_con(item_num).equipment_params.rx_cable_loss);
 
 if exist('nodesave.mat')
     load('nodesave.mat')
-            
-    for nodein = 1:save_ind
-        if strcmp(node_selection,node_con(nodein).node_name)
-            
-            item_num = nodein;
-    
-        end
-    
-    end
-end
+      node_choices= {node_con.node_name}; 
 
-set(handles.node_name_text, 'String',node_con(item_num).node_name );
-set(handles.node_type_text, 'String',node_con(item_num).node_type );
-set(handles.node_location_sel_text, 'String', node_con(item_num).node_location.placement_type);
-set(handles.longitude_text, 'String', node_con(item_num).node_location.lati);
-set(handles.latitude_text, 'String', node_con(item_num).node_location.longi);
-set(handles.technology_text, 'String', node_con(item_num).equipment_params.technology);
-set(handles.noise_fig_text, 'String', node_con(item_num).equipment_params.noise_fig);
-set(handles.tx_pwr_text, 'String', node_con(item_num).equipment_params.tx_pwr);
-set(handles.rx_pwr_text, 'String', node_con(item_num).equipment_params.rx_pwr);
-set(handles.tx_ant_gain_text, 'String', node_con(item_num).equipment_params.tx_ant_gain);
-set(handles.rx_ant_gain_text, 'String', node_con(item_num).equipment_params.rx_ant_gain);
-set(handles.tx_cable_losses_text, 'String', node_con(item_num).equipment_params.tx_cable_loss);
-set(handles.rx_cable_losses_text, 'String', node_con(item_num).equipment_params.rx_cable_loss);
+
+set(handles.node_sel_popupmenu, 'String', node_choices);
+set(handles.node_sel_popupmenu, 'Value', 1);
+end
 
 
 % Update handles structure
@@ -117,3 +126,59 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on selection change in node_sel_popupmenu.
+function node_sel_popupmenu_Callback(hObject, eventdata, handles)
+% hObject    handle to node_sel_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns node_sel_popupmenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from node_sel_popupmenu
+
+contents = cellstr(get(hObject,'String'));
+node_selection = contents{get(hObject,'Value')};
+setappdata(0, 'node_selec', node_selection);
+
+
+
+
+if exist('nodesave.mat')
+    load('nodesave.mat')
+            
+    for nodein = 1:save_ind
+        if strcmp(node_selection,node_con(nodein).node_name)
+            
+            item_num = nodein;
+    
+        end
+    
+    end
+end
+
+set(handles.node_name_text, 'String',node_con(item_num).node_name );
+set(handles.node_type_text, 'String',node_con(item_num).node_type );
+set(handles.node_location_sel_text, 'String', node_con(item_num).node_location.placement_type);
+set(handles.longitude_text, 'String', node_con(item_num).node_location.lati);
+set(handles.latitude_text, 'String', node_con(item_num).node_location.longi);
+set(handles.technology_text, 'String', node_con(item_num).equipment_params.technology);
+set(handles.noise_fig_text, 'String', node_con(item_num).equipment_params.noise_fig);
+set(handles.tx_pwr_text, 'String', node_con(item_num).equipment_params.tx_pwr);
+set(handles.rx_pwr_text, 'String', node_con(item_num).equipment_params.rx_pwr);
+set(handles.tx_ant_gain_text, 'String', node_con(item_num).equipment_params.tx_ant_gain);
+set(handles.rx_ant_gain_text, 'String', node_con(item_num).equipment_params.rx_ant_gain);
+set(handles.tx_cable_losses_text, 'String', node_con(item_num).equipment_params.tx_cable_loss);
+set(handles.rx_cable_losses_text, 'String', node_con(item_num).equipment_params.rx_cable_loss);
+
+% --- Executes during object creation, after setting all properties.
+function node_sel_popupmenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to node_sel_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

@@ -639,6 +639,8 @@ switch eventdata.Source.SelectedObject.Tag
         nodeplacetyp = 'Mouse Placement';
         setappdata(0, 'nodeplace_typ', nodeplacetyp);
         
+        datacursormode(figure_1)
+        
     otherwise
         errordlg('Error Selecting Location Source', 'Location Selection')
     return;
