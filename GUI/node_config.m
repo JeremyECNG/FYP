@@ -22,7 +22,7 @@ function varargout = node_config(varargin)
 
 % Edit the above text to modify the response to help node_config
 
-% Last Modified by GUIDE v2.5 07-Feb-2018 14:46:15
+% Last Modified by GUIDE v2.5 15-Feb-2018 13:46:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -392,6 +392,26 @@ if exist('nodesave.mat')
     load('nodesave.mat')
 end
 
+%%%
+setappdata(0, 'node_name', nodename);
+
+setappdata(0, 'node_typ', nodetyp);
+
+setappdata(0, 'nodeplace_typ', nodeplacetyp);
+
+setappdata(0, 'long_itude', longit);
+setappdata(0, 'lat_itude', latit);
+
+
+setappdata(0, 'noise_fig', noisefig);
+setappdata(0, 'rx_power', rxpower);
+setappdata(0, 'rxant_gain', rxantgain);
+setappdata(0, 'rxcab_loss', rxcabloss);
+
+setappdata(0, 'tx_power', txpower);
+setappdata(0, 'txant_gain', txantgain);
+setappdata(0, 'txcab_loss', txcabloss);
+setappdata(0, 'node_tech', nodetech);
 
 % nodeplace_typ = 'Specify Co-ordinates';
 % sav_node_con.node_type = 'Tower Mounted';
@@ -639,7 +659,7 @@ switch eventdata.Source.SelectedObject.Tag
         nodeplacetyp = 'Mouse Placement';
         setappdata(0, 'nodeplace_typ', nodeplacetyp);
         
-        datacursormode(figure_1)
+
         
     otherwise
         errordlg('Error Selecting Location Source', 'Location Selection')
@@ -676,3 +696,52 @@ switch eventdata.Source.SelectedObject.Tag
     return;
 end
         
+
+
+% --- Executes on button press in mouse_radiobutton.
+function mouse_radiobutton_Callback(hObject, eventdata, handles)
+% hObject    handle to mouse_radiobutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of mouse_radiobutton
+showmain(hObject,eventdata)
+
+
+% get the handle of Gui1
+ h = findobj('Tag','figure1');
+ % if exists (not empty)
+ if ~isempty(h)
+    % get handles and other user-defined data associated to Gui1
+    g1data = guidata(h);
+
+ end
+ 
+ 
+dcm_obj = datacursormode(h);
+set(dcm_obj,'DisplayStyle','datatip',...
+    'SnapToDataVertex','off','Enable','on','UpdateFcn',@myupdatefcn)
+
+text(-62,11.8,'Click on desired node location, then press Return.')
+% Wait while the user does this.
+pause 
+
+c_info = getCursorInfo(dcm_obj);
+
+showndoec(hObject,eventdata)
+
+function showmain(hObject,eventdata)
+h_main = findobj('Tag','figure1');
+if (isempty(h_main))
+  % Display Error MEssage 
+else
+  figure(h_main);
+end
+
+function showndoec(hObject,eventdata)
+h_nodec = findobj('Tag','figure_node');
+if (isempty(h_nodec))
+  % Display Error MEssage 
+else
+  figure(h_nodec);
+end

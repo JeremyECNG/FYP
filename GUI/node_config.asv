@@ -392,6 +392,12 @@ if exist('nodesave.mat')
     load('nodesave.mat')
 end
 
+%%%
+setappdata(0, 'node_name', nodename);
+
+
+setappdata(0, 'noise_fig', noisefig);
+setappdata(0, 'rx_power', rxpower);
 
 % nodeplace_typ = 'Specify Co-ordinates';
 % sav_node_con.node_type = 'Tower Mounted';
@@ -638,6 +644,8 @@ switch eventdata.Source.SelectedObject.Tag
         
         nodeplacetyp = 'Mouse Placement';
         setappdata(0, 'nodeplace_typ', nodeplacetyp);
+        
+        datacursormode(figure_1)
         
     otherwise
         errordlg('Error Selecting Location Source', 'Location Selection')
