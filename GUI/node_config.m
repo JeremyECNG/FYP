@@ -383,6 +383,10 @@ function save_node_pushbutton_Callback(hObject, eventdata, handles)
 % sav_node_con.equipment_params.tx_ant_gain = tx_antgain;
 % savenode(sav_node_con)
 
+% test1 = getappdata( 0, 'cursor_longi')
+% test2 = getappdata( 0, 'cursor_lati')
+
+
 type_flag = get(handles.node_type_selection, 'UserData');
 location_flag = get(handles.node_location_selection, 'UserData');
 
@@ -393,25 +397,25 @@ if exist('nodesave.mat')
 end
 
 %%%
-setappdata(0, 'node_name', nodename);
-
-setappdata(0, 'node_typ', nodetyp);
-
-setappdata(0, 'nodeplace_typ', nodeplacetyp);
-
-setappdata(0, 'long_itude', longit);
-setappdata(0, 'lat_itude', latit);
-
-
-setappdata(0, 'noise_fig', noisefig);
-setappdata(0, 'rx_power', rxpower);
-setappdata(0, 'rxant_gain', rxantgain);
-setappdata(0, 'rxcab_loss', rxcabloss);
-
-setappdata(0, 'tx_power', txpower);
-setappdata(0, 'txant_gain', txantgain);
-setappdata(0, 'txcab_loss', txcabloss);
-setappdata(0, 'node_tech', nodetech);
+% setappdata(0, 'node_name', nodename);
+% 
+% setappdata(0, 'node_typ', nodetyp);
+% 
+% setappdata(0, 'nodeplace_typ', nodeplacetyp);
+% 
+% setappdata(0, 'long_itude', longit);
+% setappdata(0, 'lat_itude', latit);
+% 
+% 
+% setappdata(0, 'noise_fig', noisefig);
+% setappdata(0, 'rx_power', rxpower);
+% setappdata(0, 'rxant_gain', rxantgain);
+% setappdata(0, 'rxcab_loss', rxcabloss);
+% 
+% setappdata(0, 'tx_power', txpower);
+% setappdata(0, 'txant_gain', txantgain);
+% setappdata(0, 'txcab_loss', txcabloss);
+% setappdata(0, 'node_tech', nodetech);
 
 % nodeplace_typ = 'Specify Co-ordinates';
 % sav_node_con.node_type = 'Tower Mounted';
@@ -430,12 +434,12 @@ if 1 == location_flag
     sav_node_con.node_location.placement_type = getappdata(0,'nodeplace_typ');
     
     if strcmp(sav_node_con.node_location.placement_type,'Mouse Placement')
-    sav_node_con.node_location.lati = 0;
+    sav_node_con.node_location.lati = getappdata( 0, 'cursor_lati');
 
-    sav_node_con.node_location.longi = 0;
+    sav_node_con.node_location.longi = getappdata( 0, 'cursor_longi');
     
     else
-        
+
     sav_node_con.node_location.lati = getappdata(0,'lat_itude');
 
     sav_node_con.node_location.longi = getappdata(0,'long_itude');
@@ -472,8 +476,76 @@ sav_node_con.equipment_params.rx_cable_loss = getappdata(0,'rxcab_loss');
 set(handles.node_type_selection, 'UserData', 0);
 set(handles.node_location_selection, 'UserData', 0);
 
+%Placing of node on the map 
+% get the handle of Gui1
 
+ if strcmp('Specify Co-ordinates', sav_node_con.node_location.placement_type)
+ h = findobj('Tag','gmap');
+%  % if exists (not empty)
+% %  if ~isempty(h)
+% %     % get handles and other user-defined data associated to Gui1
+% %     g1data = guidata(h);
+% %  end
+%  
+%  %showmain(hObject,eventdata)
+  h = h(2);
+ makedatatip(h,[sav_node_con.node_location.longi sav_node_con.node_location.lati])
+%  
+ end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%  h = findobj('Tag','figure1');
+%  % if exists (not empty)
+%  if ~isempty(h)
+%     % get handles and other user-defined data associated to Gui1
+%     g1data = guidata(h);
+% 
+%  end
+%  
+%  
+% cursorMode = datacursormode(h);
+% set(cursorMode,'DisplayStyle','datatip',...
+%     'SnapToDataVertex','off','Enable','on','UpdateFcn',@myupdatefcn)
+% 
+% % set(cursorMode,'Figure',h);
+% 
+%  m = findobj('Tag','map');
+%  % if exists (not empty)
+%  if ~isempty(m)
+%     % get handles and other user-defined data associated to Gui1
+%     g2data = guidata(m);
+% 
+%  end
+%  
+% hTarget = m;
+% hDatatip = cursorMode.createDatatip(hTarget);
+% 
+% 
+% % Create a copy of the context menu for the datatip:
+% % set(hDatatip,'UIContextMenu',get(cursorMode,'UIContextMenu'));
+% % set(hDatatip,'HandleVisibility','off');
+% % set(hDatatip,'Host',hTarget);
+% % set(hDatatip,'ViewStyle','datatip');
+%  
+% % Set the data-tip orientation to top-right rather than auto
+% set(hDatatip,'OrientationMode','manual');
+% set(hDatatip,'Orientation','topright');
+%  
+% % Update the datatip marker appearance
+% set(hDatatip, 'MarkerSize',5, 'MarkerFaceColor','none', ...
+%               'MarkerEdgeColor','k', 'Marker','o', 'HitTest','off');
+%  
+% % Move the datatip to the right-most data vertex point
+% % position = [-61.7,12.1];
+% set(hDatatip,'Position',[-61.7,12.1,0])
+% % update(hDatatip, position);
+% 
+% % c_info = getCursorInfo(dcm_obj);
+% % setappdata( 0, 'cursor_longi', c_info(1).Position(1))
+% % setappdata( 0, 'cursor_lati', c_info(1).Position(2))
+% % datacursormode off
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 save_slots_used = numel(node_con);
     
 for name_ind = 1:save_slots_used
@@ -722,11 +794,19 @@ dcm_obj = datacursormode(h);
 set(dcm_obj,'DisplayStyle','datatip',...
     'SnapToDataVertex','off','Enable','on','UpdateFcn',@myupdatefcn)
 
-text(-62,11.8,'Click on desired node location, then press Return.')
+% text(-62,11.8,'Click on desired node location, then press Return.')
 % Wait while the user does this.
+
+msgbox('Click on desired node location, then press Enter otherwise press Enter to cancel');
+
 pause 
 
 c_info = getCursorInfo(dcm_obj);
+setappdata( 0, 'cursor_longi', c_info(1).Position(1))
+setappdata( 0, 'cursor_lati', c_info(1).Position(2))
+datacursormode off
+%gtext
+%ginput
 
 showndoec(hObject,eventdata)
 

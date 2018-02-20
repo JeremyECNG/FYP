@@ -125,7 +125,7 @@ end
 
 setappdata(0, 'link_edited', item_num)
 
-set(handles.link_name_text, 'String',link_con(item_num).link_name );
+set(handles.link_name_editing, 'String',link_con(item_num).link_name );
 setappdata(0, 'link_nam', link_con(item_num).link_name);
 
 %
@@ -154,16 +154,16 @@ switch link_tech_setting
     return;
 end
 
-set(handles.fading_margin_text, 'String',link_con(item_num).channel.fading_margin);
+set(handles.fading_editing, 'String',link_con(item_num).channel.fading_margin);
 setappdata(0, 'link_fading', link_con(item_num).channel.fading_margin);
 
-set(handles.interf_margin_text, 'String',link_con(item_num).channel.interference_margin);
+set(handles.interf_editing, 'String',link_con(item_num).channel.interference_margin);
 setappdata(0, 'link_interf', link_con(item_num).channel.interference_margin);
 
-set(handles.temp_text, 'String',link_con(item_num).receiver.temperature);
+set(handles.temp_editing, 'String',link_con(item_num).receiver.temperature);
 setappdata(0, 'link_temp', link_con(item_num).receiver.temperature);
 
-set(handles.rx_bw_text, 'String',link_con(item_num).receiver.rx_bandwidth);
+set(handles.rec_band_editing, 'String',link_con(item_num).receiver.rx_bandwidth);
 setappdata(0, 'link_rxbw', link_con(item_num).receiver.rx_bandwidth);
 
 link_pl_setting =link_con(item_num).channel.path_loss_model ;
@@ -189,28 +189,227 @@ switch link_pl_setting
     return;
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-set(handles.service_text, 'String',link_con(item_num).node_service.service);
-
-set(handles.ber_text, 'String',link_con(item_num).node_service.ber);
-
-set(handles.modulation_text, 'String',link_con(item_num).system_params.mod_sch);
-
-set(handles.coding_text, 'String',link_con(item_num).system_params.code_rate  );
-
-set(handles.link_direc_text, 'String',link_con(item_num).system_params.link_direction);
-
-set(handles.link_freq_text, 'String',link_con(item_num).system_params.freq);
 
 
+link_service_setting = link_con(item_num).node_service.service;
+% set(handles.service_text, 'String',link_con(item_num).node_service.service);
+setappdata(0, 'link_service', link_con(item_num).node_service.service);
+
+switch link_service_setting
+    case 'Conversational Voice'
+        set(handles.service_edit_popupmenu, 'Value', 2);
+        ber = {'Select','10^-2','10^-3'};
+        set(handles.ber_edit_popupmenu, 'String', ber);
+        set(handles.ber_edit_popupmenu, 'Value', 1);
+
+    case 'Emergency Messaging Data'
+        set(handles.service_edit_popupmenu, 'Value', 3);
+        ber = {'Select','10^-5','6*10^-8'};
+        set(handles.ber_edit_popupmenu, 'String', ber);
+        set(handles.ber_edit_popupmenu, 'Value', 1);
+
+    case 'Vessel Tracking Data (IoT)'
+        set(handles.service_edit_popupmenu, 'Value', 4);
+        ber = {'Select','10^-5'};
+        set(handles.ber_edit_popupmenu, 'String', ber);
+        set(handles.ber_edit_popupmenu, 'Value', 1);
+
+    otherwise
+        set(handles.ber_edit_popupmenu, 'String', 'Select');
+        set(handles.ber_edit_popupmenu, 'Value', 1);
+        set(handles.service_edit_popupmenu, 'Value', 1);
+end
+
+
+link_ber_setting = link_con(item_num).node_service.ber;
+%set(handles.ber_text, 'String',link_con(item_num).node_service.ber);
+setappdata(0, 'link_ber', link_con(item_num).node_service.ber);
+
+switch link_service_setting
+    case 'Conversational Voice'
+
+        ber = {'Select','10^-2','10^-3'};
+
+        set(handles.ber_edit_popupmenu, 'Value', find((strcmp(link_ber_setting, ber)),1));
+
+    case 'Emergency Messaging Data'
+
+        ber = {'Select','10^-5','6*10^-8'};
+
+        set(handles.ber_edit_popupmenu, 'Value', find((strcmp(link_ber_setting, ber)),1));
+
+    case 'Vessel Tracking Data (IoT)'
+
+        ber = {'Select','10^-5'};
+
+        set(handles.ber_edit_popupmenu, 'Value', find((strcmp(link_ber_setting, ber)),1));
+
+    otherwise
+
+        set(handles.ber_edit_popupmenu, 'Value', 1);
+
+end
+
+link_modulation_setting = link_con(item_num).system_params.mod_sch;
+%set(handles.modulation_text, 'String',link_con(item_num).system_params.mod_sch);
+setappdata(0, 'link_modsch', link_con(item_num).system_params.mod_sch);
+
+switch link_tech_setting
+    case 'DSC'
+
+        mods = {'Select', 'FSK'};
+        set(handles.mod_sch_edit_popupmenu, 'String', mods);
+        set(handles.mod_sch_edit_popupmenu, 'Value', find((strcmp(link_modulation_setting, mods)),1));
+
+        
+    case 'LTE-A'
+
+        mods = {'Select','QPSK','16QAM','64QAM','256QAM'};
+        set(handles.mod_sch_edit_popupmenu, 'String', mods);
+        set(handles.mod_sch_edit_popupmenu, 'Value', find((strcmp(link_modulation_setting, mods)),1));
+      
+        
+    case 'NWR'
+
+        mods = {'Select','FSK'};
+        set(handles.mod_sch_edit_popupmenu, 'String', mods);
+        set(handles.mod_sch_edit_popupmenu, 'Value', find((strcmp(link_modulation_setting, mods)),1));
+      
+        
+    otherwise
+        set(handles.mod_sch_edit_popupmenu, 'String', 'Select');
+        set(handles.mod_sch_edit_popupmenu, 'Value', 1);
+
+end
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-set(handles.node1_text, 'String',link_con(item_num).node_selection.node1);
-set(handles.node2_text, 'String',link_con(item_num).node_selection.node2);
 
+link_coding_setting = link_con(item_num).system_params.code_rate;
+%set(handles.coding_text, 'String',link_con(item_num).system_params.code_rate  );
+setappdata(0, 'link_coding', link_con(item_num).system_params.code_rate);
+
+switch link_modulation_setting
+    case 'QPSK'
+
+        coders = {'Select','1/2','3/4'};
+        set(handles.coding_edit_popupmenu, 'String', coders);
+        set(handles.coding_edit_popupmenu, 'Value', find((strcmp(link_coding_setting, coders)),1));
+        
+    case '16QAM'
+
+        coders = {'Select','1/2','3/4'};
+        set(handles.coding_edit_popupmenu, 'String', coders);
+        set(handles.coding_edit_popupmenu, 'Value', find((strcmp(link_coding_setting, coders)),1));
+        
+    case '64QAM'
+
+        coders = {'Select','2/3','3/4','5/6'};
+        set(handles.coding_edit_popupmenu, 'String', coders);
+        set(handles.coding_edit_popupmenu, 'Value', find((strcmp(link_coding_setting, coders)),1));
+        
+    case '256QAM'
+
+        coders = {'Select','3/4','5/6'};
+        set(handles.coding_edit_popupmenu, 'String', coders);
+        set(handles.coding_edit_popupmenu, 'Value', find((strcmp(link_coding_setting, coders)),1));
+        
+    otherwise
+        set(handles.coding_edit_popupmenu, 'String', 'Select');
+        set(handles.coding_edit_popupmenu, 'Value', 1);
+end
+
+
+
+link_direction_setting = link_con(item_num).system_params.link_direction;
+%set(handles.link_direc_text, 'String',link_con(item_num).system_params.link_direction);
+setappdata(0, 'link_direc', link_con(item_num).system_params.link_direction);
+
+
+switch link_direction_setting
+    
+    case 'Downlink'
+        set(handles.downlink_edit_radiobutton,'Value',1) ;
+        set(handles.down_freq_editing, 'String', link_con(item_num).system_params.freq);
+        setappdata(0, 'link_downfreq', link_con(item_num).system_params.freq);
+
+
+    case 'Uplink'
+        set(handles.uplink_edit_radiobutton,'Value',1) 
+        set(handles.up_freq_editing, 'String', link_con(item_num).system_params.freq);       
+        setappdata(0, 'link_upfreq', link_con(item_num).system_params.freq);
+        
+        
+    otherwise
+        errordlg('Error Selecting Link Direction', 'Direction Selection')
+    return;
+end
+% set(handles.link_freq_text, 'String',link_con(item_num).system_params.freq);     
+
+if exist('nodesave.mat')
+    load('nodesave.mat')
+
+    choice_ind = 1;
+    node_choices{choice_ind} = 'Select';
+    for nodein = 1:save_ind
+        if strcmp(link_tech_setting,node_con(nodein).equipment_params.technology)
+            choice_ind = choice_ind + 1; 
+            node_choices{choice_ind} = node_con(nodein).node_name;
+%         else
+%              if isempty(node_choices{choice_ind})
+%               node_choices{choice_ind} = [];  
+%              end
+        end
+    end
+    
+setappdata(0, 'node_list', node_choices);
+
+% set(handles.node1_edit_popupmenu, 'String', node_choices);
+% set(handles.node1_edit_popupmenu, 'Value', 1);
+
+% set(handles.node2_popupmenu, 'String', node_choices);
+% set(handles.node2_edit_popupmenu, 'Value', 1);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% resume coding here
+link_node1_setting = link_con(item_num).node_selection.node1;
+% set(handles.node1_edit_popupmenu, 'String',link_con(item_num).node_selection.node1);
+setappdata(0, 'node_one', link_con(item_num).node_selection.node1);
+
+link_node2_setting = link_con(item_num).node_selection.node2;
+% set(handles.node2_edit_popupmenu, 'String',link_con(item_num).node_selection.node2);
+setappdata(0, 'node_two', link_con(item_num).node_selection.node2);
+
+
+current_list =  getappdata(0, 'node_list');
+list_amt  = numel(current_list);
+choice_ind = 0;
+    for nodein = 1:list_amt 
+        if strcmp(link_node2_setting,current_list(nodein))
+
+         else
+            choice_ind = choice_ind + 1; 
+            node_choices(choice_ind) = current_list(nodein);
+        end
+    end
+
+set(handles.node1_edit_popupmenu, 'String', node_choices);
+% set(handles.node1_edit_popupmenu, 'Value', 1);
+
+current_list =  getappdata(0, 'node_list');
+list_amt  = numel(current_list);
+choice_ind = 0;
+    for nodein = 1:list_amt 
+        if strcmp(link_node1_setting,current_list(nodein))
+
+         else
+            choice_ind = choice_ind + 1; 
+            node_choices(choice_ind) = current_list(nodein);
+        end
+    end
+
+set(handles.node2_edit_popupmenu, 'String', node_choices);
+% set(handles.node2_edit_popupmenu, 'Value', 1);
 
 % --- Executes during object creation, after setting all properties.
 function linksel_popupmenu_CreateFcn(hObject, eventdata, handles)

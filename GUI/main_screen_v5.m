@@ -22,7 +22,7 @@ function varargout = main_screen_v5(varargin)
 
 % Edit the above text to modify the response to help main_screen_v5
 
-% Last Modified by GUIDE v2.5 15-Feb-2018 12:58:08
+% Last Modified by GUIDE v2.5 15-Feb-2018 17:35:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -102,6 +102,10 @@ setappdata(0,'tput_on',0)
 setappdata(0,'throughput_flag',1)
 
 setappdata(0,'disp_flag',0)
+
+
+% cursorMode = datacursormode(gcf)
+% datacursormode off
 
 % Update handles structure
 guidata(hObject, handles);
@@ -553,7 +557,7 @@ function tower_filter_pushbutton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 data_filter
-
+%close(node_config)
 % datacursormode toggle
 
 % dcm_obj = datacursormode(handles.figure1);
@@ -950,3 +954,23 @@ function output_txt = myfunction(~,data_cursor_uitoggletool)
 % ~            Currently not used (empty)
 % event_obj    Object containing event data structure
 % output_txt   Data cursor text
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+delete(hObject);
+
+close(node_config)
+close(link_config)
+close(node_edit)
+close(link_edit)
+close(data_filter)
+close(node_select)
+close (link_select)
+close(node_display)
+close(link_display)
