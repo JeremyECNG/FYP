@@ -494,56 +494,7 @@ set(handles.node_location_selection, 'UserData', 0);
  end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%  h = findobj('Tag','figure1');
-%  % if exists (not empty)
-%  if ~isempty(h)
-%     % get handles and other user-defined data associated to Gui1
-%     g1data = guidata(h);
-% 
-%  end
-%  
-%  
-% cursorMode = datacursormode(h);
-% set(cursorMode,'DisplayStyle','datatip',...
-%     'SnapToDataVertex','off','Enable','on','UpdateFcn',@myupdatefcn)
-% 
-% % set(cursorMode,'Figure',h);
-% 
-%  m = findobj('Tag','map');
-%  % if exists (not empty)
-%  if ~isempty(m)
-%     % get handles and other user-defined data associated to Gui1
-%     g2data = guidata(m);
-% 
-%  end
-%  
-% hTarget = m;
-% hDatatip = cursorMode.createDatatip(hTarget);
-% 
-% 
-% % Create a copy of the context menu for the datatip:
-% % set(hDatatip,'UIContextMenu',get(cursorMode,'UIContextMenu'));
-% % set(hDatatip,'HandleVisibility','off');
-% % set(hDatatip,'Host',hTarget);
-% % set(hDatatip,'ViewStyle','datatip');
-%  
-% % Set the data-tip orientation to top-right rather than auto
-% set(hDatatip,'OrientationMode','manual');
-% set(hDatatip,'Orientation','topright');
-%  
-% % Update the datatip marker appearance
-% set(hDatatip, 'MarkerSize',5, 'MarkerFaceColor','none', ...
-%               'MarkerEdgeColor','k', 'Marker','o', 'HitTest','off');
-%  
-% % Move the datatip to the right-most data vertex point
-% % position = [-61.7,12.1];
-% set(hDatatip,'Position',[-61.7,12.1,0])
-% % update(hDatatip, position);
-% 
-% % c_info = getCursorInfo(dcm_obj);
-% % setappdata( 0, 'cursor_longi', c_info(1).Position(1))
-% % setappdata( 0, 'cursor_lati', c_info(1).Position(2))
-% % datacursormode off
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 save_slots_used = numel(node_con);

@@ -65,7 +65,7 @@ set(handles.filter_height_checkbox,'Value',filter_con.height_on)
 setappdata(0,'h_filter_on', filter_con.height_on);
 
 set(handles.height_edit,'String',filter_con.val);
-setappdata(0,'operator',filter_con.operator)
+
     if strcmp (filter_con.operator,'equal')
         set(handles.height_above_radiobutton,'Value',1);
     elseif strcmp (filter_con.operator,'greater')
@@ -345,7 +345,7 @@ end
 
 
 
-setappdata(0,'filter_change_flag',1)
+setappdata()
 
 close(data_filter)
 
