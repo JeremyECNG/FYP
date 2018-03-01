@@ -22,7 +22,7 @@ function varargout = node_config(varargin)
 
 % Edit the above text to modify the response to help node_config
 
-% Last Modified by GUIDE v2.5 15-Feb-2018 13:46:03
+% Last Modified by GUIDE v2.5 01-Mar-2018 15:22:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -475,7 +475,7 @@ sav_node_con.equipment_params.rx_cable_loss = getappdata(0,'rxcab_loss');
 
 set(handles.node_type_selection, 'UserData', 0);
 set(handles.node_location_selection, 'UserData', 0);
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Placing of node on the map 
 % get the handle of Gui1
 

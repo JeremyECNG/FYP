@@ -22,7 +22,7 @@ function varargout = node_edit(varargin)
 
 % Edit the above text to modify the response to help node_edit
 
-% Last Modified by GUIDE v2.5 01-Mar-2018 15:21:50
+% Last Modified by GUIDE v2.5 13-Feb-2018 21:10:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -107,9 +107,8 @@ if exist('nodesave.mat')
 end
 
 
-location_flag = get(handles.node_location_edit, 'UserData');
- 
- 
+location_flag = get(handles.node_location_selection, 'UserData');
+
 %Node Name
 sav_node_con.node_name = getappdata(0,'node_name');
 
@@ -163,8 +162,9 @@ sav_node_con.equipment_params.tx_cable_loss = getappdata(0,'txcab_loss');
 sav_node_con.equipment_params.rx_cable_loss = getappdata(0,'rxcab_loss');
 
 
-set(handles.node_location_edit, 'UserData', 0);
 
+% set(handles.node_type_selection, 'UserData', 0);
+% set(handles.node_location_selection, 'UserData', 0);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Placing of node on the map 
@@ -707,7 +707,7 @@ function node_location_edit_SelectionChangedFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-set(handles.node_location_edit, 'UserData', 1);
+ set(handles.node_location_edit, 'UserData', 1);
         
 switch eventdata.Source.SelectedObject.Tag
     
@@ -822,3 +822,5 @@ if (isempty(h_nodec))
 else
   figure(h_nodec);
 end
+
+

@@ -286,7 +286,7 @@ switch linkservice
         set(handles.ber_popupmenu, 'String', ber);
     case 'Emergency Messaging Data'
 %         ber = {10^-5,6*10^-8};
-        ber = {'Select','10^-5','6*10^-8'};
+        ber = {'Select','10^-5','6x10^-8'};
         set(handles.ber_popupmenu, 'String', ber);
     case 'Vessel Tracking Data (IoT)'
 %         ber = {10^-5};
@@ -530,25 +530,25 @@ setappdata(0, 'link_modsch', linkmodsch);
 switch linkmodsch
     case 'QPSK'
 
-        coders = {'Select','1/2','3/4'};
+        coders = {'Select','1/8','1/5','1/4','1/3','1/2','2/3','3/4','4/5'};
         set(handles.code_rate_popupmenu, 'String', coders);
         set(handles.code_rate_popupmenu, 'Value', 1);
         
     case '16QAM'
 
-        coders = {'Select','1/2','3/4'};
+        coders = {'Select','1/3','1/2','2/3','3/4','4/5'};
         set(handles.code_rate_popupmenu, 'String', coders);
         set(handles.code_rate_popupmenu, 'Value', 1);
         
     case '64QAM'
 
-        coders = {'Select','2/3','3/4','5/6'};
+        coders = {'Select','1/3','2/3','3/4','5/6'};
         set(handles.code_rate_popupmenu, 'String', coders);
         set(handles.code_rate_popupmenu, 'Value', 1);
         
     case '256QAM'
 
-        coders = {'Select','3/4','5/6'};
+        coders = {'Select','1/3','3/4','5/6'};
         set(handles.code_rate_popupmenu, 'String', coders);
         set(handles.code_rate_popupmenu, 'Value', 1);
         

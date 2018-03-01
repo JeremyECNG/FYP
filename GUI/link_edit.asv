@@ -96,6 +96,166 @@ function save_linkedit_pushbutton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+if exist('linksave.mat')
+    load('linksave.mat')
+end
+
+%Link Name
+sav_link_con.link_name = getappdata(0,'link_nam');
+
+%Link Technology
+sav_link_con.technology = getappdata(0,'link_tech');
+
+%Link Node Selections
+sav_link_con.node_selection.node1 = getappdata(0,'node_one');
+
+sav_link_con.node_selection.node2 = getappdata(0,'node_two');
+
+%Link Service
+sav_link_con.node_selection.service = getappdata(0,'link_service');
+
+sav_link_con.node_selection.ber = getappdata(0,'link_ber');
+
+%Link System Paramters
+sav_link_con.system_params.mod_sch = getappdata(0,'link_modsch');
+
+sav_link_con.system_params.code_rate = getappdata(0,'link_coding');
+
+sav_link_con.system_params.link_direction = getappdata(0,'link_direc');
+
+if strcmp('Downlink',sav_link_con.system_params.link_direction)
+    
+    sav_link_con.system_params.freq = getappdata(0,'link_downfreq');
+    
+else
+    
+    sav_link_con.system_params.freq = getappdata(0,'link_upfreq');
+    
+end
+
+%Link Channel Parameters
+sav_link_con.channel.path_loss_model = getappdata(0,'link_pl');
+
+sav_link_con.channel.fading_margin = getappdata(0,'link_fading');
+
+sav_link_con.channel.interference_margin = getappdata(0,'link_interf');
+
+%Link Receiver Paramters
+sav_link_con.receiver.temperature = getappdata(0,'link_temp');
+
+sav_link_con.receiver.rx_bandwidth = getappdata(0,'link_rxbw');
+
+%
+if exist('linksave.mat')
+    load('linksave.mat')
+    
+    save_slots_used = numel(link_con);
+    
+else
+    save_slots_used = 0;
+end
+
+edited_link = getappdata(0, 'link_edited');
+    
+for name_ind = 1:save_slots_used
+    if strcmp(getappdata(0,'link_nam'), link_con(name_ind).link_name)
+        name_conflict_flag = 1;
+        setappdata(0,'linknameflag',name_conflict_flag)
+        %errordlg('A node of this name already exists please change the name of your entry', 'Name Conflict')
+    end  
+    
+    if edited_link  == name_ind
+        name_conflict_flag = 0;
+        setappdata(0,'linknameflag',name_conflict_flag)
+    end       
+    
+end
+
+if  getappdata(0,'linknameflag') == 1
+   
+    errordlg('A link of this name already exists please change the name of your entry', 'Name Conflict')
+    setappdata(0,'linknameflag',0)
+    
+elseif isempty(sav_link_con.link_name)||isempty(sav_link_con.system_params.freq)||isempty(sav_link_con.channel.fading_margin)||isempty(sav_link_con.channel.interference_margin)||isempty(sav_link_con.receiver.temperature)||isempty(sav_link_con.receiver.rx_bandwidth)
+        
+    errordlg('Please fill all fields', 'Save')
+
+elseif isnan(sav_link_con.system_params.freq)||isnan(sav_link_con.channel.fading_margin)||isnan(sav_link_con.channel.interference_margin )||isnan(sav_link_con.receiver.temperature)||isnan(sav_link_con.receiver.rx_bandwidth)
+        
+    errordlg('Please fill all fields with valid content', 'Save')
+    
+elseif strcmp('Select',sav_link_con.technology)||strcmp('Select',sav_link_con.node_selection.node1)||strcmp('Select',sav_link_con.node_selection.node2)||strcmp('Select',sav_link_con.node_selection.service)||strcmp('Select',sav_link_con.node_selection.ber)||strcmp('Select',sav_link_con.system_params.mod_sch)||strcmp('Select',sav_link_con.system_params.code_rate)||strcmp('Select',sav_link_con.channel.path_loss_model)
+        
+    errordlg('Please make all necessary selections', 'Save')
+else
+    
+    savelinkedit(sav_link_con)
+    close(link_edit)
+    
+end
+
+
+function savelinkedit(sav_link_con)
+
+%editing  Index
+edit_ind = getappdata(0, 'link_edited');
+
+if exist('linksave.mat')
+    load('linksave.mat')
+end
+
+% save_counter_link = getappdata(0, 'linksavecounter');
+% 
+% if exist('linksave.mat')
+%     load('linksave.mat')
+%     if exist('save_ind_link')
+%         save_counter_link = save_ind_link;
+%     end
+% end
+% save_counter_link = save_counter_link + 1;
+% 
+% %Saving Index
+% save_ind_link = save_counter_link;
+
+%Link Name
+link_con(edit_ind).link_name = sav_link_con.link_name;
+
+%Link Technology
+link_con(edit_ind).technology = sav_link_con.technology;
+
+%Link Node Selections
+link_con(edit_ind).node_selection.node1 = sav_link_con.node_selection.node1;
+
+link_con(edit_ind).node_selection.node2 = sav_link_con.node_selection.node2;
+
+%Link Service
+link_con(edit_ind).node_service.service = sav_link_con.node_selection.service;
+
+link_con(edit_ind).node_service.ber = sav_link_con.node_selection.ber;
+
+%Link System Paramters
+link_con(edit_ind).system_params.mod_sch = sav_link_con.system_params.mod_sch;
+
+link_con(edit_ind).system_params.code_rate = sav_link_con.system_params.code_rate;
+
+link_con(edit_ind).system_params.link_direction = sav_link_con.system_params.link_direction;
+    
+link_con(edit_ind).system_params.freq = sav_link_con.system_params.freq;
+    
+%Link Channel Parameters
+link_con(edit_ind).channel.path_loss_model = sav_link_con.channel.path_loss_model;
+
+link_con(edit_ind).channel.fading_margin = sav_link_con.channel.fading_margin ;
+
+link_con(edit_ind).channel.interference_margin = sav_link_con.channel.interference_margin;
+
+%Link Receiver Paramters
+link_con(edit_ind).receiver.temperature = sav_link_con.receiver.temperature;
+
+link_con(edit_ind).receiver.rx_bandwidth = sav_link_con.receiver.rx_bandwidth;
+
+
+save('linksave.mat','link_con','save_ind_link')
 
 % --- Executes on selection change in linksel_popupmenu.
 function linksel_popupmenu_Callback(hObject, eventdata, handles)
@@ -204,7 +364,7 @@ switch link_service_setting
 
     case 'Emergency Messaging Data'
         set(handles.service_edit_popupmenu, 'Value', 3);
-        ber = {'Select','10^-5','6*10^-8'};
+        ber = {'Select','10^-5','6x10^-8'};
         set(handles.ber_edit_popupmenu, 'String', ber);
         set(handles.ber_edit_popupmenu, 'Value', 1);
 
@@ -234,7 +394,7 @@ switch link_service_setting
 
     case 'Emergency Messaging Data'
 
-        ber = {'Select','10^-5','6*10^-8'};
+        ber = {'Select','10^-5','6x10^-8'};
 
         set(handles.ber_edit_popupmenu, 'Value', find((strcmp(link_ber_setting, ber)),1));
 
@@ -292,7 +452,7 @@ setappdata(0, 'link_coding', link_con(item_num).system_params.code_rate);
 switch link_modulation_setting
     case 'QPSK'
 
-        coders = {'Select','1/2','3/4'};
+        coders = {'Select','1/8','1/5','1/4','1/3','1/2','2/3','3/4','4/5'};
         set(handles.coding_edit_popupmenu, 'String', coders);
         set(handles.coding_edit_popupmenu, 'Value', find((strcmp(link_coding_setting, coders)),1));
         
@@ -371,7 +531,7 @@ setappdata(0, 'node_list', node_choices);
 % set(handles.node2_edit_popupmenu, 'Value', 1);
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%% resume coding here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 link_node1_setting = link_con(item_num).node_selection.node1;
 % set(handles.node1_edit_popupmenu, 'String',link_con(item_num).node_selection.node1);
 setappdata(0, 'node_one', link_con(item_num).node_selection.node1);
@@ -389,12 +549,13 @@ choice_ind = 0;
 
          else
             choice_ind = choice_ind + 1; 
-            node_choices(choice_ind) = current_list(nodein);
+            node1_choices(choice_ind) = current_list(nodein);
         end
     end
 
-set(handles.node1_edit_popupmenu, 'String', node_choices);
-% set(handles.node1_edit_popupmenu, 'Value', 1);
+set(handles.node1_edit_popupmenu, 'String', node1_choices);
+set(handles.node1_edit_popupmenu, 'Value', find((strcmp(link_node1_setting, node1_choices)),1));
+
 
 current_list =  getappdata(0, 'node_list');
 list_amt  = numel(current_list);
@@ -404,12 +565,12 @@ choice_ind = 0;
 
          else
             choice_ind = choice_ind + 1; 
-            node_choices(choice_ind) = current_list(nodein);
+            node2_choices(choice_ind) = current_list(nodein);
         end
     end
 
-set(handles.node2_edit_popupmenu, 'String', node_choices);
-% set(handles.node2_edit_popupmenu, 'Value', 1);
+set(handles.node2_edit_popupmenu, 'String', node2_choices);
+set(handles.node2_edit_popupmenu, 'Value', find((strcmp(link_node2_setting, node2_choices)),1));
 
 % --- Executes during object creation, after setting all properties.
 function linksel_popupmenu_CreateFcn(hObject, eventdata, handles)
@@ -916,7 +1077,7 @@ switch linkservice
         set(handles.ber_edit_popupmenu, 'String', ber);
     case 'Emergency Messaging Data'
 
-        ber = {'Select','10^-5','6*10^-8'};
+        ber = {'Select','10^-5','6x10^-8'};
         set(handles.ber_edit_popupmenu, 'String', ber);
     case 'Vessel Tracking Data (IoT)'
 

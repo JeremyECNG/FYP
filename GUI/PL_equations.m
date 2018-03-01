@@ -1,0 +1,48 @@
+freq = 1910;
+range = 0;
+ht = 2;
+hr = 30;
+lambda = physconst('LightSpeed')/freq;
+
+%FSPL
+FSPL = 20*log10(range)+ 20*log10(freq)+32.44; % f(MHz)  & d(km)
+
+%Sea Radio-Wave Propagation Loss
+PL_0 = FSPL;
+PL_1 = 10*log10(4*sin((2*pi*hr*ht)/(lambda*range))^2);
+PL_boat = 0;
+PL_earth = 0;
+alpha = 0;
+PL_sea_path = PL_0 + PL_1 + PL_boat + PL_earth + alpha;
+
+
+%2-Ray Path Loss
+L2_ray = -10*log10(((lambda/(4*pi*range))^2)*(2*sin((2*pi*hr*ht)/(lambda*range)))^2);
+
+%3-Ray Path Loss
+d_break = (4*hr*ht)/lambda;
+
+if (range < d_break || range == d_break)
+    
+    L3_ray = -10*log10(((lambda/(4*pi*range))^2)*(2*sin((2*pi*hr*ht)/(lambda*range)))^2);
+
+elseif (range > d_break)
+   
+    delta = 2*sin((2*pi*hr*ht)/(lambda*range)) *2*sin((2*pi*(he-hr)*(he-ht))/(lambda*range));
+    L3_ray = -10*log10(((lambda/(4*pi*range))^2)*(2*(1+delta))^2);
+    
+end
+
+%%
+freq = 1910;
+PL = 188;
+ht = 2;
+hr = 30;
+lambda = physconst('LightSpeed')/freq;
+
+%FSPL
+range_fspl = 10^((PL-20*log10(freq)-32.44)/20) 
+
+%Sea Radio-Wave Propagation Loss
+ 
+

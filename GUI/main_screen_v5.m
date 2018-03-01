@@ -439,7 +439,11 @@ if exist('linksave.mat')
 end
 
 tput_modulation = link_con(link_num).system_params.mod_sch;
-tput_code_rate = str2double(link_con(link_num).system_params.code_rate);
+if strcmp(link_con(link_num).system_params.code_rate,'6x10^-8')
+    tput_code_rate = 6*10^-8;
+else
+    tput_code_rate = str2double(link_con(link_num).system_params.code_rate);
+end
 
 switch tput_modulation
     
@@ -915,7 +919,7 @@ if 1 == econ_on
 lon_var = [eez.Lon];
 lat_var = [eez.Lat];
 handles.econ_plot = plot(handles.map,lon_var,lat_var,'--w','LineWidth',2);
- 
+%fill(handles.map,lon_var,lat_var,'w')
 
         end
 
@@ -947,7 +951,8 @@ if 1 == contig_on
 lon_var = [con.Lon];
 lat_var = [con.Lat];
 handles.contig_plot = plot(handles.map,lon_var,lat_var,'--y','LineWidth',2);
- 
+%fill(handles.map,lon_var,lat_var,'y') 
+
 
         end
 
@@ -979,7 +984,7 @@ if 1 == terri_on
 lon_var = [ter.Lon];
 lat_var = [ter.Lat];
 handles.terri_plot = plot(handles.map,lon_var,lat_var,'--m','LineWidth',2);
- 
+%fill(handles.map,lon_var,lat_var,'m')
 
         end
 
