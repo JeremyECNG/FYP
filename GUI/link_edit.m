@@ -22,7 +22,7 @@ function varargout = link_edit(varargin)
 
 % Edit the above text to modify the response to help link_edit
 
-% Last Modified by GUIDE v2.5 14-Feb-2018 14:14:14
+% Last Modified by GUIDE v2.5 01-Mar-2018 19:48:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -123,15 +123,17 @@ sav_link_con.system_params.code_rate = getappdata(0,'link_coding');
 
 sav_link_con.system_params.link_direction = getappdata(0,'link_direc');
 
-if strcmp('Downlink',sav_link_con.system_params.link_direction)
-    
-    sav_link_con.system_params.freq = getappdata(0,'link_downfreq');
-    
-else
-    
-    sav_link_con.system_params.freq = getappdata(0,'link_upfreq');
-    
-end
+sav_link_con.system_params.freq = getappdata(0, 'link_freqy');
+
+% if strcmp('Downlink',sav_link_con.system_params.link_direction)
+%     
+%     sav_link_con.system_params.freq = getappdata(0,'link_downfreq');
+%     
+% else
+%     
+%     sav_link_con.system_params.freq = getappdata(0,'link_upfreq');
+%     
+% end
 
 %Link Channel Parameters
 sav_link_con.channel.path_loss_model = getappdata(0,'link_pl');
@@ -336,14 +338,21 @@ switch link_pl_setting
         
         set (handles.pl_edit_popupmenu, 'Value', 2)
         
-%     case ''
-%         
-%         set (handles.pl_edit_popupmenu, 'Value', 3)
-%         
-%     case ''
-%         
-%         set (handles.pl_edit_popupmenu, 'Value', 4)
+    case '2-Ray'
         
+        set (handles.pl_edit_popupmenu, 'Value', 3)
+        
+    case '3-Ray'
+        
+        set (handles.pl_edit_popupmenu, 'Value', 4)
+
+    case 'Sea Radio-Wave Propagation Loss'
+        
+        set (handles.pl_edit_popupmenu, 'Value', 5)
+        
+
+
+
     otherwise
         errordlg('Error Loading Path Loss Model', 'Path Loss Model Selection Loading')
     return;
@@ -490,14 +499,14 @@ switch link_direction_setting
     
     case 'Downlink'
         set(handles.downlink_edit_radiobutton,'Value',1) ;
-        set(handles.down_freq_editing, 'String', link_con(item_num).system_params.freq);
-        setappdata(0, 'link_downfreq', link_con(item_num).system_params.freq);
+        set(handles.link_frequency_editing, 'String', link_con(item_num).system_params.freq);
+        setappdata(0, 'link_freqy', link_con(item_num).system_params.freq);
 
 
     case 'Uplink'
         set(handles.uplink_edit_radiobutton,'Value',1) 
-        set(handles.up_freq_editing, 'String', link_con(item_num).system_params.freq);       
-        setappdata(0, 'link_upfreq', link_con(item_num).system_params.freq);
+        set(handles.link_frequency_editing, 'String', link_con(item_num).system_params.freq);
+        setappdata(0, 'link_freqy', link_con(item_num).system_params.freq);
         
         
     otherwise
@@ -928,8 +937,9 @@ function down_freq_editing_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of down_freq_editing as text
 %        str2double(get(hObject,'String')) returns contents of down_freq_editing as a double
-linkdownfreq = str2double(get(handles.down_freq_editing, 'String'));
-setappdata(0, 'link_downfreq', linkdownfreq);
+
+% linkdownfreq = str2double(get(handles.down_freq_editing, 'String'));
+% setappdata(0, 'link_downfreq', linkdownfreq);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -953,8 +963,9 @@ function up_freq_editing_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of up_freq_editing as text
 %        str2double(get(hObject,'String')) returns contents of up_freq_editing as a double
-linkupfreq = str2double(get(handles.up_freq_editing, 'String'));
-setappdata(0, 'link_upfreq', linkupfreq);
+
+% linkupfreq = str2double(get(handles.up_freq_editing, 'String'));
+% setappdata(0, 'link_upfreq', linkupfreq);
 
 % --- Executes during object creation, after setting all properties.
 function up_freq_editing_CreateFcn(hObject, eventdata, handles)
@@ -1136,19 +1147,19 @@ function system_paramters_editsel_SelectionChangedFcn(hObject, eventdata, handle
 switch eventdata.Source.SelectedObject.Tag
     
     case 'downlink_edit_radiobutton'
-        set(handles.up_freq_editing,'Enable','off') 
-%         set(handles.uplink_text,'Enable','off')
-        set(handles.down_freq_editing,'Enable','on')
-%         set(handles.downlink_text,'Enable','on') 
+%         set(handles.up_freq_editing,'Enable','off') 
+% %         set(handles.uplink_text,'Enable','off')
+%         set(handles.down_freq_editing,'Enable','on')
+% %         set(handles.downlink_text,'Enable','on') 
         
         direc =  'Downlink';
         setappdata(0, 'link_direc', direc);
         
     case 'uplink_edit_radiobutton'
-        set(handles.up_freq_editing,'Enable','on') 
-%         set(handles.uplink_text,'Enable','on')
-        set(handles.down_freq_editing,'Enable','off')
-%         set(handles.downlink_text,'Enable','off') 
+%         set(handles.up_freq_editing,'Enable','on') 
+% %         set(handles.uplink_text,'Enable','on')
+%         set(handles.down_freq_editing,'Enable','off')
+% %         set(handles.downlink_text,'Enable','off') 
         
         direc =  'Uplink';
         setappdata(0, 'link_direc', direc);
@@ -1159,3 +1170,29 @@ end
         
 
 guidata(handles.figure_link_edit, handles);
+
+
+
+function link_frequency_editing_Callback(hObject, eventdata, handles)
+% hObject    handle to link_frequency_editing (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of link_frequency_editing as text
+%        str2double(get(hObject,'String')) returns contents of link_frequency_editing as a double
+
+link_freq = str2double(get(handles.link_frequency_editing, 'String'));
+setappdata(0, 'link_freqy', link_freq);
+
+
+% --- Executes during object creation, after setting all properties.
+function link_frequency_editing_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to link_frequency_editing (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

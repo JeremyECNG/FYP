@@ -22,7 +22,7 @@ function varargout = link_config(varargin)
 
 % Edit the above text to modify the response to help link_config
 
-% Last Modified by GUIDE v2.5 07-Feb-2018 14:54:39
+% Last Modified by GUIDE v2.5 01-Mar-2018 19:09:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,10 +55,10 @@ function link_config_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for link_config
 handles.output = hObject;
 
-set(handles.up_freq_edit,'Enable','off') 
-set(handles.uplink_text,'Enable','off')
-set(handles.down_freq_edit,'Enable','on')
-set(handles.downlink_text,'Enable','on') 
+% set(handles.up_freq_edit,'Enable','off') 
+% set(handles.uplink_text,'Enable','off')
+% set(handles.down_freq_edit,'Enable','on')
+% set(handles.downlink_text,'Enable','on') 
 
 set(handles.mod_sch_popupmenu,'Enable','off')
 set(handles.code_rate_popupmenu,'Enable','off')
@@ -196,8 +196,9 @@ function down_freq_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of down_freq_edit as text
 %        str2double(get(hObject,'String')) returns contents of down_freq_edit as a double
-linkdownfreq = str2double(get(handles.down_freq_edit, 'String'));
-setappdata(0, 'link_downfreq', linkdownfreq);
+
+% linkdownfreq = str2double(get(handles.down_freq_edit, 'String'));
+% setappdata(0, 'link_downfreq', linkdownfreq);
 
 % --- Executes during object creation, after setting all properties.
 function down_freq_edit_CreateFcn(hObject, eventdata, handles)
@@ -220,8 +221,9 @@ function up_freq_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of up_freq_edit as text
 %        str2double(get(hObject,'String')) returns contents of up_freq_edit as a double
-linkupfreq = str2double(get(handles.up_freq_edit, 'String'));
-setappdata(0, 'link_upfreq', linkupfreq);
+
+% linkupfreq = str2double(get(handles.up_freq_edit, 'String'));
+% setappdata(0, 'link_upfreq', linkupfreq);
 
 % --- Executes during object creation, after setting all properties.
 function up_freq_edit_CreateFcn(hObject, eventdata, handles)
@@ -713,15 +715,17 @@ sav_link_con.system_params.code_rate = getappdata(0,'link_coding');
 
 sav_link_con.system_params.link_direction = getappdata(0,'link_direc');
 
-if strcmp('Downlink',sav_link_con.system_params.link_direction)
-    
-    sav_link_con.system_params.freq = getappdata(0,'link_downfreq');
-    
-else
-    
-    sav_link_con.system_params.freq = getappdata(0,'link_upfreq');
-    
-end
+sav_link_con.system_params.freq = getappdata(0, 'link_freqy');
+
+% if strcmp('Downlink',sav_link_con.system_params.link_direction)
+%     
+%     sav_link_con.system_params.freq = getappdata(0,'link_downfreq');
+%     
+% else
+%     
+%     sav_link_con.system_params.freq = getappdata(0,'link_upfreq');
+%     
+% end
 
 %Link Channel Parameters
 sav_link_con.channel.path_loss_model = getappdata(0,'link_pl');
@@ -868,19 +872,19 @@ function system_paramters_selection_SelectionChangedFcn(hObject, eventdata, hand
 switch eventdata.Source.SelectedObject.Tag
     
     case 'downlink_radiobutton'
-        set(handles.up_freq_edit,'Enable','off') 
-        set(handles.uplink_text,'Enable','off')
-        set(handles.down_freq_edit,'Enable','on')
-        set(handles.downlink_text,'Enable','on') 
+%         set(handles.up_freq_edit,'Enable','off') 
+%         set(handles.uplink_text,'Enable','off')
+%         set(handles.down_freq_edit,'Enable','on')
+%         set(handles.downlink_text,'Enable','on') 
         
         direc =  'Downlink';
         setappdata(0, 'link_direc', direc);
         
     case 'uplink_radiobutton'
-        set(handles.up_freq_edit,'Enable','on') 
-        set(handles.uplink_text,'Enable','on')
-        set(handles.down_freq_edit,'Enable','off')
-        set(handles.downlink_text,'Enable','off') 
+%         set(handles.up_freq_edit,'Enable','on') 
+%         set(handles.uplink_text,'Enable','on')
+%         set(handles.down_freq_edit,'Enable','off')
+%         set(handles.downlink_text,'Enable','off') 
         
         direc =  'Uplink';
         setappdata(0, 'link_direc', direc);
@@ -891,3 +895,28 @@ end
         
 
 guidata(handles.figure_link, handles);
+
+
+
+function link_frequency_edit_Callback(hObject, eventdata, handles)
+% hObject    handle to link_frequency_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of link_frequency_edit as text
+%        str2double(get(hObject,'String')) returns contents of link_frequency_edit as a double
+
+link_freq = str2double(get(handles.link_frequency_edit, 'String'));
+setappdata(0, 'link_freqy', link_freq);
+
+% --- Executes during object creation, after setting all properties.
+function link_frequency_edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to link_frequency_edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

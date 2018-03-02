@@ -328,6 +328,8 @@ switch range_sel
                                    rx_num = nodein;                              
                            end
                        end
+                       
+                       %%% Code here for if Mobile or Tower 
                end
          end
 
@@ -383,14 +385,38 @@ switch range_sel
                     
                    case 'Uplink'
                        
+                    transmitter = link_con(link_num).node_selection.node2;
+                    receiver = link_con(link_num).node_selection.node1;
+
+                    %load node stuff get location plot LOSH range from
+                    %TX and  use area inside circle to determine
+                    %if rx is in range and display text
+
+                    %insert circle checking to decide if point is within
+                    %range circle 
+                    for nodein = 1:save_ind
+                       if strcmp(transmitter,node_con(nodein).node_name)
+                           tx_num = nodein;
+                       end
+
+                       if strcmp(receiver,node_con(nodein).node_name)
+                           rx_num = nodein;
+                       end
+                    end
+
+                    rx_cords = [node_con(rx_num).node_location.longi  ,node_con(rx_num).node_location.lati ];
+                    tx_cords = [node_con(tx_num).node_location.longi  ,node_con(tx_num).node_location.lati ];
+                    
                end
                
+               % Place condition for whether mobile or tower to then get
+               % heights to be use in PL models
                Ptx = node_con(tx_num).equipment_params.tx_pwr;
                Prx = node_con(rx_num).equipment_params.rx_pwr;
                setappdata(0,'prx_display',Prx)
                Gant = node_con(tx_num).equipment_params.tx_ant_gain + node_con(rx_num).equipment_params.rx_ant_gain;
                Cable_losses = node_con(tx_num).equipment_params.tx_cable_loss + node_con(rx_num).equipment_params.rx_cable_loss;
-               f = link_con(link_num).system_params.freq;
+               f = link_con(link_num).system_params.freq*10^6;
                switch link_con(link_num).channel.path_loss_model
                    
                    case 'FSPL'
@@ -400,6 +426,21 @@ switch range_sel
                        plim_distance = 10^((Path_Loss-20*log10(f)-32.44)/20);
                        
                        range_plot(node_con(tx_num).node_location.longi  ,node_con(tx_num).node_location.lati  ,plim_distance,handles.map);
+                       
+                   case '2-Ray'
+                       %%%%%%%%%%%%%%%%%
+        
+
+        
+                   case '3-Ray'
+                       %%%%%%%%%%%%%%%%%
+        
+
+
+                   case 'Sea Radio-Wave Propagation Loss'
+                       %%%%%%%%%%%%%%%%%
+        
+
                end
                
              
@@ -1289,7 +1330,7 @@ function node_popupmenu_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to node_popupmenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-f = 0;
+
 
 
 % --- Executes on key press with focus on node_popupmenu and none of its controls.
@@ -1300,7 +1341,7 @@ function node_popupmenu_KeyPressFcn(hObject, eventdata, handles)
 %	Character: character interpretation of the key(s) that was pressed
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handles    structure with handles and user data (see GUIDATA)
-f = 0;
+
 
 
 % --- Executes when selected object is changed in range_uibuttongroup.
@@ -1382,7 +1423,7 @@ function data_cursor_uitoggletool_OnCallback(hObject, eventdata, handles)
 % hObject    handle to data_cursor_uitoggletool (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-f = 0;
+
 
 % --------------------------------------------------------------------
 function data_cursor_uitoggletool_ClickedCallback(hObject, eventdata, handles)
@@ -1396,7 +1437,7 @@ function map_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to map (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-f = 0;
+
 
 function output_txt = myfunction(~,data_cursor_uitoggletool)
 % ~            Currently not used (empty)
