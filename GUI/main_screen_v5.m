@@ -95,7 +95,8 @@ handles.output = hObject;
 % set(handles.link_popupmenu, 'String', link_choices);
 % set(handles.link_popupmenu, 'Value', 1);
 % end
-
+setappdata(0, 'user_node_selection', []);
+setappdata(0, 'user_link_selection', []);
 % setappdata(0, 'node_selec', 'Select');
 setappdata(0,'range_type',0)
 setappdata(0,'tput_on',0)
@@ -108,6 +109,9 @@ if exist('filter.mat')
    filter_con.height_on = 0;
    save('filter.mat','filter_con')
 end
+
+set(handles.pwr_lim_radiobutton,'Enable','off')
+set(handles.prev_lim_radiobutton,'Enable','off')
 
 % cursorMode = datacursormode(gcf)
 % datacursormode off
@@ -141,7 +145,7 @@ range_sel =      getappdata(0,'range_type');
 display_flag =  getappdata(0,'disp_flag');
 R = 6.378*(10^6); %R is in meters 
 
-if exist('nodesave.mat')
+if exist('nodesave.mat') %#ok
     load('nodesave.mat')
 end
 
@@ -1188,11 +1192,19 @@ switch eventdata.Source.SelectedObject.Tag
     case 'load_link_radiobutton'
 %         set(handles.link_popupmenu,'Enable','on')
 %         set(handles.node_popupmenu,'Enable','off')
-        setappdata(0,'disp_flag',1)
+        setappdata(0,'disp_flag',1)        
+        set(handles.pwr_lim_radiobutton,'Enable','on')
+        set(handles.prev_lim_radiobutton,'Enable','on')
+        
     case 'load_node_radiobutton'
 %         set(handles.node_popupmenu,'Enable','on') 
 %         set(handles.link_popupmenu,'Enable','off')
         setappdata(0,'disp_flag',0)
+        set(handles.pwr_lim_radiobutton,'Enable','off')
+        set(handles.prev_lim_radiobutton,'Enable','off')
+        setappdata(0,'range_type',0)
+        set(handles.los_radiobutton,'Value',1)
+        
     otherwise
         errordlg('Error Selecting Loading Source', 'Load Selection')
     return;
@@ -1360,6 +1372,11 @@ switch eventdata.Source.SelectedObject.Tag
 %         set(handles.node_popupmenu,'Enable','on') 
 %         set(handles.link_popupmenu,'Enable','off')
         setappdata(0,'range_type',1)
+        
+    case 'prev_lim_radiobutton'
+
+        setappdata(0,'range_type',2)
+        
     otherwise
         errordlg('Error Selecting Range Type', 'Range Type Selection')
     return;

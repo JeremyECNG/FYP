@@ -95,7 +95,8 @@ handles.output = hObject;
 % set(handles.link_popupmenu, 'String', link_choices);
 % set(handles.link_popupmenu, 'Value', 1);
 % end
-
+setappdata(0, 'user_node_selection', []);
+setappdata(0, 'user_link_selection', []);
 % setappdata(0, 'node_selec', 'Select');
 setappdata(0,'range_type',0)
 setappdata(0,'tput_on',0)
@@ -416,7 +417,7 @@ switch range_sel
                setappdata(0,'prx_display',Prx)
                Gant = node_con(tx_num).equipment_params.tx_ant_gain + node_con(rx_num).equipment_params.rx_ant_gain;
                Cable_losses = node_con(tx_num).equipment_params.tx_cable_loss + node_con(rx_num).equipment_params.rx_cable_loss;
-               f = link_con(link_num).system_params.freq;
+               f = link_con(link_num).system_params.freq*10^6;
                switch link_con(link_num).channel.path_loss_model
                    
                    case 'FSPL'
@@ -1188,11 +1189,17 @@ switch eventdata.Source.SelectedObject.Tag
     case 'load_link_radiobutton'
 %         set(handles.link_popupmenu,'Enable','on')
 %         set(handles.node_popupmenu,'Enable','off')
-        setappdata(0,'disp_flag',1)
+        setappdata(0,'disp_flag',1)        
+        set(handles.pwr_lim_radiobutton,'Enable','on')
+        set(handles.prev_lim_radiobutton,'Enable','on')
+        
     case 'load_node_radiobutton'
 %         set(handles.node_popupmenu,'Enable','on') 
 %         set(handles.link_popupmenu,'Enable','off')
         setappdata(0,'disp_flag',0)
+        set(handles.pwr_lim_radiobutton,'Enable','off')
+        set(handles.prev_lim_radiobutton,'Enable','off')
+        
     otherwise
         errordlg('Error Selecting Loading Source', 'Load Selection')
     return;
@@ -1330,7 +1337,7 @@ function node_popupmenu_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to node_popupmenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-f = 0;
+
 
 
 % --- Executes on key press with focus on node_popupmenu and none of its controls.
@@ -1341,7 +1348,7 @@ function node_popupmenu_KeyPressFcn(hObject, eventdata, handles)
 %	Character: character interpretation of the key(s) that was pressed
 %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
 % handles    structure with handles and user data (see GUIDATA)
-f = 0;
+
 
 
 % --- Executes when selected object is changed in range_uibuttongroup.
@@ -1360,6 +1367,11 @@ switch eventdata.Source.SelectedObject.Tag
 %         set(handles.node_popupmenu,'Enable','on') 
 %         set(handles.link_popupmenu,'Enable','off')
         setappdata(0,'range_type',1)
+        
+    case 'prev_lim_radiobutton'
+
+        setappdata(0,'range_type',2)
+        
     otherwise
         errordlg('Error Selecting Range Type', 'Range Type Selection')
     return;
@@ -1423,7 +1435,7 @@ function data_cursor_uitoggletool_OnCallback(hObject, eventdata, handles)
 % hObject    handle to data_cursor_uitoggletool (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-f = 0;
+
 
 % --------------------------------------------------------------------
 function data_cursor_uitoggletool_ClickedCallback(hObject, eventdata, handles)
@@ -1437,7 +1449,7 @@ function map_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to map (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-f = 0;
+
 
 function output_txt = myfunction(~,data_cursor_uitoggletool)
 % ~            Currently not used (empty)

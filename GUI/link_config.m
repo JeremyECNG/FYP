@@ -22,7 +22,7 @@ function varargout = link_config(varargin)
 
 % Edit the above text to modify the response to help link_config
 
-% Last Modified by GUIDE v2.5 01-Mar-2018 19:09:07
+% Last Modified by GUIDE v2.5 05-Mar-2018 11:56:10
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,17 +60,18 @@ handles.output = hObject;
 % set(handles.down_freq_edit,'Enable','on')
 % set(handles.downlink_text,'Enable','on') 
 
-set(handles.mod_sch_popupmenu,'Enable','off')
-set(handles.code_rate_popupmenu,'Enable','off')
-set(handles.mod_text,'Enable','off')
-set(handles.code_text,'Enable','off')
+% set(handles.mod_sch_popupmenu,'Enable','off')
+% set(handles.code_rate_popupmenu,'Enable','off')
+% set(handles.mod_text,'Enable','off')
+% set(handles.code_text,'Enable','off')
 
 set(handles.ber_text,'Enable','off')
 set(handles.ber_popupmenu,'Enable','off')
 
 set(handles.node1_popupmenu,'Enable','off')
 set(handles.node2_popupmenu,'Enable','off')
-
+set(handles.sys_bw_popupmenu,'Enable','off')
+set(handles.sys_bw_text,'Enable','off')
 % setappdata(0, 'link_tech', 'Select');
 
 %Node selection code
@@ -101,8 +102,8 @@ setappdata(0, 'link_service', 'Select');
 setappdata(0, 'link_ber', 'Select');
 setappdata(0, 'link_tech', 'Select');
 setappdata(0, 'link_pl', 'Select');
-setappdata(0, 'link_modsch', 'Select');
-setappdata(0, 'link_coding', 'Select');
+% setappdata(0, 'link_modsch', 'Select');
+% setappdata(0, 'link_coding', 'Select');
 setappdata(0, 'link_direc', 'Downlink');
 
 save_counter_link = 0;
@@ -351,10 +352,10 @@ linktech = contents{get(hObject,'Value')};
 setappdata(0, 'link_tech', linktech);
 
 if strcmp('Select',linktech)
-    set(handles.mod_sch_popupmenu,'Enable','off')
-    set(handles.code_rate_popupmenu,'Enable','off')
-    set(handles.mod_text,'Enable','off')
-    set(handles.code_text,'Enable','off')
+%     set(handles.mod_sch_popupmenu,'Enable','off')
+%     set(handles.code_rate_popupmenu,'Enable','off')
+%     set(handles.mod_text,'Enable','off')
+%     set(handles.code_text,'Enable','off')
     set(handles.node1_popupmenu,'Enable','off')
     set(handles.node2_popupmenu,'Enable','off')
     
@@ -364,13 +365,18 @@ if strcmp('Select',linktech)
     set(handles.node2_popupmenu, 'String', 'Select');
     set(handles.node2_popupmenu, 'Value', 1);
     
+
+    
 else
-    set(handles.mod_sch_popupmenu,'Enable','on')
-    set(handles.code_rate_popupmenu,'Enable','on')
-    set(handles.mod_text,'Enable','on')
-    set(handles.code_text,'Enable','on')
+%     set(handles.mod_sch_popupmenu,'Enable','on')
+%     set(handles.code_rate_popupmenu,'Enable','on')
+%     set(handles.mod_text,'Enable','on')
+%     set(handles.code_text,'Enable','on')
     set(handles.node1_popupmenu,'Enable','on')
     set(handles.node2_popupmenu,'Enable','on')
+    set(handles.sys_bw_popupmenu,'Enable','on')
+    set(handles.sys_bw_text,'Enable','on')
+        
 end
 
 if exist('nodesave.mat')
@@ -399,38 +405,67 @@ set(handles.node2_popupmenu, 'String', node_choices);
 set(handles.node2_popupmenu, 'Value', 1);
 end
 
+% switch linktech
+%     case 'DSC'
+% 
+%         mods = {'Select', 'FSK'};
+%         set(handles.mod_sch_popupmenu, 'String', mods);
+%         set(handles.mod_sch_popupmenu, 'Value', 1);
+%         set(handles.code_rate_popupmenu, 'String', 'Select');
+%         set(handles.code_rate_popupmenu, 'Value', 1);
+%         
+%     case 'LTE-A'
+% 
+%         mods = {'Select','QPSK','16QAM','64QAM','256QAM'};
+%         set(handles.mod_sch_popupmenu, 'String', mods);
+%         set(handles.mod_sch_popupmenu, 'Value', 1);
+%         set(handles.code_rate_popupmenu, 'String', 'Select');
+%         set(handles.code_rate_popupmenu, 'Value', 1);        
+%         
+%     case 'NWR'
+% 
+%         mods = {'Select','FSK'};
+%         set(handles.mod_sch_popupmenu, 'String', mods);
+%         set(handles.mod_sch_popupmenu, 'Value', 1);
+%         set(handles.code_rate_popupmenu, 'String', 'Select');
+%         set(handles.code_rate_popupmenu, 'Value', 1);        
+%         
+%     otherwise
+%         set(handles.mod_sch_popupmenu, 'String', 'Select');
+%         set(handles.mod_sch_popupmenu, 'Value', 1);
+%         set(handles.code_rate_popupmenu, 'String', 'Select');
+%         set(handles.code_rate_popupmenu, 'Value', 1);
+% end
+
 switch linktech
     case 'DSC'
 
-        mods = {'Select', 'FSK'};
-        set(handles.mod_sch_popupmenu, 'String', mods);
-        set(handles.mod_sch_popupmenu, 'Value', 1);
-        set(handles.code_rate_popupmenu, 'String', 'Select');
-        set(handles.code_rate_popupmenu, 'Value', 1);
+        bws = {'Select'};
+        set(handles.sys_bw_popupmenu, 'String', bws);
+        set(handles.sys_bw_popupmenu, 'Value', 1);
+
         
     case 'LTE-A'
 
-        mods = {'Select','QPSK','16QAM','64QAM','256QAM'};
-        set(handles.mod_sch_popupmenu, 'String', mods);
-        set(handles.mod_sch_popupmenu, 'Value', 1);
-        set(handles.code_rate_popupmenu, 'String', 'Select');
-        set(handles.code_rate_popupmenu, 'Value', 1);        
+        bws = {'Select', '1.4', '3', '5', '10', '15', '20'};
+        set(handles.sys_bw_popupmenu, 'String', bws);
+        set(handles.sys_bw_popupmenu, 'Value', 1);
+       
         
     case 'NWR'
-
-        mods = {'Select','FSK'};
-        set(handles.mod_sch_popupmenu, 'String', mods);
-        set(handles.mod_sch_popupmenu, 'Value', 1);
-        set(handles.code_rate_popupmenu, 'String', 'Select');
-        set(handles.code_rate_popupmenu, 'Value', 1);        
+        
+        bws = {'Select'};
+        set(handles.sys_bw_popupmenu, 'String', bws);
+        set(handles.sys_bw_popupmenu, 'Value', 1);
+        
         
     otherwise
-        set(handles.mod_sch_popupmenu, 'String', 'Select');
-        set(handles.mod_sch_popupmenu, 'Value', 1);
-        set(handles.code_rate_popupmenu, 'String', 'Select');
-        set(handles.code_rate_popupmenu, 'Value', 1);
-end
+        
+        bws = {'Select'};
+        set(handles.sys_bw_popupmenu, 'String', bws);
+        set(handles.sys_bw_popupmenu, 'Value', 1);
 
+end
 % --- Executes during object creation, after setting all properties.
 function technology_popupmenu_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to technology_popupmenu (see GCBO)
@@ -525,39 +560,39 @@ function mod_sch_popupmenu_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns mod_sch_popupmenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from mod_sch_popupmenu
-contents = cellstr(get(hObject,'String'));
-linkmodsch= contents{get(hObject,'Value')};
-setappdata(0, 'link_modsch', linkmodsch);
-
-switch linkmodsch
-    case 'QPSK'
-
-        coders = {'Select','1/8','1/5','1/4','1/3','1/2','2/3','3/4','4/5'};
-        set(handles.code_rate_popupmenu, 'String', coders);
-        set(handles.code_rate_popupmenu, 'Value', 1);
-        
-    case '16QAM'
-
-        coders = {'Select','1/3','1/2','2/3','3/4','4/5'};
-        set(handles.code_rate_popupmenu, 'String', coders);
-        set(handles.code_rate_popupmenu, 'Value', 1);
-        
-    case '64QAM'
-
-        coders = {'Select','1/3','2/3','3/4','5/6'};
-        set(handles.code_rate_popupmenu, 'String', coders);
-        set(handles.code_rate_popupmenu, 'Value', 1);
-        
-    case '256QAM'
-
-        coders = {'Select','1/3','3/4','5/6'};
-        set(handles.code_rate_popupmenu, 'String', coders);
-        set(handles.code_rate_popupmenu, 'Value', 1);
-        
-    otherwise
-        set(handles.code_rate_popupmenu, 'String', 'Select');
-        set(handles.code_rate_popupmenu, 'Value', 1);
-end
+% contents = cellstr(get(hObject,'String'));
+% linkmodsch= contents{get(hObject,'Value')};
+% setappdata(0, 'link_modsch', linkmodsch);
+% 
+% switch linkmodsch
+%     case 'QPSK'
+% 
+%         coders = {'Select','1/8','1/5','1/4','1/3','1/2','2/3','3/4','4/5'};
+%         set(handles.code_rate_popupmenu, 'String', coders);
+%         set(handles.code_rate_popupmenu, 'Value', 1);
+%         
+%     case '16QAM'
+% 
+%         coders = {'Select','1/3','1/2','2/3','3/4','4/5'};
+%         set(handles.code_rate_popupmenu, 'String', coders);
+%         set(handles.code_rate_popupmenu, 'Value', 1);
+%         
+%     case '64QAM'
+% 
+%         coders = {'Select','1/3','2/3','3/4','5/6'};
+%         set(handles.code_rate_popupmenu, 'String', coders);
+%         set(handles.code_rate_popupmenu, 'Value', 1);
+%         
+%     case '256QAM'
+% 
+%         coders = {'Select','1/3','3/4','5/6'};
+%         set(handles.code_rate_popupmenu, 'String', coders);
+%         set(handles.code_rate_popupmenu, 'Value', 1);
+%         
+%     otherwise
+%         set(handles.code_rate_popupmenu, 'String', 'Select');
+%         set(handles.code_rate_popupmenu, 'Value', 1);
+% end
 
 % --- Executes during object creation, after setting all properties.
 function mod_sch_popupmenu_CreateFcn(hObject, eventdata, handles)
@@ -580,9 +615,9 @@ function code_rate_popupmenu_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns code_rate_popupmenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from code_rate_popupmenu
-contents = cellstr(get(hObject,'String'));
-linkcoding= contents{get(hObject,'Value')};
-setappdata(0, 'link_coding', linkcoding);
+% contents = cellstr(get(hObject,'String'));
+% linkcoding= contents{get(hObject,'Value')};
+% setappdata(0, 'link_coding', linkcoding);
 
 % --- Executes during object creation, after setting all properties.
 function code_rate_popupmenu_CreateFcn(hObject, eventdata, handles)
@@ -709,9 +744,11 @@ sav_link_con.node_selection.service = getappdata(0,'link_service');
 sav_link_con.node_selection.ber = getappdata(0,'link_ber');
 
 %Link System Paramters
-sav_link_con.system_params.mod_sch = getappdata(0,'link_modsch');
+% sav_link_con.system_params.mod_sch = getappdata(0,'link_modsch');
+% 
+% sav_link_con.system_params.code_rate = getappdata(0,'link_coding'); 
 
-sav_link_con.system_params.code_rate = getappdata(0,'link_coding');
+sav_link_con.system_params.system_bandwidth = getappdata(0,'link_sys_bw');
 
 sav_link_con.system_params.link_direction = getappdata(0,'link_direc');
 
@@ -772,9 +809,9 @@ elseif isnan(sav_link_con.system_params.freq)||isnan(sav_link_con.channel.fading
         
     errordlg('Please fill all fields with valid content', 'Save')
     
-elseif strcmp('Select',sav_link_con.technology)||strcmp('Select',sav_link_con.node_selection.node1)||strcmp('Select',sav_link_con.node_selection.node2)||strcmp('Select',sav_link_con.node_selection.service)||strcmp('Select',sav_link_con.node_selection.ber)||strcmp('Select',sav_link_con.system_params.mod_sch)||strcmp('Select',sav_link_con.system_params.code_rate)||strcmp('Select',sav_link_con.channel.path_loss_model)
+elseif strcmp('Select',sav_link_con.system_params.system_bandwidth)||strcmp('Select',sav_link_con.technology)||strcmp('Select',sav_link_con.node_selection.node1)||strcmp('Select',sav_link_con.node_selection.node2)||strcmp('Select',sav_link_con.node_selection.service)||strcmp('Select',sav_link_con.node_selection.ber)||strcmp('Select',sav_link_con.channel.path_loss_model)
         
-    errordlg('Please make all necessary selections', 'Save')
+    errordlg('Please make all necessary selections', 'Save') 
 else
     
     savelink(sav_link_con)
@@ -816,9 +853,11 @@ link_con(save_counter_link).node_service.service = sav_link_con.node_selection.s
 link_con(save_counter_link).node_service.ber = sav_link_con.node_selection.ber;
 
 %Link System Paramters
-link_con(save_counter_link).system_params.mod_sch = sav_link_con.system_params.mod_sch;
+% link_con(save_counter_link).system_params.mod_sch = sav_link_con.system_params.mod_sch;
+% 
+% link_con(save_counter_link).system_params.code_rate = sav_link_con.system_params.code_rate;
 
-link_con(save_counter_link).system_params.code_rate = sav_link_con.system_params.code_rate;
+link_con(save_counter_link).system_params.system_bandwidth = sav_link_con.system_params.system_bandwidth;
 
 link_con(save_counter_link).system_params.link_direction = sav_link_con.system_params.link_direction;
     
@@ -916,6 +955,31 @@ function link_frequency_edit_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in sys_bw_popupmenu.
+function sys_bw_popupmenu_Callback(hObject, eventdata, handles)
+% hObject    handle to sys_bw_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns sys_bw_popupmenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from sys_bw_popupmenu
+contents = cellstr(get(hObject,'String'));
+link_sysbw= contents{get(hObject,'Value')};
+setappdata(0, 'link_sys_bw', link_sysbw);
+
+% --- Executes during object creation, after setting all properties.
+function sys_bw_popupmenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sys_bw_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
