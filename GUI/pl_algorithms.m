@@ -1,6 +1,6 @@
 %Sea Radio-Wave Propagation Loss
 
-PL_target = 1; %126.6910;
+PL_target = 200; %126.6910;
 
 ht = 30;
 hr = 2;
@@ -33,8 +33,8 @@ while (fin_flag == 0)
        
     end
     
-%    PL_res(d) = 20*log10(d*10^-3)+ 20*log10(freq)+32.44 + 10*log10(4*sin((2*pi*hr*ht)/(lambda*d))^2) + PL_boat + PL_earth + alpha;
-    PL_res = 20*log10(d*10^-3)+ 20*log10(freq)+32.44 + 10*log10(4*sin((2*pi*hr*ht)/(lambda*d))^2) + PL_boat + PL_earth + alpha;
+    PL_res(d) = 20*log10(d*10^-3)+ 20*log10(freq)+32.44 + 10*log10(4*sin((2*pi*hr*ht)/(lambda*d))^2) + PL_boat + PL_earth + alpha;
+ %   PL_res = 20*log10(d*10^-3)+ 20*log10(freq)+32.44 + 10*log10(4*sin((2*pi*hr*ht)/(lambda*d))^2) + PL_boat + PL_earth + alpha;
 
     value_check = PL_res - PL_target;
     new_sign = sign(value_check);
@@ -94,7 +94,7 @@ PL_sea_path = PL_0 + PL_1 + PL_boat + PL_earth + alpha;
 %%
 %3-Ray Path Loss
 
-PL_target = 300; %117.7529;
+PL_target = 500; %117.7529;
 
 ht = 30;
 hr = 2;

@@ -634,8 +634,6 @@ function node_tech_popupmenu_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns node_tech_popupmenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from node_tech_popupmenu
 contents = cellstr(get(hObject,'String'));
-
-
 % nodetech = str2double(get(handles.node_tech_popupmenu, 'String'));
 nodetech = contents{get(hObject,'Value')};
 setappdata(0, 'node_tech', nodetech);

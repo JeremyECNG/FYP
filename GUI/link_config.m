@@ -22,7 +22,7 @@ function varargout = link_config(varargin)
 
 % Edit the above text to modify the response to help link_config
 
-% Last Modified by GUIDE v2.5 05-Mar-2018 11:56:10
+% Last Modified by GUIDE v2.5 12-Mar-2018 17:41:28
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -105,6 +105,9 @@ setappdata(0, 'link_pl', 'Select');
 % setappdata(0, 'link_modsch', 'Select');
 % setappdata(0, 'link_coding', 'Select');
 setappdata(0, 'link_direc', 'Downlink');
+
+setappdata(0, 'link_sys_bw', 'Select');
+setappdata(0, 'link_chan_typ', 'Select');
 
 save_counter_link = 0;
 setappdata(0, 'linksavecounter', save_counter_link);
@@ -458,6 +461,11 @@ switch linktech
         set(handles.sys_bw_popupmenu, 'String', bws);
         set(handles.sys_bw_popupmenu, 'Value', 1);
         
+    case 'Generic'
+        
+        bws = {'Select', '1.4', '3', '5', '10', '15', '20'};
+        set(handles.sys_bw_popupmenu, 'String', bws);
+        set(handles.sys_bw_popupmenu, 'Value', 1);
         
     otherwise
         
@@ -644,23 +652,25 @@ contents = cellstr(get(hObject,'String'));
 nodetwo = contents{get(hObject,'Value')};
 setappdata(0, 'node_two', nodetwo);
 
-% node1_choice = getappdata(0, 'node_one');
-
-
-current_list =  getappdata(0, 'node_list');
-% current_list =  handles.node1_popupmenu.String;
-list_amt  = numel(current_list);
-choice_ind = 0;
-    for nodein = 1:list_amt 
-        if strcmp(nodetwo,current_list(nodein))
-
-         else
-            choice_ind = choice_ind + 1; 
-            node_choices(choice_ind) = current_list(nodein);
-        end
-    end
-
-set(handles.node1_popupmenu, 'String', node_choices);
+ node1_choice = getappdata(0, 'node_one');
+if strcmp(nodetwo ,node1_choice )
+    errordlg('Please select two distinct nodes', 'Node Conflict')
+    set(handles.node2_popupmenu, 'Value', 1);
+end
+% current_list =  getappdata(0, 'node_list');
+% % current_list =  handles.node1_popupmenu.String;
+% list_amt  = numel(current_list);
+% choice_ind = 0;
+%     for nodein = 1:list_amt 
+%         if strcmp(nodetwo,current_list(nodein))
+% 
+%          else
+%             choice_ind = choice_ind + 1; 
+%             node_choices(choice_ind) = current_list(nodein);
+%         end
+%     end
+% 
+% set(handles.node1_popupmenu, 'String', node_choices);
 % set(handles.node1_popupmenu, 'Value', 1);
 
 % --- Executes during object creation, after setting all properties.
@@ -688,24 +698,27 @@ contents = cellstr(get(hObject,'String'));
 nodeone = contents{get(hObject,'Value')};
 setappdata(0, 'node_one', nodeone);
 
-% node2_choice = getappdata(0, 'node_two');
+node2_choice = getappdata(0, 'node_two');
 
-
-current_list =  getappdata(0, 'node_list');
-% current_list =  handles.node2_popupmenu.String;
-
-list_amt  = numel(current_list);
-choice_ind = 0;
-    for nodein = 1:list_amt 
-        if strcmp(nodeone,current_list(nodein))
-
-         else
-            choice_ind = choice_ind + 1; 
-            node_choices(choice_ind) = current_list(nodein);
-        end
-    end
-
-set(handles.node2_popupmenu, 'String', node_choices);
+if strcmp(nodeone ,node2_choice)
+    errordlg('Please select two distinct nodes', 'Node Conflict')
+    set(handles.node1_popupmenu, 'Value', 1);
+end
+% current_list =  getappdata(0, 'node_list');
+% % current_list =  handles.node2_popupmenu.String;
+% 
+% list_amt  = numel(current_list);
+% choice_ind = 0;
+%     for nodein = 1:list_amt 
+%         if strcmp(nodeone,current_list(nodein))
+% 
+%          else
+%             choice_ind = choice_ind + 1; 
+%             node_choices(choice_ind) = current_list(nodein);
+%         end
+%     end
+% 
+% set(handles.node2_popupmenu, 'String', node_choices);
 % set(handles.node2_popupmenu, 'Value', 1);
 
 % --- Executes during object creation, after setting all properties.
@@ -771,6 +784,8 @@ sav_link_con.channel.fading_margin = getappdata(0,'link_fading');
 
 sav_link_con.channel.interference_margin = getappdata(0,'link_interf');
 
+sav_link_con.channel.channel_type = getappdata(0, 'link_chan_typ');
+
 %Link Receiver Paramters
 sav_link_con.receiver.temperature = getappdata(0,'link_temp');
 
@@ -809,7 +824,7 @@ elseif isnan(sav_link_con.system_params.freq)||isnan(sav_link_con.channel.fading
         
     errordlg('Please fill all fields with valid content', 'Save')
     
-elseif strcmp('Select',sav_link_con.system_params.system_bandwidth)||strcmp('Select',sav_link_con.technology)||strcmp('Select',sav_link_con.node_selection.node1)||strcmp('Select',sav_link_con.node_selection.node2)||strcmp('Select',sav_link_con.node_selection.service)||strcmp('Select',sav_link_con.node_selection.ber)||strcmp('Select',sav_link_con.channel.path_loss_model)
+elseif strcmp('Select',sav_link_con.channel.channel_type)||strcmp('Select',sav_link_con.system_params.system_bandwidth)||strcmp('Select',sav_link_con.technology)||strcmp('Select',sav_link_con.node_selection.node1)||strcmp('Select',sav_link_con.node_selection.node2)||strcmp('Select',sav_link_con.node_selection.service)||strcmp('Select',sav_link_con.node_selection.ber)||strcmp('Select',sav_link_con.channel.path_loss_model)
         
     errordlg('Please make all necessary selections', 'Save') 
 else
@@ -869,6 +884,8 @@ link_con(save_counter_link).channel.path_loss_model = sav_link_con.channel.path_
 link_con(save_counter_link).channel.fading_margin = sav_link_con.channel.fading_margin ;
 
 link_con(save_counter_link).channel.interference_margin = sav_link_con.channel.interference_margin;
+
+link_con(save_counter_link).channel.channel_type = sav_link_con.channel.channel_type;
 
 %Link Receiver Paramters
 link_con(save_counter_link).receiver.temperature = sav_link_con.receiver.temperature;
@@ -970,12 +987,37 @@ function sys_bw_popupmenu_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns sys_bw_popupmenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from sys_bw_popupmenu
 contents = cellstr(get(hObject,'String'));
-link_sysbw= contents{get(hObject,'Value')};
+link_sysbw= str2double(contents{get(hObject,'Value')});
 setappdata(0, 'link_sys_bw', link_sysbw);
 
 % --- Executes during object creation, after setting all properties.
 function sys_bw_popupmenu_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to sys_bw_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in chan_type_popupmenu.
+function chan_type_popupmenu_Callback(hObject, eventdata, handles)
+% hObject    handle to chan_type_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns chan_type_popupmenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from chan_type_popupmenu
+contents = cellstr(get(hObject,'String'));
+link_chantyp= contents{get(hObject,'Value')};
+setappdata(0, 'link_chan_typ', link_chantyp);
+
+% --- Executes during object creation, after setting all properties.
+function chan_type_popupmenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to chan_type_popupmenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

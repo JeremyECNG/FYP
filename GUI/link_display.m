@@ -169,6 +169,7 @@ set(handles.link_freq_text, 'String',link_con(item_num).system_params.freq);
 set(handles.path_loss_mod_text, 'String',link_con(item_num).channel.path_loss_model);
 set(handles.fading_margin_text, 'String',link_con(item_num).channel.fading_margin);
 set(handles.interf_margin_text, 'String',link_con(item_num).channel.interference_margin);
+set(handles.chan_typ_text, 'String',link_con(item_num).channel.channel_type);
 set(handles.temp_text, 'String',link_con(item_num).receiver.temperature);
 set(handles.rx_bw_text, 'String',link_con(item_num).receiver.rx_bandwidth);
 

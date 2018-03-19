@@ -94,7 +94,9 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
  case 1 %Link is selected
           
-     
+     if exist('nodesave.mat')
+         load('nodesave.mat') 
+     end
      %Obtain user selection 
      user_l_sel = getappdata(0, 'user_link_selection');
      if isempty(user_l_sel) 
@@ -302,55 +304,172 @@ switch display_flag %Variable for determining whether a node or link is to be di
                      
              end
              
-             B_sys = link_con(link_num).system_params.system_bandwidth;
-             set(handles.freq_disp_text, 'String', B_sys);
-             switch B_sys
-                 
-                 case '1.4'
-                     PDSCH_RE_frame = 4912; %Extended CP, CFI = 3, BW = 1.4 MHz
-                     
-                 case '3'
-                     PDSCH_RE_frame = 14812; %Extended CP, CFI = 3
-                     
-                 case '5'
-                     PDSCH_RE_frame = 25012; %Extended CP, CFI = 3
-                     
-                 case '10'
-                     PDSCH_RE_frame = 50512; %Extended CP, CFI = 3
-                     
-                 case '15'
-                     PDSCH_RE_frame = 76012; %Extended CP, CFI = 3
-                     
-                 case '20'
-                     PDSCH_RE_frame = 101512; %Extended CP, CFI = 3
+              channel_type = link_con(link_num).channel.channel_type;%channel type variable from configuration
+
+             
+             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+             switch link_con(link_num).technology 
+    
+                 case 'DSC'
+                     Qm = 2;
+                     datarate = 1200; 
+
+                     Rb = datarate ; 
+
+                     B_noise = link_con(link_num).receiver.rx_bandwidth;
+                     mod_sch = 'FSK';
+                     EbN0 = EbN0_value(ber_target,mod_sch,channel_type);
+                     SINR = EbN0*(Rb/B_noise);
+                     SINR_db = 10*log10(SINR);
+                     Nf = node_con(rx_num).equipment_params.noise_fig;
+                     k = physconst('Boltzmann');
+                     T = link_con(link_num).receiver.temperature;
+                     Nt = k*T*B_noise;
+                     Nt_db =  10*log10(Nt);   
+    
+                 case 'LTE-A'
+                     B_sys = link_con(link_num).system_params.system_bandwidth;
+                     set(handles.freq_disp_text, 'String', B_sys);
+                     switch B_sys
+
+                         case '1.4'
+                             RE_frame = 8640; %Extended CP, CFI = 3, BW = 1.4 MHz
+
+                         case '3'
+                             RE_frame = 21600; %Extended CP, CFI = 3
+
+                         case '5'
+                             RE_frame = 36000; %Extended CP, CFI = 3
+
+                         case '10'
+                             RE_frame = 72000; %Extended CP, CFI = 3
+
+                         case '15'
+                             RE_frame = 108000; %Extended CP, CFI = 3
+
+                         case '20'
+                             RE_frame = 144000; %Extended CP, CFI = 3
+
+                     end
+
+                     Qm = 2;
+                     phy_datarate_frame = ((RE_frame*Qm)/(10*10^-3)); %SISO
+
+                     Rb = phy_datarate_frame ; 
+
+                     B_noise = link_con(link_num).receiver.rx_bandwidth;
+                     mod_sch = 'QPSK';
+                     EbN0 = EbN0_value(ber_target,mod_sch,channel_type);
+                     SINR = EbN0*(Rb/B_noise);
+                     SINR_db = 10*log10(SINR);
+                     Nf = node_con(rx_num).equipment_params.noise_fig;
+                     k = physconst('Boltzmann');
+                     T = link_con(link_num).receiver.temperature;
+                     Nt = k*T*B_noise;
+                     Nt_db =  10*log10(Nt);      
+           
+
+                 case 'NWR'
+                     B_sys = link_con(link_num).system_params.system_bandwidth;
+                     set(handles.freq_disp_text, 'String', B_sys);
+%                      switch B_sys
+% 
+%                          case '1.4'
+%                              PDSCH_RE_frame = 4912; %Extended CP, CFI = 3, BW = 1.4 MHz
+% 
+%                          case '3'
+%                              PDSCH_RE_frame = 14812; %Extended CP, CFI = 3
+% 
+%                          case '5'
+%                              PDSCH_RE_frame = 25012; %Extended CP, CFI = 3
+% 
+%                          case '10'
+%                              PDSCH_RE_frame = 50512; %Extended CP, CFI = 3
+% 
+%                          case '15'
+%                              PDSCH_RE_frame = 76012; %Extended CP, CFI = 3
+% 
+%                          case '20'
+%                              PDSCH_RE_frame = 101512; %Extended CP, CFI = 3
+% 
+%                      end
+
+                     Qm = 2;
+                     datarate = 520.83; 
+
+                     Rb = 520.83; 
+
+                     B_noise = link_con(link_num).receiver.rx_bandwidth;
+                     mod_sch = 'FSK';
+                     EbN0 = EbN0_value(ber_target,mod_sch,channel_type);
+                     SINR = EbN0*(Rb/B_noise);
+                     SINR_db = 10*log10(SINR);
+                     Nf = node_con(rx_num).equipment_params.noise_fig;
+                     k = physconst('Boltzmann');
+                     T = link_con(link_num).receiver.temperature;
+                     Nt = k*T*B_noise;
+                     Nt_db =  10*log10(Nt);    
+   
+                 case 'Generic'    
+                     B_sys = link_con(link_num).system_params.system_bandwidth;
+                     set(handles.freq_disp_text, 'String', B_sys);
+                     switch B_sys
+
+                         case '1.4'
+                             RE_frame = 8640; %Extended CP,  BW = 1.4 MHz
+
+                         case '3'
+                             RE_frame = 21600; %Extended CP 
+
+                         case '5'
+                             RE_frame = 36000; %Extended CP
+                             
+                         case '10'
+                             RE_frame = 72000; %Extended CP 
+
+                         case '15'
+                             RE_frame = 108000; %Extended CP 
+
+                         case '20'
+                             RE_frame = 144000; %Extended CP 
+
+                     end
+
+                     Qm = 2;
+                     phy_datarate_frame = ((RE_frame*Qm)/(10*10^-3)); %SISO
+                     Rb = phy_datarate_frame;
+
+                     B_noise = link_con(link_num).receiver.rx_bandwidth;
+                     mod_sch = 'QPSK';
+                     EbN0 = EbN0_value(ber_target,mod_sch,channel_type);
+                     SINR = EbN0*(Rb/B_noise);
+                     SINR_db = 10*log10(SINR);
+                     Nf = node_con(rx_num).equipment_params.noise_fig;
+                     k = physconst('Boltzmann');
+                     T = link_con(link_num).receiver.temperature;
+                     Nt = k*T*B_noise;
+                     Nt_db =  10*log10(Nt);                                
                      
              end
              
-             Qm = 2;
-             PDSCH_RE_frame = 4912; %Extended CP, CFI = 3, BW = 1.4 MHz
-             phy_tput_frame = ((PDSCH_RE_frame*Qm)/(10*10^-3))/10^6; %SISO
+
              
-             Rb = phy_tput_frame; 
-             
-             B_noise = link_con(link_num).receiver.rx_bandwidth;
-             mod_sch = 'QPSK';
-             EbN0 = EbN0_value(ber_target,mod_sch);
-             SINR = EbN0*(Rb/B_noise);
-             SINR_db = 10*log10(SINR);
-             Nf = node_con(rx_num).equipment_params.noise_fig;
-             k = physconst('Boltzmann');
-             T = link_con(link_num).receiver.temperature;
-             Nt = k*T*B_noise;
-             Nt_db =  10*log10(Nt);
+             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
              If_margin = link_con(link_num).channel.interference_margin;
              set(handles.interf_disp_text, 'String', If_margin);
-             
-             Interf_Noise = Nt_db+Nf+If_margin;
-             Pr_min = SINR_db - Interf_Noise;
-             set(handles.rx_sens_text, 'String',Pr_min)
-             
              fad_margin = link_con(link_num).channel.fading_margin;
              set(handles.fade_disp_text, 'String', fad_margin);
+             
+             Interf_Noise = Nt_db+Nf+If_margin+fad_margin;
+             
+             Pr_min = SINR_db - Interf_Noise;
+             
+             set(handles.rx_sens_text, 'String',Pr_min)
+             set(handles.ber_display_text, 'String',link_con(link_num).node_service.ber) 
+             set(handles.node_display_text, 'String',link_con(link_num).link_name) 
+             
+%              fad_margin = link_con(link_num).channel.fading_margin;
+%              set(handles.fade_disp_text, 'String', fad_margin);
                           
 
              Ptx = node_con(tx_num).equipment_params.tx_pwr;
@@ -359,14 +478,14 @@ switch display_flag %Variable for determining whether a node or link is to be di
              G_ant = node_con(tx_num).equipment_params.tx_ant_gain + node_con(rx_num).equipment_params.rx_ant_gain;
              Cable_losses = node_con(tx_num).equipment_params.tx_cable_loss + node_con(rx_num).equipment_params.rx_cable_loss;
              
-             PL_target = Ptx + G_ant - Cable_losses + fad_margin - Pr_min;
+             PL_target = Ptx + G_ant - Cable_losses - Pr_min;
              
              freq = link_con(link_num).system_params.freq;
 
                switch link_con(link_num).channel.path_loss_model
                    
                    case 'FSPL'
-                       set(handles.techno_disp_text, 'String', link_con(link_num).channel.path_loss_model);
+                       set(handles.path_loss_disp_text, 'String', link_con(link_num).channel.path_loss_model);
                        %Path_Loss = Ptx + G_ant - Cable_losses - Prx;
                        
                        plim_distance = 10^((PL_target-20*log10(freq*10^6)-32.44)/20);
@@ -374,7 +493,7 @@ switch display_flag %Variable for determining whether a node or link is to be di
                        plotted_range = range_plot(node_con(tx_num).node_location.longi  ,node_con(tx_num).node_location.lati  ,plim_distance,handles.map);
                        
                    case '2-Ray'
-                       set(handles.techno_disp_text, 'String', link_con(link_num).channel.path_loss_model);
+                       set(handles.path_loss_disp_text, 'String', link_con(link_num).channel.path_loss_model);
 
                        plim_distance =two_ray(PL_target, ht, hr, freq)*10^-3;
                        
@@ -383,7 +502,7 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
         
                    case '3-Ray'
-                       set(handles.techno_disp_text, 'String', link_con(link_num).channel.path_loss_model);
+                       set(handles.path_loss_disp_text, 'String', link_con(link_num).channel.path_loss_model);
                        
                        plim_distance =three_ray(PL_target, ht, hr, freq)*10^-3;
                        
@@ -391,39 +510,449 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
 
                    case 'Sea Radio-Wave Propagation Loss'
-                       set(handles.techno_disp_text, 'String', link_con(link_num).channel.path_loss_model);
+                       set(handles.path_loss_disp_text, 'String', link_con(link_num).channel.path_loss_model);
                        
                        plim_distance = srwpl(PL_target, ht, hr, freq)*10^-3;
         
                        plotted_range = range_plot(node_con(tx_num).node_location.longi  ,node_con(tx_num).node_location.lati  ,plim_distance,handles.map);
                end
                
-               set(handles.range_display_text, 'String',link_con(link_num).link_name) 
+               set(handles.range_display_text, 'String',plim_distance) 
+               
+                switch link_con(link_num).technology 
+
+                    case 'DSC'
+                         Qm = 2;
+                         datarate = 1200; 
+
+                         Rb = datarate ; 
+
+                         mod_sch = 'FSK';
+                         EbN0 = EbN0_value(ber_target,mod_sch,channel_type);
+                         SINR = EbN0*(Rb/B_noise);
+                         SINR_db = 10*log10(SINR);
+                         Pr_min = SINR_db - Interf_Noise;
+                         PL_target = Ptx + G_ant - Cable_losses - Pr_min;
+                         x = node_con(tx_num).node_location.longi; 
+                         y = node_con(tx_num).node_location.lati;
+
+                         switch link_con(link_num).channel.path_loss_model
+
+                                     case 'FSPL'
+
+                                         tput_distance = 10^((PL_target-20*log10(freq*10^6)-32.44)/20);
+
+
+                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map);
+
+
+                                     case '2-Ray'
+
+                                         tput_distance = two_ray(PL_target, ht, hr, freq);
+                                         tput_distance = tput_distance*10^-3;
+
+                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map);               
+
+                                     case '3-Ray'
+                                         tput_distance = three_ray(PL_target, ht, hr, freq);
+                                         tput_distance = tput_distance*10^-3;                 
+
+                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map); 
+
+                                     case 'Sea Radio-Wave Propagation Loss'
+                                         tput_distance = srwpl(PL_target, ht, hr, freq);
+                                         tput_distance = tput_distance*10^-3;                 
+
+                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map); 
+                         end
+
+
+
+                     case 'LTE-A'
+
+                         switch link_con(link_num).node_service.ber
+
+                             case '10^-3'
+                                 Qm = [1,1,2,2,4,4,6,6,6,6];
+                                 code = ['1/2','3/4','1/2','3/4','1/2','3/4','1/2','2/3','3/4','5/6'];
+                                 %Rb = ((RE_frame*Qm)/(10*10^-3)); 
+                                 %EbN0 = [EbN0_value(ber_target,'QPSK',channel_type),EbN0_value(ber_target,'16QAM',channel_type),EbN0_value(ber_target,'64QAM',channel_type)];
+
+                                 %SINR = EbN0.*(Rb/B_noise);         
+                                 %SINR_db = 10*log10(SINR);   
+                                 SINR_db = [14.54,19.16,17.54,22.16,23.6,28.5,26.36,30.84,31.96,33.08];
+                                 Pr_min = SINR_db - Interf_Noise;        
+                                 PL_target = Ptx + G_ant - Cable_losses - Pr_min;                
+                                 x = node_con(tx_num).node_location.longi;          
+                                 y = node_con(tx_num).node_location.lati;
+
+                                 switch link_con(link_num).channel.path_loss_model
+
+                                     case 'FSPL'
+
+                                         tput_distance = 10.^((PL_target-20*log10(freq*10^6)-32.44)/20);
+
+                                         %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map);
+
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map);
+
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map);
+
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map);                 
+
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map);
+
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map);
+
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);
+
+                                     case '2-Ray'
+
+                                         tput_distance = [two_ray(PL_target(1), ht, hr, freq),two_ray(PL_target(2), ht, hr, freq),two_ray(PL_target(3), ht, hr, freq)];
+                                         tput_distance = tput_distance*10^-3;
+
+                                         %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map);
+
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map);
+
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map);
+
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map);                 
+
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map);
+
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map);
+
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);               
+
+                                     case '3-Ray'
+                                         tput_distance = [three_ray(PL_target(1), ht, hr, freq),three_ray(PL_target(2), ht, hr, freq),three_ray(PL_target(3), ht, hr, freq)];
+                                         tput_distance = tput_distance*10^-3;                 
+
+                                         %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map);
+
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map);
+
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map);
+
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map);                 
+
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map);
+
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map);
+
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);
+
+                                     case 'Sea Radio-Wave Propagation Loss'
+                                         tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq)];
+                                         tput_distance = tput_distance*10^-3;                 
+
+                                         %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map);
+
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map);
+
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map);
+
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map);                 
+
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map);
+
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map);
+
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);
+                                 end 
+
+                             otherwise
+
+                                 Qm = [2,4,6];
+                                 Rb = ((RE_frame*Qm)/(10*10^-3)); 
+                                 EbN0 = [EbN0_value(ber_target,'QPSK',channel_type),EbN0_value(ber_target,'16QAM',channel_type),EbN0_value(ber_target,'64QAM',channel_type)];
+
+                                 SINR = EbN0.*(Rb/B_noise);         
+                                 SINR_db = 10*log10(SINR);                  
+                                 Pr_min = SINR_db - Interf_Noise;        
+                                 PL_target = Ptx + G_ant - Cable_losses - Pr_min;                
+                                 x = node_con(tx_num).node_location.longi;          
+                                 y = node_con(tx_num).node_location.lati;
+
+                                 switch link_con(link_num).channel.path_loss_model
+
+                                     case 'FSPL'
+
+                                         tput_distance = 10.^((PL_target-20*log10(freq*10^6)-32.44)/20);
+
+                                         %QPSK                                  
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+
+                                         %16QAM
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+
+                                         %64QAM                 
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+
+                                     case '2-Ray'
+
+                                         tput_distance = [two_ray(PL_target(1), ht, hr, freq),two_ray(PL_target(2), ht, hr, freq),two_ray(PL_target(3), ht, hr, freq)];
+                                         tput_distance = tput_distance*10^-3;
+
+                                          %QPSK                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+                                         %16QAM
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+                                         %64QAM
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);                
+
+                                     case '3-Ray'
+                                         tput_distance = [three_ray(PL_target(1), ht, hr, freq),three_ray(PL_target(2), ht, hr, freq),three_ray(PL_target(3), ht, hr, freq)];
+                                         tput_distance = tput_distance*10^-3;                 
+
+                                         %QPSK                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+                                         %16QAM
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+                                         %64QAM
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+
+                                     case 'Sea Radio-Wave Propagation Loss'
+                                         tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq)];
+                                         tput_distance = tput_distance*10^-3;                 
+
+                                         %QPSK                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+                                         %16QAM
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+                                         %64QAM
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                 end                
+                         end
+
+
+                     case 'NWR'
+
+                         Qm = 2;
+                         datarate = 520.83; 
+
+                         Rb = 520.83; 
+
+                         B_noise = link_con(link_num).receiver.rx_bandwidth;
+                         mod_sch = 'FSK';
+                         EbN0 = EbN0_value(ber_target,mod_sch,channel_type);
+                         SINR = EbN0*(Rb/B_noise);
+                         SINR_db = 10*log10(SINR);
+                         Pr_min = SINR_db - Interf_Noise;
+                         PL_target = Ptx + G_ant - Cable_losses - Pr_min;
+
+                         x = node_con(tx_num).node_location.longi; 
+                         y = node_con(tx_num).node_location.lati;
+
+                         switch link_con(link_num).channel.path_loss_model
+
+                                     case 'FSPL'
+
+                                         tput_distance = 10^((PL_target-20*log10(freq*10^6)-32.44)/20);
+
+
+                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map);
+
+
+                                     case '2-Ray'
+
+                                         tput_distance = two_ray(PL_target, ht, hr, freq);
+                                         tput_distance = tput_distance*10^-3;
+
+                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map);               
+
+                                     case '3-Ray'
+                                         tput_distance = three_ray(PL_target, ht, hr, freq);
+                                         tput_distance = tput_distance*10^-3;                 
+
+                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map); 
+
+                                     case 'Sea Radio-Wave Propagation Loss'
+                                         tput_distance = srwpl(PL_target, ht, hr, freq);
+                                         tput_distance = tput_distance*10^-3;                 
+
+                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map); 
+                         end
+
+
+
+
+                     case 'Generic'    
+                         Qm = [2,4,6];
+                         Rb = ((RE_frame*Qm)/(10*10^-3)); 
+
+                         EbN0 = [EbN0_value(ber_target,'QPSK',channel_type),EbN0_value(ber_target,'16QAM',channel_type),EbN0_value(ber_target,'64QAM',channel_type)];
+                         SINR = EbN0.*(Rb/B_noise);
+                         SINR_db = 10*log10(SINR);
+
+                         Pr_min = SINR_db - Interf_Noise;
+                         PL_target = Ptx + G_ant - Cable_losses - Pr_min;
+
+                         x = node_con(tx_num).node_location.longi; 
+                         y = node_con(tx_num).node_location.lati;
+
+
+                         switch link_con(link_num).channel.path_loss_model
+
+                             case 'FSPL'
+
+                                 tput_distance = 10.^((PL_target-20*log10(freq*10^6)-32.44)/20);
+
+                                 %QPSK                 
+                                 handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+                                 %16QAM
+                                 handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+                                 %64QAM
+                                 handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+
+                             case '2-Ray'
+
+                                 tput_distance = [two_ray(PL_target(1), ht, hr, freq),two_ray(PL_target(2), ht, hr, freq),two_ray(PL_target(3), ht, hr, freq)];
+                                 tput_distance = tput_distance*10^-3;
+
+                                  %QPSK                 
+                                 handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+                                 %16QAM
+                                 handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+                                 %64QAM
+                                 handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);                
+
+                             case '3-Ray'
+                                 tput_distance = [three_ray(PL_target(1), ht, hr, freq),three_ray(PL_target(2), ht, hr, freq),three_ray(PL_target(3), ht, hr, freq)];
+                                 tput_distance = tput_distance*10^-3;                 
+
+                                 %QPSK                 
+                                 handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+                                 %16QAM
+                                 handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+                                 %64QAM
+                                 handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+
+                             case 'Sea Radio-Wave Propagation Loss'
+                                 tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq)];
+                                 tput_distance = tput_distance*10^-3;                 
+
+                                 %QPSK                 
+                                 handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+
+                                 %16QAM
+                                 handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+
+                                 %64QAM
+                                 handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                         end
+
+                     otherwise
+
+
+                 end
 
              case 2 %Prevailing Limit
                  
-                 % switch linktech
-%     case 'DSC'
+                 
+%                  switch link_con(link_num).technology 
+%     
+%                      case 'DSC'
 % 
-
-%         
-%     case 'LTE-A'
+%     
+%                      case 'LTE-A'
+%       
+%            
+%                      case 'NWR'
 % 
-       
+%    
+%                      case 'Generic'    
 %         
-%     case 'NWR'
-% 
-     
-%         
-%     otherwise
-
-% end
+%     
+%                      otherwise
+%                          
+%                          
+%                  end
                  
                  
       end
      
-    otherwise
-     errordlg('No configuration selected', 'Run')
+%     otherwise
+%      errordlg('No configuration selected', 'Run')
 end
 
 
@@ -719,55 +1248,115 @@ end
 pl_srwpl = d;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function ebno_out = EbN0_value(ber_target,mod_sch)
+function ebno_out = EbN0_value(ber_target,mod_sch,channel_type)
 
-switch mod_sch
+switch channel_type
     
-    case 'QPSK'
-        ber_target = 10^-3;
-        EbN0_range =0:0.001:30;
-        M = 4;
+    case 'AWGN'
+        switch mod_sch
+    
+            case 'QPSK'
+               
+                EbN0_range =0:0.001:30; %EbN0 in db
+                M = 4;
 
-        ber = berawgn(EbN0_range,'psk',M,'nondiff'); %returns the BER of uncoded QAM over an AWGN channel with coherent demodulation. The alphabet size, M, must be at least 4. 
+                ber = berawgn(EbN0_range,'psk',M,'nondiff'); %returns the BER of uncoded QAM over an AWGN channel with coherent demodulation. The alphabet size, M, must be at least 4. 
 
-        [~,i] = min(abs(ber-ber_target));
-        ebno_out = EbN0_range(i);
+                [~,i] = min(abs(ber-ber_target));
+                EbN0_dB = EbN0_range(i);
+                ebno_out = 10^(EbN0_dB/10); % linear output 
         
-    case '16QAM'
+            case '16QAM'
         
-        ber_target = 10^-3;
-        EbN0_range =0:0.001:35;
-        M = 16;
+                EbN0_range =0:0.001:35;
+                M = 16;
 
-        ber = berawgn(EbN0_range,'qam',M);
+                ber = berawgn(EbN0_range,'qam',M);
 
-        [~,i] = min(abs(ber-ber_target));
-        ebno_out = EbN0_range(i);
+                [~,i] = min(abs(ber-ber_target));
+                EbN0_dB = EbN0_range(i);
+                ebno_out = 10^(EbN0_dB/10);
         
-    case '64QAM'
-        ber_target = 10^-3;
-        EbN0_range =0:0.001:40;
-        M = 64;
+            case '64QAM'
+                EbN0_range =0:0.001:40;
+                M = 64;
 
-        ber = berawgn(EbN0_range,'qam',M);
+                ber = berawgn(EbN0_range,'qam',M);
 
-        [~,i] = min(abs(ber-ber_target));
-        ebno_out = EbN0_range(i);
+                [~,i] = min(abs(ber-ber_target));
+                EbN0_dB = EbN0_range(i);
+                ebno_out = 10^(EbN0_dB/10);
         
         
-    case 'FSK'  
+            case 'FSK'  
         
-        ber_target = 10^-3;
-        EbN0_range =0:0.01:31;
-        M = 2;
+                EbN0_range =0:0.01:31;
+                M = 2;
 
-        ber = berawgn(EbN0_range,'fsk',M,'coherent');%returns the BER of orthogonal uncoded FSK modulation over an AWGN channel. coherence is either 'coherent' for coherent demodulation or 'noncoherent' for noncoherent demodulation. M must be no greater than 64 for 'noncoherent'
+                ber = berawgn(EbN0_range,'fsk',M,'coherent');%returns the BER of orthogonal uncoded FSK modulation over an AWGN channel. coherence is either 'coherent' for coherent demodulation or 'noncoherent' for noncoherent demodulation. M must be no greater than 64 for 'noncoherent'
 
-        [~,i] = min(abs(ber-ber_target));
-        ebno_out = EbN0_range(i);
+                [~,i] = min(abs(ber-ber_target));
+                EbN0_dB = EbN0_range(i);
+                ebno_out = 10^(EbN0_dB/10);
          
+        end
+        
+    case 'Rayleigh'
+        switch mod_sch
+    
+            case 'QPSK'
+                EbN0_range =0:1:75; %EbN0 in db
+                M = 4;
+                divorder = 1;
+
+                ber = berfading(EbN0_range,'psk',M,divorder); %returns the BER of uncoded QAM over an AWGN channel with coherent demodulation. The alphabet size, M, must be at least 4. 
+
+                [~,i] = min(abs(ber-ber_target));
+                EbN0_dB = EbN0_range(i);
+                ebno_out = 10^(EbN0_dB/10);
+
+        
+            case '16QAM'
+                EbN0_range =0:1:80;
+                M = 16;
+                divorder = 1;
+
+                ber = berfading(EbN0_range,'qam',M,divorder);
+
+                [~,i] = min(abs(ber-ber_target));
+                EbN0_dB = EbN0_range(i);
+                ebno_out = 10^(EbN0_dB/10);
+        
+        
+            case '64QAM'
+                EbN0_range =0:1:85;
+                M = 64;
+                divorder = 1;
+
+                ber = berfading(EbN0_range,'qam',M,divorder);
+
+                [~,i] = min(abs(ber-ber_target));
+                EbN0_dB = EbN0_range(i);
+                ebno_out = 10^(EbN0_dB/10);
+
+        
+        
+            case 'FSK'  
+                EbN0_range =0:1:80;
+                M = 2;
+                divorder = 1;
+
+                ber = berfading(EbN0_range,'fsk',M,divorder,'coherent');%returns the BER of orthogonal uncoded FSK modulation over an AWGN channel. coherence is either 'coherent' for coherent demodulation or 'noncoherent' for noncoherent demodulation. M must be no greater than 64 for 'noncoherent'
+
+                [~,i] = min(abs(ber-ber_target));
+                EbN0_dB = EbN0_range(i);
+                ebno_out = 10^(EbN0_dB/10);
+                
+        end
         
 end
+        
+
 
 
 

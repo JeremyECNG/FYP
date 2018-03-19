@@ -629,6 +629,10 @@ switch node_tech_setting
     case 'NWR'
         
         set (handles.node_tech_edit_popupmenu, 'Value', 4)
+
+    case 'Generic'
+        
+        set (handles.node_tech_edit_popupmenu, 'Value', 5)
         
     otherwise
         errordlg('Error Loading Node Technology', 'Node Technology Selection Loading')

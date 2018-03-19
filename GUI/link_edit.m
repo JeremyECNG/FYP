@@ -22,7 +22,7 @@ function varargout = link_edit(varargin)
 
 % Edit the above text to modify the response to help link_edit
 
-% Last Modified by GUIDE v2.5 05-Mar-2018 13:13:11
+% Last Modified by GUIDE v2.5 12-Mar-2018 17:41:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -144,6 +144,8 @@ sav_link_con.channel.fading_margin = getappdata(0,'link_fading');
 
 sav_link_con.channel.interference_margin = getappdata(0,'link_interf');
 
+sav_link_con.channel.channel_type = getappdata(0, 'link_chan_typ');
+
 %Link Receiver Paramters
 sav_link_con.receiver.temperature = getappdata(0,'link_temp');
 
@@ -188,7 +190,7 @@ elseif isnan(sav_link_con.system_params.freq)||isnan(sav_link_con.channel.fading
         
     errordlg('Please fill all fields with valid content', 'Save')
     
-elseif strcmp('Select',sav_link_con.system_params.system_bandwidth)||strcmp('Select',sav_link_con.technology)||strcmp('Select',sav_link_con.node_selection.node1)||strcmp('Select',sav_link_con.node_selection.node2)||strcmp('Select',sav_link_con.node_selection.service)||strcmp('Select',sav_link_con.node_selection.ber)||strcmp('Select',sav_link_con.channel.path_loss_model)
+elseif strcmp('Select',sav_link_con.channel.channel_type)||strcmp('Select',sav_link_con.system_params.system_bandwidth)||strcmp('Select',sav_link_con.technology)||strcmp('Select',sav_link_con.node_selection.node1)||strcmp('Select',sav_link_con.node_selection.node2)||strcmp('Select',sav_link_con.node_selection.service)||strcmp('Select',sav_link_con.node_selection.ber)||strcmp('Select',sav_link_con.channel.path_loss_model)
         
     errordlg('Please make all necessary selections', 'Save')
 else
@@ -255,6 +257,8 @@ link_con(edit_ind).channel.fading_margin = sav_link_con.channel.fading_margin ;
 
 link_con(edit_ind).channel.interference_margin = sav_link_con.channel.interference_margin;
 
+link_con(edit_ind).channel.channel_type = sav_link_con.channel.channel_type;
+
 %Link Receiver Paramters
 link_con(edit_ind).receiver.temperature = sav_link_con.receiver.temperature;
 
@@ -301,6 +305,8 @@ setappdata(0, 'link_nam', link_con(item_num).link_name);
 link_tech_setting =link_con(item_num).technology ;
 setappdata(0, 'link_tech', link_con(item_num).technology);
 
+
+
 switch link_tech_setting
     
     case 'DSC'
@@ -315,6 +321,10 @@ switch link_tech_setting
         
         set (handles.technology_edit_popupmenu, 'Value', 4)
         
+    case 'Generic'
+        
+        set (handles.technology_edit_popupmenu, 'Value', 5)   
+        
     otherwise
         errordlg('Error Loading Link Technology', 'Link Technology Selection Loading')
     return;
@@ -325,6 +335,25 @@ setappdata(0, 'link_fading', link_con(item_num).channel.fading_margin);
 
 set(handles.interf_editing, 'String',link_con(item_num).channel.interference_margin);
 setappdata(0, 'link_interf', link_con(item_num).channel.interference_margin);
+
+link_chan_type = link_con(item_num).channel.channel_type;
+setappdata(0, 'link_chan_typ',link_con(item_num).channel.channel_type);
+
+switch link_chan_type
+    
+    case 'AWGN'
+        
+        set (handles.chan_type_edit_popupmenu, 'Value', 2)
+        
+    case 'Rayleigh'
+        
+        set (handles.chan_type_edit_popupmenu, 'Value', 3)
+                
+    otherwise
+        errordlg('Error Loading Channel Type', 'Channel Type Selection Loading')
+    return;
+end
+
 
 set(handles.temp_editing, 'String',link_con(item_num).receiver.temperature);
 setappdata(0, 'link_temp', link_con(item_num).receiver.temperature);
@@ -517,7 +546,11 @@ switch link_tech_setting
         bws = {'Select'};
         set(handles.system_bw_edit_popupmenu, 'String', bws);
         set(handles.system_bw_edit_popupmenu, 'Value', find((strcmp(link_sysbw_setting, bws)),1));
-      
+  
+    case 'Generic'
+        bws = {'Select', '1.4', '3', '5', '10', '15', '20'};
+        set(handles.system_bw_edit_popupmenu, 'String', bws);
+        set(handles.system_bw_edit_popupmenu, 'Value', find((strcmp(link_sysbw_setting, bws)),1));
         
     otherwise
         set(handles.system_bw_edit_popupmenu, 'String', 'Select');
@@ -716,37 +749,37 @@ set(handles.node2_edit_popupmenu, 'String', node_choices);
 set(handles.node2_edit_popupmenu, 'Value', 1);
 end
 
-switch linktech
-    case 'DSC'
-
-        mods = {'Select', 'FSK'};
-        set(handles.mod_sch_edit_popupmenu, 'String', mods);
-        set(handles.mod_sch_edit_popupmenu, 'Value', 1);
-        set(handles.coding_edit_popupmenu, 'String', 'Select');
-        set(handles.coding_edit_popupmenu, 'Value', 1);
-        
-    case 'LTE-A'
-
-        mods = {'Select','QPSK','16QAM','64QAM','256QAM'};
-        set(handles.mod_sch_edit_popupmenu, 'String', mods);
-        set(handles.mod_sch_edit_popupmenu, 'Value', 1);
-        set(handles.coding_edit_popupmenu, 'String', 'Select');
-        set(handles.coding_edit_popupmenu, 'Value', 1);        
-        
-    case 'NWR'
-
-        mods = {'Select','FSK'};
-        set(handles.mod_sch_edit_popupmenu, 'String', mods);
-        set(handles.mod_sch_edit_popupmenu, 'Value', 1);
-        set(handles.coding_edit_popupmenu, 'String', 'Select');
-        set(handles.coding_edit_popupmenu, 'Value', 1);        
-        
-    otherwise
-        set(handles.mod_sch_edit_popupmenu, 'String', 'Select');
-        set(handles.mod_sch_edit_popupmenu, 'Value', 1);
-        set(handles.coding_edit_popupmenu, 'String', 'Select');
-        set(handles.coding_edit_popupmenu, 'Value', 1);
-end
+% switch linktech
+%     case 'DSC'
+% 
+%         mods = {'Select', 'FSK'};
+%         set(handles.mod_sch_edit_popupmenu, 'String', mods);
+%         set(handles.mod_sch_edit_popupmenu, 'Value', 1);
+%         set(handles.coding_edit_popupmenu, 'String', 'Select');
+%         set(handles.coding_edit_popupmenu, 'Value', 1);
+%         
+%     case 'LTE-A'
+% 
+%         mods = {'Select','QPSK','16QAM','64QAM','256QAM'};
+%         set(handles.mod_sch_edit_popupmenu, 'String', mods);
+%         set(handles.mod_sch_edit_popupmenu, 'Value', 1);
+%         set(handles.coding_edit_popupmenu, 'String', 'Select');
+%         set(handles.coding_edit_popupmenu, 'Value', 1);        
+%         
+%     case 'NWR'
+% 
+%         mods = {'Select','FSK'};
+%         set(handles.mod_sch_edit_popupmenu, 'String', mods);
+%         set(handles.mod_sch_edit_popupmenu, 'Value', 1);
+%         set(handles.coding_edit_popupmenu, 'String', 'Select');
+%         set(handles.coding_edit_popupmenu, 'Value', 1);        
+%         
+%     otherwise
+%         set(handles.mod_sch_edit_popupmenu, 'String', 'Select');
+%         set(handles.mod_sch_edit_popupmenu, 'Value', 1);
+%         set(handles.coding_edit_popupmenu, 'String', 'Select');
+%         set(handles.coding_edit_popupmenu, 'Value', 1);
+% end
 
 % --- Executes during object creation, after setting all properties.
 function technology_edit_popupmenu_CreateFcn(hObject, eventdata, handles)
@@ -813,20 +846,27 @@ contents = cellstr(get(hObject,'String'));
 nodeone = contents{get(hObject,'Value')};
 setappdata(0, 'node_one', nodeone);
 
-current_list =  getappdata(0, 'node_list');
+node2_choice = getappdata(0, 'node_two');
 
-list_amt  = numel(current_list);
-choice_ind = 0;
-    for nodein = 1:list_amt 
-        if strcmp(nodeone,current_list(nodein))
+if strcmp(nodeone ,node2_choice)
+    errordlg('Please select two distinct nodes', 'Node Conflict')
+    set(handles.node1_popupmenu, 'Value', 1);
+end
 
-         else
-            choice_ind = choice_ind + 1; 
-            node_choices(choice_ind) = current_list(nodein);
-        end
-    end
-
-set(handles.node2_edit_popupmenu, 'String', node_choices);
+% current_list =  getappdata(0, 'node_list');
+% 
+% list_amt  = numel(current_list);
+% choice_ind = 0;
+%     for nodein = 1:list_amt 
+%         if strcmp(nodeone,current_list(nodein))
+% 
+%          else
+%             choice_ind = choice_ind + 1; 
+%             node_choices(choice_ind) = current_list(nodein);
+%         end
+%     end
+% 
+% set(handles.node2_edit_popupmenu, 'String', node_choices);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1243,12 +1283,37 @@ function system_bw_edit_popupmenu_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns system_bw_edit_popupmenu contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from system_bw_edit_popupmenu
 contents = cellstr(get(hObject,'String'));
-link_sysbw= contents{get(hObject,'Value')};
+link_sysbw= str2double(contents{get(hObject,'Value')});
 setappdata(0, 'link_sys_bw', link_sysbw);
 
 % --- Executes during object creation, after setting all properties.
 function system_bw_edit_popupmenu_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to system_bw_edit_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in chan_type_edit_popupmenu.
+function chan_type_edit_popupmenu_Callback(hObject, eventdata, handles)
+% hObject    handle to chan_type_edit_popupmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns chan_type_edit_popupmenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from chan_type_edit_popupmenu
+contents = cellstr(get(hObject,'String'));
+link_chantyp= contents{get(hObject,'Value')};
+setappdata(0, 'link_chan_typ', link_chantyp);
+
+% --- Executes during object creation, after setting all properties.
+function chan_type_edit_popupmenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to chan_type_edit_popupmenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
