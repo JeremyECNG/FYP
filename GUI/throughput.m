@@ -622,3 +622,238 @@ end
                                          handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);
                                          txt = ['\rightarrow'  num2str(phy_tput_frame(10)) ' Mbps'];
                                          handles.tput_text10 = text((x+tput_distance(10)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+                                         
+                                         %%
+                                                                                  %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                         
+%                                        handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+                                         handles.tput_text1 = text(handles.tput_plot1.XData(1),handles.tput_plot1.YData(1),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                         handles.tput_text2 = text(handles.tput_plot2.XData(10),handles.tput_plot2.YData(10),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 23);
+
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                         handles.tput_text3 = text(handles.tput_plot3.XData(20),handles.tput_plot3.YData(20),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 45);
+
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(4)) ' Mbps'];
+                                         handles.tput_text4 = text(handles.tput_plot4.XData(30),handles.tput_plot4.YData(30),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 90);
+
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(5) ) ' Mbps'];
+                                         handles.tput_text5 = text(handles.tput_plot5.XData(40),handles.tput_plot5.YData(40),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 112);
+
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(6)) ' Mbps'];
+                                         handles.tput_text6 = text(handles.tput_plot6.XData(50),handles.tput_plot6.YData(50),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 135);
+
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map); 
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(7)) ' Mbps'];
+                                         handles.tput_text7 = text(handles.tput_plot7.XData(60),handles.tput_plot7.YData(60),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 180);
+
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(8)) ' Mbps'];
+                                         handles.tput_text8 = text(handles.tput_plot8.XData(70),handles.tput_plot8.YData(70),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 203);
+
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(9)) ' Mbps'];
+                                         handles.tput_text9 = text(handles.tput_plot9.XData(80),handles.tput_plot9.YData(80),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 225);
+
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(10)) ' Mbps'];
+                                         handles.tput_text10 = text(handles.tput_plot10.XData(90),handles.tput_plot10.YData(90),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 250);
+
+                                      
+                                         %%
+                                         
+                                                                                 %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(1)) ' Mbps'];                                    
+                                         handles.tput_text1 = text(handles.tput_plot1.XData(1),handles.tput_plot1.YData(1),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+%                                          handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                         handles.tput_text2 = text(handles.tput_plot2.XData(10),handles.tput_plot2.YData(10),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 23);
+
+                                         colour = 'g'; 
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                         handles.tput_text3 = text(handles.tput_plot3.XData(20),handles.tput_plot3.YData(20),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 45);
+
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(4)) ' Mbps'];
+                                         handles.tput_text4 = text(handles.tput_plot4.XData(30),handles.tput_plot4.YData(30),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 90);
+
+                                         colour = 'c'; 
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(5) ) ' Mbps'];
+                                         handles.tput_text5 = text(handles.tput_plot5.XData(40),handles.tput_plot5.YData(40),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 112);
+
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(6)) ' Mbps'];
+                                         handles.tput_text6 = text(handles.tput_plot6.XData(50),handles.tput_plot6.YData(50),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 135);
+
+                                         colour = 'm'; 
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(7)) ' Mbps'];
+                                         handles.tput_text7 = text(handles.tput_plot7.XData(60),handles.tput_plot7.YData(60),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 180);
+
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(8)) ' Mbps'];
+                                         handles.tput_text8 = text(handles.tput_plot8.XData(70),handles.tput_plot8.YData(70),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 203);
+
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(9)) ' Mbps'];
+                                         handles.tput_text9 = text(handles.tput_plot9.XData(80),handles.tput_plot9.YData(80),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 225);
+
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(10)) ' Mbps'];
+                                         handles.tput_text10 = text(handles.tput_plot10.XData(90),handles.tput_plot10.YData(90),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 250);
+                                         
+                                         
+%                                          i_am_legend = legend(handles.map,[plotted_range,handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{'Power Limited Range','BPSK 1/2','BPSK 3/4','QPSK 1/2','QPSK 3/4','16QAM 1/2','16QAM 3/4','64QAM 1/2','64QAM 2/3','64QAM 3/4','64QAM 5/6'})
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{'BPSK 1/2','BPSK 3/4','QPSK 1/2','QPSK 3/4','16QAM 1/2','16QAM 3/4','64QAM 1/2','64QAM 2/3','64QAM 3/4','64QAM 5/6'})
+
+
+                                         %%
+                                         
+                                                                                  colour = 'y'; 
+                                         %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
+                                         txt = ['\leftarrow'  num2str(phy_tput_frame(1)) ' Mbps' ' - BPSK 1/2'];                                    
+                                         handles.tput_text1 = text(handles.tput_plot1.XData(25),handles.tput_plot1.YData(25),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 90);
+%                                          handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+                                         
+                                         colour = [216/255 133/255 49/255]; 
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
+                                         txt = ['\leftarrow' '   ' num2str(phy_tput_frame(2)) ' Mbps' ' - BPSK 3/4'];
+                                         handles.tput_text2 = text(handles.tput_plot2.XData(20),handles.tput_plot2.YData(20),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 72);
+
+                                         colour = [7/255 164/255 18/255]; 
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
+                                         txt = ['\leftarrow'  '   ' num2str(phy_tput_frame(3)) ' Mbps' ' - QPSK 1/2'];
+                                         handles.tput_text3 = text(handles.tput_plot3.XData(15),handles.tput_plot3.YData(15),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 54);
+
+                                         colour = [116/255 11/255 128/255]; 
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
+                                         txt = ['\leftarrow' '       ' num2str(phy_tput_frame(4)) ' Mbps' ' - QPSK 3/4'];
+                                         handles.tput_text4 = text(handles.tput_plot4.XData(10),handles.tput_plot4.YData(10),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 36);
+
+                                         colour = 'c'; 
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
+                                         txt = ['\leftarrow' '       ' num2str(phy_tput_frame(5) ) ' Mbps' ' - 16QAM 1/2'];
+                                         handles.tput_text5 = text(handles.tput_plot5.XData(1),handles.tput_plot5.YData(1),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 0);
+
+                                         colour = 'b'; 
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
+                                         txt = ['\leftarrow' '       ' num2str(phy_tput_frame(6)) ' Mbps' ' - 16QAM 3/4'];
+                                         handles.tput_text6 = text(handles.tput_plot6.XData(95),handles.tput_plot6.YData(95),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', -36);
+
+                                         colour = 'm'; 
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
+                                         txt = ['\leftarrow' '       ' num2str(phy_tput_frame(7)) ' Mbps' ' - 64QAM 1/2'];
+                                         handles.tput_text7 = text(handles.tput_plot7.XData(90),handles.tput_plot7.YData(90),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', -54);
+
+                                         colour = 'g';
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
+                                         txt = ['\leftarrow' '       ' num2str(phy_tput_frame(8)) ' Mbps' ' - 64QAM 2/3'];
+                                         handles.tput_text8 = text(handles.tput_plot8.XData(85),handles.tput_plot8.YData(85),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', -72);
+
+                                         colour = [243/255 197/255 91/255]; 
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
+                                         txt = ['\leftarrow' '       ' num2str(phy_tput_frame(9)) ' Mbps' ' - 64QAM 3/4'];
+                                         handles.tput_text9 = text(handles.tput_plot9.XData(80),handles.tput_plot9.YData(80),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', -90);
+
+                                         colour = [127/255 0/255 255/255];
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
+                                         txt = ['\leftarrow' '       ' num2str(phy_tput_frame(10)) ' Mbps' ' - 64QAM 5/6'];
+                                         handles.tput_text10 = text(handles.tput_plot10.XData(75),handles.tput_plot10.YData(75),txt, 'HorizontalAlignment','left','Color','white','FontSize',14,'Rotation', 250);
+                                         
+ %%
+ 
+                                          set(handles.range_display_text, 'String',tput_distance(1)) 
+                                         
+                                         colour = 'y'; 
+                                         %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
+                                         txt1 = [ num2str(phy_tput_frame(1)) ' Mbps' ' (BPSK 1/2)']; 
+                                         
+                                         colour = [216/255 133/255 49/255]; 
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
+                                         txt2 = [num2str(phy_tput_frame(2)) ' Mbps' ' (BPSK 3/4)'];
+
+                                         colour = [7/255 164/255 18/255]; 
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
+                                         txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (QPSK 1/2)'];
+
+                                         colour = [116/255 11/255 128/255]; 
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
+                                         txt4 = [num2str(phy_tput_frame(4)) ' Mbps' ' (QPSK 3/4)'];
+
+                                         colour = 'c'; 
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
+                                         txt5 = [num2str(phy_tput_frame(5)) ' Mbps' ' (16QAM 1/2)'];
+
+                                         colour = 'b'; 
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
+                                         txt6 = [num2str(phy_tput_frame(6)) ' Mbps' ' (16QAM 3/4)'];
+
+                                         colour = 'm'; 
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
+                                         txt7 = [num2str(phy_tput_frame(7)) ' Mbps' ' (64QAM 1/2)'];
+
+                                         colour = 'g';
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
+                                         txt8 = [num2str(phy_tput_frame(8)) ' Mbps' ' (64QAM 2/3)'];
+
+                                         colour = [243/255 197/255 91/255]; 
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
+                                         txt9 = [num2str(phy_tput_frame(9)) ' Mbps' ' (64QAM 3/4)'];
+
+                                         colour = [127/255 0/255 255/255];
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
+                                         txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
+                                     
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10})
+                                         title(i_am_legend,'LTE PHY Throuput per MCS')                                         
