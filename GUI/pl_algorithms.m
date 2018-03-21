@@ -1,8 +1,8 @@
 %Sea Radio-Wave Propagation Loss
 
-PL_target = 200; %126.6910;
+PL_target = [-100.201575143161]; %126.6910;
 
-ht = 30;
+ht = 227;
 hr = 2;
 freq = 1910; %1910; %MHz
 lambda = physconst('LightSpeed')/(freq*10^6);
@@ -17,7 +17,8 @@ PL_earth = 0;
 alpha = 5;
 PL_sea_path = PL_0 + PL_1 + PL_boat + PL_earth + alpha;
 
-d_losh = (sqrt(2*(6.378*(10^6))*(ht)));
+R = 6.378*(10^6);
+d_losh = (sqrt(2*(R)*(ht))+sqrt(2*(R)*(hr)));
 
 fin_flag = 0;
 
@@ -82,7 +83,7 @@ while (fin_flag == 0)
         fin_flag = 1;
     end
 end
-range_SRWPL = d;
+range_SRWPL = d/(10^3);
 FSPL = 20*log10(d*10^-3)+ 20*log10(freq)+32.44; % f(MHz)  & d(km)
 PL_0 = FSPL;
 PL_1 = 10*log10(4*sin((2*pi*hr*ht)/(lambda*d))^2);

@@ -22,7 +22,7 @@ function varargout = node_edit(varargin)
 
 % Edit the above text to modify the response to help node_edit
 
-% Last Modified by GUIDE v2.5 13-Feb-2018 21:10:55
+% Last Modified by GUIDE v2.5 01-Mar-2018 15:21:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -107,8 +107,9 @@ if exist('nodesave.mat')
 end
 
 
-location_flag = get(handles.node_location_selection, 'UserData');
-
+location_flag = get(handles.node_location_edit, 'UserData');
+ 
+ 
 %Node Name
 sav_node_con.node_name = getappdata(0,'node_name');
 
@@ -151,7 +152,7 @@ sav_node_con.equipment_params.noise_fig = getappdata(0,'noise_fig');
 
 sav_node_con.equipment_params.tx_pwr = getappdata(0,'tx_power');
 
-sav_node_con.equipment_params.rx_pwr = getappdata(0,'rx_power');
+% sav_node_con.equipment_params.rx_pwr = getappdata(0,'rx_power');
 
 sav_node_con.equipment_params.tx_ant_gain = getappdata(0,'txant_gain');
 
@@ -162,9 +163,8 @@ sav_node_con.equipment_params.tx_cable_loss = getappdata(0,'txcab_loss');
 sav_node_con.equipment_params.rx_cable_loss = getappdata(0,'rxcab_loss');
 
 
+set(handles.node_location_edit, 'UserData', 0);
 
-% set(handles.node_type_selection, 'UserData', 0);
-% set(handles.node_location_selection, 'UserData', 0);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Placing of node on the map 
@@ -201,12 +201,12 @@ if  getappdata(0,'nameflag') == 1
     errordlg('A node of this name already exists please change the name of your entry', 'Name Conflict')
     setappdata(0,'nameflag',0)
     
-elseif  isempty(sav_node_con.node_name)||isempty(sav_node_con.node_location.lati)||isempty(sav_node_con.node_location.longi)||isempty(sav_node_con.equipment_params.technology)||isempty(sav_node_con.equipment_params.noise_fig)||isempty(sav_node_con.equipment_params.tx_pwr)||isempty(sav_node_con.equipment_params.rx_pwr)||isempty(sav_node_con.equipment_params.tx_ant_gain)||isempty(sav_node_con.equipment_params.rx_ant_gain)||isempty(sav_node_con.equipment_params.tx_cable_loss)||isempty(sav_node_con.equipment_params.rx_cable_loss)
+elseif  isempty(sav_node_con.node_name)||isempty(sav_node_con.node_location.lati)||isempty(sav_node_con.node_location.longi)||isempty(sav_node_con.equipment_params.technology)||isempty(sav_node_con.equipment_params.noise_fig)||isempty(sav_node_con.equipment_params.tx_pwr)||isempty(sav_node_con.equipment_params.tx_ant_gain)||isempty(sav_node_con.equipment_params.rx_ant_gain)||isempty(sav_node_con.equipment_params.tx_cable_loss)||isempty(sav_node_con.equipment_params.rx_cable_loss)
         
     errordlg('Please fill all fields', 'Save')
     %(isempty(sav_node_con.node_location.lati)&&(strcmp('Specify Co-ordinates',sav_node_con.node_location.placement_type)))
     
-elseif  isnan(sav_node_con.node_location.lati)||isnan(sav_node_con.node_location.longi)||isnan(sav_node_con.equipment_params.noise_fig)||isnan(sav_node_con.equipment_params.tx_pwr)||isnan(sav_node_con.equipment_params.rx_pwr)||isnan(sav_node_con.equipment_params.tx_ant_gain)||isnan(sav_node_con.equipment_params.rx_ant_gain)||isnan(sav_node_con.equipment_params.tx_cable_loss)||isnan(sav_node_con.equipment_params.rx_cable_loss)
+elseif  isnan(sav_node_con.node_location.lati)||isnan(sav_node_con.node_location.longi)||isnan(sav_node_con.equipment_params.noise_fig)||isnan(sav_node_con.equipment_params.tx_pwr)||isnan(sav_node_con.equipment_params.tx_ant_gain)||isnan(sav_node_con.equipment_params.rx_ant_gain)||isnan(sav_node_con.equipment_params.tx_cable_loss)||isnan(sav_node_con.equipment_params.rx_cable_loss)
         
     errordlg('Please fill all fields with valid content', 'Save')
 else
@@ -254,7 +254,7 @@ node_con(edit_ind).equipment_params.noise_fig = sav_node_con.equipment_params.no
 
 node_con(edit_ind).equipment_params.tx_pwr = sav_node_con.equipment_params.tx_pwr;
 
-node_con(edit_ind).equipment_params.rx_pwr = sav_node_con.equipment_params.rx_pwr;
+% node_con(edit_ind).equipment_params.rx_pwr = sav_node_con.equipment_params.rx_pwr;
 
 node_con(edit_ind).equipment_params.tx_ant_gain = sav_node_con.equipment_params.tx_ant_gain;
 
@@ -629,6 +629,10 @@ switch node_tech_setting
     case 'NWR'
         
         set (handles.node_tech_edit_popupmenu, 'Value', 4)
+
+    case 'Generic'
+        
+        set (handles.node_tech_edit_popupmenu, 'Value', 5)
         
     otherwise
         errordlg('Error Loading Node Technology', 'Node Technology Selection Loading')
@@ -641,8 +645,8 @@ setappdata(0, 'noise_fig', node_con(item_num).equipment_params.noise_fig);
 set(handles.tx_power_editing, 'String', node_con(item_num).equipment_params.tx_pwr);
 setappdata(0, 'tx_power', node_con(item_num).equipment_params.tx_pwr);
 
-set(handles.rx_power_editing, 'String', node_con(item_num).equipment_params.rx_pwr);
-setappdata(0, 'rx_power', node_con(item_num).equipment_params.rx_pwr);
+% set(handles.rx_power_editing, 'String', node_con(item_num).equipment_params.rx_pwr);
+% setappdata(0, 'rx_power', node_con(item_num).equipment_params.rx_pwr);
 
 set(handles.tx_ant_gain_editing, 'String', node_con(item_num).equipment_params.tx_ant_gain);
 setappdata(0, 'txant_gain', node_con(item_num).equipment_params.tx_ant_gain);
@@ -707,7 +711,7 @@ function node_location_edit_SelectionChangedFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
- set(handles.node_location_edit, 'UserData', 1);
+set(handles.node_location_edit, 'UserData', 1);
         
 switch eventdata.Source.SelectedObject.Tag
     
@@ -822,5 +826,3 @@ if (isempty(h_nodec))
 else
   figure(h_nodec);
 end
-
-

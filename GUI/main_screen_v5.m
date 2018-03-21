@@ -303,8 +303,41 @@ switch display_flag %Variable for determining whether a node or link is to be di
                  case 'Mobile at Sea'
                      
                      h_ves = 2; %Vessel selected to be maximum 2m 
+                     
+                     switch node_con(rx_num).node_type
+                         
+                         case 'Mobile at Sea'
+                             
+                             h_2 = h_ves ;
+                             
+                         case 'Tower Mounted'
+                             
+                             if exist('towers.mat')
+                         
+                                 load('towers.mat')
+                         
+                                 if exist('tower_tnt')
 
-                     d_losh = (sqrt(2*R*h_ves))/(10^3); %answer in km
+                                     maxi = numel(tower_tnt);
+
+                                     tower_cords = zeros(maxi,2);
+
+                             for elements = 1:maxi
+
+                                 tower_cords(elements,:) = [tower_tnt(elements).Lon,tower_tnt(elements).Lat];
+                             end
+                             
+                             user_cords = [node_con(rx_num).node_location.longi  ,node_con(rx_num).node_location.lati];
+
+                                euclidean_distances = sqrt(sum(bsxfun(@minus, tower_cords, user_cords).^2,2));
+                                closest_tower = tower_cords(find(euclidean_distances==min(euclidean_distances)),:);
+
+                                h_2 = tower_tnt(find((ismember(tower_cords,closest_tower )),1)).AntennaHeight; %Height of Closest tower                                    
+                                 end
+                             end
+                     end
+
+                     d_losh = (sqrt(2*R*h_ves)+sqrt(2*R*h_2))/(10^3); %answer in km
 
                      setappdata(0,'range_dist',d_losh)
                      setappdata(0,'long_cordi',node_con(tx_num).node_location.longi); 
@@ -313,10 +346,10 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                      euclidean_los = sqrt(sum(bsxfun(@minus, tx_cords, rx_cords).^2,2)); %find direct distance between tx and rx to find if rx is in range of tx by comparing the link lenght to the LOSH distance(radius)
                      if euclidean_los<d_losh
-                         range_flag = 1;                         
+                         range_flag = 1;   %Signal if in range or out of range                      
                      end
 
-                     %Compute Throughput 
+                     %Compute Throughput? 
                      
                  case 'Tower Mounted'
                      
@@ -341,8 +374,9 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                 closest_tower = tower_cords(find(euclidean_distances==min(euclidean_distances)),:);
 
                                 h_bs = tower_tnt(find((ismember(tower_cords,closest_tower )),1)).AntennaHeight; %Height of Closest tower
+                                h_ves = 2; 
 
-                                d_losh = (sqrt(2*R*h_bs))/(10^3); %answer in km
+                                d_losh = (sqrt(2*R*h_bs)+sqrt(2*R*h_ves))/(10^3); %answer in km
                                 setappdata(0,'range_dist',d_losh)
                                 setappdata(0,'long_cordi',closest_tower(:,1)); 
                                 setappdata(0,'lat_cordi',closest_tower(:,2));
@@ -468,7 +502,7 @@ switch display_flag %Variable for determining whether a node or link is to be di
                      k = physconst('Boltzmann');
                      T = link_con(link_num).receiver.temperature;
                      Nt = k*T*B_noise;
-                     Nt_db =  10*log10(Nt);   
+                     Nt_db =  10*log10(Nt)+30;   
     
                  case 'LTE-A'
                      B_sys = link_con(link_num).system_params.system_bandwidth;
@@ -511,33 +545,13 @@ switch display_flag %Variable for determining whether a node or link is to be di
                      k = physconst('Boltzmann');
                      T = link_con(link_num).receiver.temperature;
                      Nt = k*T*B_noise;
-                     Nt_db =  10*log10(Nt);      
+                     Nt_db =  10*log10(Nt)+30;      
            
 
                  case 'NWR'
                      B_sys = link_con(link_num).system_params.system_bandwidth;
                      set(handles.freq_disp_text, 'String', B_sys);
-%                      switch B_sys
-% 
-%                          case '1.4'
-%                              PDSCH_RE_frame = 4912; %Extended CP, CFI = 3, BW = 1.4 MHz
-% 
-%                          case '3'
-%                              PDSCH_RE_frame = 14812; %Extended CP, CFI = 3
-% 
-%                          case '5'
-%                              PDSCH_RE_frame = 25012; %Extended CP, CFI = 3
-% 
-%                          case '10'
-%                              PDSCH_RE_frame = 50512; %Extended CP, CFI = 3
-% 
-%                          case '15'
-%                              PDSCH_RE_frame = 76012; %Extended CP, CFI = 3
-% 
-%                          case '20'
-%                              PDSCH_RE_frame = 101512; %Extended CP, CFI = 3
-% 
-%                      end
+                     
 
                      Qm = 2;
                      datarate = 520.83; 
@@ -553,7 +567,7 @@ switch display_flag %Variable for determining whether a node or link is to be di
                      k = physconst('Boltzmann');
                      T = link_con(link_num).receiver.temperature;
                      Nt = k*T*B_noise;
-                     Nt_db =  10*log10(Nt);    
+                     Nt_db =  10*log10(Nt)+30;    
    
                  case 'Generic'    
                      B_sys = link_con(link_num).system_params.system_bandwidth;
@@ -594,7 +608,7 @@ switch display_flag %Variable for determining whether a node or link is to be di
                      k = physconst('Boltzmann');
                      T = link_con(link_num).receiver.temperature;
                      Nt = k*T*B_noise;
-                     Nt_db =  10*log10(Nt);                                
+                     Nt_db =  10*log10(Nt)+30;                                
                      
              end
              
@@ -608,7 +622,7 @@ switch display_flag %Variable for determining whether a node or link is to be di
              
              Interf_Noise = Nt_db+Nf+If_margin+fad_margin;
              
-             Pr_min = SINR_db - Interf_Noise;
+             Pr_min = SINR_db + Interf_Noise;
              
              set(handles.rx_sens_text, 'String',Pr_min)
              set(handles.ber_display_text, 'String',link_con(link_num).node_service.ber) 
@@ -634,7 +648,7 @@ switch display_flag %Variable for determining whether a node or link is to be di
                        set(handles.path_loss_disp_text, 'String', link_con(link_num).channel.path_loss_model);
                        %Path_Loss = Ptx + G_ant - Cable_losses - Prx;
                        
-                       plim_distance = 10^((PL_target-20*log10(freq*10^6)-32.44)/20);
+                       plim_distance = 10^((PL_target-20*log10(freq)-32.44)/20);
                        
                        plotted_range = range_plot(node_con(tx_num).node_location.longi  ,node_con(tx_num).node_location.lati  ,plim_distance,handles.map);
                        
@@ -678,19 +692,24 @@ switch display_flag %Variable for determining whether a node or link is to be di
                          EbN0 = EbN0_value(ber_target,mod_sch,channel_type);
                          SINR = EbN0*(Rb/B_noise);
                          SINR_db = 10*log10(SINR);
-                         Pr_min = SINR_db - Interf_Noise;
+                         Pr_min = SINR_db + Interf_Noise;
                          PL_target = Ptx + G_ant - Cable_losses - Pr_min;
                          x = node_con(tx_num).node_location.longi; 
                          y = node_con(tx_num).node_location.lati;
+                         
+                         dsc_throughput = 1200;
 
                          switch link_con(link_num).channel.path_loss_model
 
                                      case 'FSPL'
 
-                                         tput_distance = 10^((PL_target-20*log10(freq*10^6)-32.44)/20);
+                                         tput_distance = 10^((PL_target-20*log10(freq)-32.44)/20);
 
 
                                          handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map);
+                                         txt = ['\rightarrow'  num2str(dsc_throughput) ' bps'];
+                                         handles.tput_text1 = text((x+tput_distance),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+
 
 
                                      case '2-Ray'
@@ -698,35 +717,76 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                          tput_distance = two_ray(PL_target, ht, hr, freq);
                                          tput_distance = tput_distance*10^-3;
 
-                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map);               
+                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map); 
+                                         txt = ['\rightarrow'  num2str(dsc_throughput) ' bps'];
+                                         handles.tput_text1 = text((x+tput_distance),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+
+
 
                                      case '3-Ray'
                                          tput_distance = three_ray(PL_target, ht, hr, freq);
                                          tput_distance = tput_distance*10^-3;                 
 
                                          handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map); 
+                                         txt = ['\rightarrow'  num2str(dsc_throughput) ' bps'];
+                                         handles.tput_text1 = text((x+tput_distance),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+
+
 
                                      case 'Sea Radio-Wave Propagation Loss'
                                          tput_distance = srwpl(PL_target, ht, hr, freq);
                                          tput_distance = tput_distance*10^-3;                 
 
                                          handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map); 
+                                         txt = ['\rightarrow'  num2str(dsc_throughput) ' bps'];
+                                         handles.tput_text1 = text((x+tput_distance),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+
+
                          end
 
 
 
                      case 'LTE-A'
+                         
+                         B_sys = link_con(link_num).system_params.system_bandwidth;
+                         B_sys = num2str(B_sys);
+                         switch B_sys
+
+
+                             case '1.4'
+                                 PDSCH_RE_frame = 4912; %Extended CP, CFI = 3, BW = 1.4 MHz
+
+                             case '3'
+                                 PDSCH_RE_frame = 14812; %Extended CP, CFI = 3
+
+                             case '5'
+                                 PDSCH_RE_frame = 25012; %Extended CP, CFI = 3
+
+                             case '10'
+                                 PDSCH_RE_frame = 50512; %Extended CP, CFI = 3
+
+                             case '15'
+                                 PDSCH_RE_frame = 76012; %Extended CP, CFI = 3
+
+                             case '20'
+                                 PDSCH_RE_frame = 101512; %Extended CP, CFI = 3
+                         end
+                         
+
 
                          switch link_con(link_num).node_service.ber
 
                              case '10^-3'
                                  Qm = [1,1,2,2,4,4,6,6,6,6];
-                                 code = ['1/2','3/4','1/2','3/4','1/2','3/4','1/2','2/3','3/4','5/6'];
+                                 code = ["1/2","3/4","1/2","3/4","1/2","3/4","1/2","2/3","3/4","5/6"];
                                  %Rb = ((RE_frame*Qm)/(10*10^-3)); 
                                  %EbN0 = [EbN0_value(ber_target,'QPSK',channel_type),EbN0_value(ber_target,'16QAM',channel_type),EbN0_value(ber_target,'64QAM',channel_type)];
 
                                  %SINR = EbN0.*(Rb/B_noise);         
                                  %SINR_db = 10*log10(SINR); 
+                                 code_rate = [1/2,3/4,1/2,3/4,1/2,3/4,1/2,2/3,3/4,5/6];
+                                 phy_tput_frame = ((((PDSCH_RE_frame*Qm)/(10*10^-3))).*code_rate)/10^6; %Mbps
+                                 phy_tput_frame  = round(phy_tput_frame,2);
                                  switch channel_type
                                      
                                      case 'AWGN'
@@ -734,7 +794,8 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                      case 'Rayleigh'
                                          SINR_db = [14.54,19.16,17.54,22.16,23.6,28.5,26.36,30.84,31.96,33.08];                                       
                                  end
-                                 Pr_min = SINR_db - Interf_Noise;        
+                                 
+                                 Pr_min = SINR_db + Interf_Noise;        
                                  PL_target = Ptx + G_ant - Cable_losses - Pr_min;                
                                  x = node_con(tx_num).node_location.longi;          
                                  y = node_con(tx_num).node_location.lati;
@@ -743,37 +804,59 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                      case 'FSPL'
 
-                                         tput_distance = 10.^((PL_target-20*log10(freq*10^6)-32.44)/20);
+                                         tput_distance = 10.^((PL_target-20*log10(freq)-32.44)/20);
 
                                          %BPSK 1/2                                 
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                         
+%                                        handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+                                         handles.tput_text1 = text(handles.tput_plot1.XData(10),handles.tput_plot1.YData(10),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %BPSK 3/4 
                                          handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                         handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %QPSK 1/2             
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                         handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %QPSK 3/4                                 
                                          handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(4)) ' Mbps'];
+                                         handles.tput_text4 = text((x+tput_distance(4)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %16QAM 1/2  
                                          handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(5) ) ' Mbps'];
+                                         handles.tput_text5 = text((x+tput_distance(5)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %16QAM 3/4               
                                          handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(6)) ' Mbps'];
+                                         handles.tput_text6 = text((x+tput_distance(6)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 1/2                                 
-                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map);                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map); 
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(7)) ' Mbps'];
+                                         handles.tput_text7 = text((x+tput_distance(7)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 2/3 
                                          handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(8)) ' Mbps'];
+                                         handles.tput_text8 = text((x+tput_distance(8)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 3/4                 
                                          handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(9)) ' Mbps'];
+                                         handles.tput_text9 = text((x+tput_distance(9)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 5/6                 
                                          handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(10)) ' Mbps'];
+                                         handles.tput_text10 = text((x+tput_distance(10)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                      case '2-Ray'
 
@@ -782,33 +865,54 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                          %BPSK 1/2                                 
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                         handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %BPSK 3/4 
                                          handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                         handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %QPSK 1/2             
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                         handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %QPSK 3/4                                 
                                          handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(4)) ' Mbps'];
+                                         handles.tput_text4 = text((x+tput_distance(4)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %16QAM 1/2  
                                          handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(5)) ' Mbps'];
+                                         handles.tput_text5 = text((x+tput_distance(5)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %16QAM 3/4               
                                          handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(6)) ' Mbps'];
+                                         handles.tput_text6 = text((x+tput_distance(6)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 1/2                                 
-                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map);                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map);    
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(7)) ' Mbps'];
+                                         handles.tput_text7 = text((x+tput_distance(7)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 2/3 
                                          handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(8)) ' Mbps'];
+                                         handles.tput_text8 = text((x+tput_distance(8)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 3/4                 
                                          handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(9)) ' Mbps'];
+                                         handles.tput_text9 = text((x+tput_distance(9)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 5/6                 
-                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);               
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);       
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(10)) ' Mbps'];
+                                         handles.tput_text10 = text((x+tput_distance(10)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+                                         
 
                                      case '3-Ray'
                                          tput_distance = [three_ray(PL_target(1), ht, hr, freq),three_ray(PL_target(2), ht, hr, freq),three_ray(PL_target(3), ht, hr, freq),three_ray(PL_target(4), ht, hr, freq),three_ray(PL_target(5), ht, hr, freq),three_ray(PL_target(6), ht, hr, freq),three_ray(PL_target(7), ht, hr, freq),three_ray(PL_target(8), ht, hr, freq),three_ray(PL_target(9), ht, hr, freq),three_ray(PL_target(10), ht, hr, freq)];
@@ -816,33 +920,53 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                          %BPSK 1/2                                 
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                         handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %BPSK 3/4 
                                          handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                         handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %QPSK 1/2             
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                         handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %QPSK 3/4                                 
                                          handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(4)) ' Mbps'];
+                                         handles.tput_text4 = text((x+tput_distance(4)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %16QAM 1/2  
                                          handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(5)) ' Mbps'];
+                                         handles.tput_text5 = text((x+tput_distance(5)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %16QAM 3/4               
                                          handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(6)) ' Mbps'];
+                                         handles.tput_text6 = text((x+tput_distance(6)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 1/2                                 
-                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map);                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map);    
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(7)) ' Mbps'];
+                                         handles.tput_text7 = text((x+tput_distance(7)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 2/3 
                                          handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(8)) ' Mbps'];
+                                         handles.tput_text8 = text((x+tput_distance(8)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 3/4                 
                                          handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(9)) ' Mbps'];
+                                         handles.tput_text9 = text((x+tput_distance(9)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 5/6                 
                                          handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(10)) ' Mbps'];
+                                         handles.tput_text10 = text((x+tput_distance(10)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                      case 'Sea Radio-Wave Propagation Loss'
                                          tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq),srwpl(PL_target(4), ht, hr, freq),srwpl(PL_target(5), ht, hr, freq),srwpl(PL_target(6), ht, hr, freq),srwpl(PL_target(7), ht, hr, freq),srwpl(PL_target(8), ht, hr, freq),srwpl(PL_target(9), ht, hr, freq),srwpl(PL_target(10), ht, hr, freq)];
@@ -850,33 +974,53 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                          %BPSK 1/2                                 
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                         handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %BPSK 3/4 
                                          handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                         handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %QPSK 1/2             
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                         handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %QPSK 3/4                                 
                                          handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(4)) ' Mbps'];
+                                         handles.tput_text4 = text((x+tput_distance(4)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %16QAM 1/2  
                                          handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(5)) ' Mbps'];
+                                         handles.tput_text5 = text((x+tput_distance(5)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %16QAM 3/4               
                                          handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(6)) ' Mbps'];
+                                         handles.tput_text6 = text((x+tput_distance(6)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 1/2                                 
-                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map);                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map);    
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(7)) ' Mbps'];
+                                         handles.tput_text7 = text((x+tput_distance(7)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 2/3 
                                          handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(8)) ' Mbps'];
+                                         handles.tput_text8 = text((x+tput_distance(8)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 3/4                 
                                          handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(9)) ' Mbps'];
+                                         handles.tput_text9 = text((x+tput_distance(9)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM 5/6                 
                                          handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(10)) ' Mbps'];
+                                         handles.tput_text10 = text((x+tput_distance(10)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
                                  end 
 
                              otherwise
@@ -887,41 +1031,55 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                  SINR = EbN0.*(Rb/B_noise);         
                                  SINR_db = 10*log10(SINR);                  
-                                 Pr_min = SINR_db - Interf_Noise;        
+                                 Pr_min = SINR_db + Interf_Noise;        
                                  PL_target = Ptx + G_ant - Cable_losses - Pr_min;                
                                  x = node_con(tx_num).node_location.longi;          
                                  y = node_con(tx_num).node_location.lati;
+                                 
+                                 phy_tput_frame = ((PDSCH_RE_frame*Qm)/(10*10^-3))/10^6;
 
                                  switch link_con(link_num).channel.path_loss_model
 
                                      case 'FSPL'
 
-                                         tput_distance = 10.^((PL_target-20*log10(freq*10^6)-32.44)/20);
+                                         tput_distance = 10.^((PL_target-20*log10(freq)-32.44)/20);
 
                                          %QPSK                                  
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                         handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
 
                                          %16QAM
                                          handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                         handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
 
                                          %64QAM                 
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                         handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                      case '2-Ray'
 
                                          tput_distance = [two_ray(PL_target(1), ht, hr, freq),two_ray(PL_target(2), ht, hr, freq),two_ray(PL_target(3), ht, hr, freq)];
                                          tput_distance = tput_distance*10^-3;
 
-                                          %QPSK                 
+                                         %QPSK                 
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                         handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %16QAM
                                          handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                         handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM
-                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);                
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map); 
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                         handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                      case '3-Ray'
                                          tput_distance = [three_ray(PL_target(1), ht, hr, freq),three_ray(PL_target(2), ht, hr, freq),three_ray(PL_target(3), ht, hr, freq)];
@@ -929,12 +1087,21 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                          %QPSK                 
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                         handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+
 
                                          %16QAM
                                          handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                         handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+
 
                                          %64QAM
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                         handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+
 
                                      case 'Sea Radio-Wave Propagation Loss'
                                          tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq)];
@@ -942,12 +1109,18 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                          %QPSK                 
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                         handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %16QAM
                                          handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                         handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %64QAM
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                         handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
                                  end                
                          end
 
@@ -964,20 +1137,24 @@ switch display_flag %Variable for determining whether a node or link is to be di
                          EbN0 = EbN0_value(ber_target,mod_sch,channel_type);
                          SINR = EbN0*(Rb/B_noise);
                          SINR_db = 10*log10(SINR);
-                         Pr_min = SINR_db - Interf_Noise;
+                         Pr_min = SINR_db + Interf_Noise;
                          PL_target = Ptx + G_ant - Cable_losses - Pr_min;
 
                          x = node_con(tx_num).node_location.longi; 
                          y = node_con(tx_num).node_location.lati;
+                         
+                         nwr_throughput = 520.83;%bps
 
                          switch link_con(link_num).channel.path_loss_model
 
                                      case 'FSPL'
 
-                                         tput_distance = 10^((PL_target-20*log10(freq*10^6)-32.44)/20);
+                                         tput_distance = 10^((PL_target-20*log10(freq)-32.44)/20);
 
 
                                          handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map);
+                                         txt = ['\rightarrow'  num2str(nwr_throughput) ' bps'];
+                                         handles.tput_text1 = text((x+tput_distance),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
 
                                      case '2-Ray'
@@ -985,19 +1162,25 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                          tput_distance = two_ray(PL_target, ht, hr, freq);
                                          tput_distance = tput_distance*10^-3;
 
-                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map);               
+                                         handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map); 
+                                         txt = ['\rightarrow'  num2str(nwr_throughput) ' bps'];
+                                         handles.tput_text1 = text((x+tput_distance),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                      case '3-Ray'
                                          tput_distance = three_ray(PL_target, ht, hr, freq);
                                          tput_distance = tput_distance*10^-3;                 
 
                                          handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map); 
+                                         txt = ['\rightarrow'  num2str(nwr_throughput) ' bps'];
+                                         handles.tput_text1 = text((x+tput_distance),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                      case 'Sea Radio-Wave Propagation Loss'
                                          tput_distance = srwpl(PL_target, ht, hr, freq);
                                          tput_distance = tput_distance*10^-3;                 
 
                                          handles.tput_plotted = tput_plot(x,y,tput_distance ,handles.map); 
+                                         txt = ['\rightarrow'  num2str(nwr_throughput) ' bps'];
+                                         handles.tput_text1 = text((x+tput_distance),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
                          end
 
 
@@ -1011,27 +1194,36 @@ switch display_flag %Variable for determining whether a node or link is to be di
                          SINR = EbN0.*(Rb/B_noise);
                          SINR_db = 10*log10(SINR);
 
-                         Pr_min = SINR_db - Interf_Noise;
+                         Pr_min = SINR_db + Interf_Noise;
                          PL_target = Ptx + G_ant - Cable_losses - Pr_min;
 
                          x = node_con(tx_num).node_location.longi; 
                          y = node_con(tx_num).node_location.lati;
+                         
+                         phy_tput_frame = ((PDSCH_RE_frame*Qm)/(10*10^-3))/10^6;
 
 
                          switch link_con(link_num).channel.path_loss_model
 
                              case 'FSPL'
 
-                                 tput_distance = 10.^((PL_target-20*log10(freq*10^6)-32.44)/20);
+                                 tput_distance = 10.^((PL_target-20*log10(freq)-32.44)/20);
 
                                  %QPSK                 
                                  handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                 handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                  %16QAM
                                  handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                 handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                  %64QAM
                                  handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                 handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+                                 
 
                              case '2-Ray'
 
@@ -1040,12 +1232,18 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                   %QPSK                 
                                  handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                 handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                  %16QAM
                                  handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                 handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                  %64QAM
-                                 handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);                
+                                 handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);     
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                 handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                              case '3-Ray'
                                  tput_distance = [three_ray(PL_target(1), ht, hr, freq),three_ray(PL_target(2), ht, hr, freq),three_ray(PL_target(3), ht, hr, freq)];
@@ -1053,12 +1251,18 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                  %QPSK                 
                                  handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                 handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                  %16QAM
                                  handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                 handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                  %64QAM
                                  handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                 handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                              case 'Sea Radio-Wave Propagation Loss'
                                  tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq)];
@@ -1066,12 +1270,18 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                  %QPSK                 
                                  handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
+                                 handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                  %16QAM
                                  handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map);
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(2)) ' Mbps'];
+                                 handles.tput_text2 = text((x+tput_distance(2)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                  %64QAM
                                  handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
+                                 txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
+                                 handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
                          end
 
                      otherwise
@@ -1118,9 +1328,8 @@ d_init = 0.001; %11.132; %d in meters
 d = d_init;
 
 
-
-
-d_losh = (sqrt(2*(6.378*(10^6))*(ht)));
+R = 6.378*(10^6);
+d_losh = (sqrt(2*(R)*(ht))+sqrt(2*(R)*(hr)));
 
 fin_flag = 0;
 
@@ -1206,8 +1415,8 @@ he = 30.5;
 d_break = (4*hr*ht)/lambda;
 
 
-
-d_losh = (sqrt(2*(6.378*(10^6))*(ht)));
+R = 6.378*(10^6);
+d_losh = (sqrt(2*(R)*(ht))+sqrt(2*(R)*(hr)));
 
 fin_flag = 0;
 
@@ -1335,8 +1544,8 @@ PL_boat = 10;
 PL_earth = 0;
 alpha = 5;
 
-
-d_losh = (sqrt(2*(6.378*(10^6))*(ht)));
+R = 6.378*(10^6);
+d_losh = (sqrt(2*(R)*(ht))+sqrt(2*(R)*(hr)));
 
 fin_flag = 0;
 
@@ -1956,9 +2165,17 @@ if 1 == econ_on
         load('geodata.mat')
         if exist('eez')
 
-lon_var = [eez.Lon];
-lat_var = [eez.Lat];
-handles.econ_plot = plot(handles.map,lon_var,lat_var,'--w','LineWidth',2);
+lon_var = [eez.Lon(1:40)];
+lat_var = [eez.Lat(1:40)];
+handles.econ_plot1 = plot(handles.map,lon_var,lat_var,'--w','LineWidth',2);
+
+lon_var = [eez.Lon(41:456)];
+lat_var = [eez.Lat(41:456)];
+handles.econ_plot2 = plot(handles.map,lon_var,lat_var,'--w','LineWidth',2);
+
+lon_var = [eez.Lon(457:1508)];
+lat_var = [eez.Lat(457:1508)];
+handles.econ_plot3 = plot(handles.map,lon_var,lat_var,'--w','LineWidth',2);
 %fill(handles.map,lon_var,lat_var,'w')
 
         end
@@ -1969,7 +2186,9 @@ handles.econ_plot = plot(handles.map,lon_var,lat_var,'--w','LineWidth',2);
     end
     
 else 
-    delete (handles.econ_plot)
+    delete (handles.econ_plot1)
+    delete (handles.econ_plot2)
+    delete (handles.econ_plot3)
 end
 
 guidata(handles.figure1, handles);

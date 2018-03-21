@@ -12,11 +12,9 @@ ter.Lat = csvread('MarineRegions-ter_lat.csv');
 
 %%
 
-test_lon = eez.Lon(1:450);
+test_lon = eez.Lon(1:450)
 
-test_lat = eez.Lat(1:450);
-
-plot(handles.map,test_lon,test_lat,'r*');
+test_lat = eez.Lat(1:450)
 
 %%
 towers_on = get(hObject,'Value');

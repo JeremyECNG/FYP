@@ -572,8 +572,7 @@ end
 
 %%
 
-
- %BPSK 1/2                                 
+                                         %BPSK 1/2                                 
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map);
                                          txt = ['\rightarrow'  num2str(phy_tput_frame(1)) ' Mbps'];
                                          handles.tput_text1 = text((x+tput_distance(1)),y,txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
@@ -585,7 +584,7 @@ end
 
                                          %QPSK 1/2             
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map);
-                                         txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];  
+                                         txt = ['\rightarrow'  num2str(phy_tput_frame(3)) ' Mbps'];
                                          handles.tput_text3 = text((x+tput_distance(3)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
 
                                          %QPSK 3/4                                 
@@ -622,3 +621,6 @@ end
                                          handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map);
                                          txt = ['\rightarrow'  num2str(phy_tput_frame(10)) ' Mbps'];
                                          handles.tput_text10 = text((x+tput_distance(10)),(y),txt, 'HorizontalAlignment','left','Color','white','FontSize',14);
+
+
+ 

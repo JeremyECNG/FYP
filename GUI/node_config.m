@@ -76,7 +76,7 @@ setappdata(0,'noise_fig',double.empty);
 
 setappdata(0,'tx_power',double.empty);
 
-setappdata(0,'rx_power',double.empty);
+% setappdata(0,'rx_power',double.empty);
 
 setappdata(0,'txant_gain',double.empty);
 
@@ -142,8 +142,9 @@ function rx_power_edit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of rx_power_edit as text
 %        str2double(get(hObject,'String')) returns contents of rx_power_edit as a double
-rxpower = str2double(get(handles.rx_power_edit, 'String'));
-setappdata(0, 'rx_power', rxpower);
+
+% rxpower = str2double(get(handles.rx_power_edit, 'String'));
+% setappdata(0, 'rx_power', rxpower);
 
 % --- Executes during object creation, after setting all properties.
 function rx_power_edit_CreateFcn(hObject, eventdata, handles)
@@ -461,7 +462,7 @@ sav_node_con.equipment_params.noise_fig = getappdata(0,'noise_fig');
 
 sav_node_con.equipment_params.tx_pwr = getappdata(0,'tx_power');
 
-sav_node_con.equipment_params.rx_pwr = getappdata(0,'rx_power');
+% sav_node_con.equipment_params.rx_pwr = getappdata(0,'rx_power');
 
 sav_node_con.equipment_params.tx_ant_gain = getappdata(0,'txant_gain');
 
@@ -512,12 +513,12 @@ if  getappdata(0,'nameflag') == 1
     errordlg('A node of this name already exists please change the name of your entry', 'Name Conflict')
     setappdata(0,'nameflag',0)
     
-elseif  isempty(sav_node_con.node_name)||isempty(sav_node_con.node_location.lati)||isempty(sav_node_con.node_location.longi)||isempty(sav_node_con.equipment_params.technology)||isempty(sav_node_con.equipment_params.noise_fig)||isempty(sav_node_con.equipment_params.tx_pwr)||isempty(sav_node_con.equipment_params.rx_pwr)||isempty(sav_node_con.equipment_params.tx_ant_gain)||isempty(sav_node_con.equipment_params.rx_ant_gain)||isempty(sav_node_con.equipment_params.tx_cable_loss)||isempty(sav_node_con.equipment_params.rx_cable_loss)
+elseif  isempty(sav_node_con.node_name)||isempty(sav_node_con.node_location.lati)||isempty(sav_node_con.node_location.longi)||isempty(sav_node_con.equipment_params.technology)||isempty(sav_node_con.equipment_params.noise_fig)||isempty(sav_node_con.equipment_params.tx_pwr)||isempty(sav_node_con.equipment_params.tx_ant_gain)||isempty(sav_node_con.equipment_params.rx_ant_gain)||isempty(sav_node_con.equipment_params.tx_cable_loss)||isempty(sav_node_con.equipment_params.rx_cable_loss)
         
     errordlg('Please fill all fields', 'Save')
     %(isempty(sav_node_con.node_location.lati)&&(strcmp('Specify Co-ordinates',sav_node_con.node_location.placement_type)))
     
-elseif  isnan(sav_node_con.node_location.lati)||isnan(sav_node_con.node_location.longi)||isnan(sav_node_con.equipment_params.noise_fig)||isnan(sav_node_con.equipment_params.tx_pwr)||isnan(sav_node_con.equipment_params.rx_pwr)||isnan(sav_node_con.equipment_params.tx_ant_gain)||isnan(sav_node_con.equipment_params.rx_ant_gain)||isnan(sav_node_con.equipment_params.tx_cable_loss)||isnan(sav_node_con.equipment_params.rx_cable_loss)
+elseif  isnan(sav_node_con.node_location.lati)||isnan(sav_node_con.node_location.longi)||isnan(sav_node_con.equipment_params.noise_fig)||isnan(sav_node_con.equipment_params.tx_pwr)||isnan(sav_node_con.equipment_params.tx_ant_gain)||isnan(sav_node_con.equipment_params.rx_ant_gain)||isnan(sav_node_con.equipment_params.tx_cable_loss)||isnan(sav_node_con.equipment_params.rx_cable_loss)
         
     errordlg('Please fill all fields with valid content', 'Save')
 else
@@ -587,7 +588,7 @@ node_con(save_counter).equipment_params.noise_fig = sav_node_con.equipment_param
 
 node_con(save_counter).equipment_params.tx_pwr = sav_node_con.equipment_params.tx_pwr;
 
-node_con(save_counter).equipment_params.rx_pwr = sav_node_con.equipment_params.rx_pwr;
+% node_con(save_counter).equipment_params.rx_pwr = sav_node_con.equipment_params.rx_pwr;
 
 node_con(save_counter).equipment_params.tx_ant_gain = sav_node_con.equipment_params.tx_ant_gain;
 
