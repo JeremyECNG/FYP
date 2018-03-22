@@ -55,10 +55,10 @@ function node_config_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for node_config
 handles.output = hObject;
 
-set(handles.longitude_edit,'Enable','on')
-set(handles.latitude_edit,'Enable','on') 
-set(handles.longitude_text,'Enable','on')
-set(handles.latitude_text,'Enable','on') 
+% set(handles.longitude_edit,'Enable','on')
+% set(handles.latitude_edit,'Enable','on') 
+% set(handles.longitude_text,'Enable','on')
+% set(handles.latitude_text,'Enable','on') 
 
 %Node Name
 setappdata(0,'node_name',string.empty);
@@ -664,19 +664,19 @@ set(handles.node_location_selection, 'UserData', 1);
 switch eventdata.Source.SelectedObject.Tag
     
     case 'coordinates_radiobutton'
-        set(handles.longitude_edit,'Enable','on')
-        set(handles.latitude_edit,'Enable','on') 
-        set(handles.longitude_text,'Enable','on')
-        set(handles.latitude_text,'Enable','on') 
+%         set(handles.longitude_edit,'Enable','on')
+%         set(handles.latitude_edit,'Enable','on') 
+%         set(handles.longitude_text,'Enable','on')
+%         set(handles.latitude_text,'Enable','on') 
         
         nodeplacetyp = 'Specify Co-ordinates';
         setappdata(0, 'nodeplace_typ', nodeplacetyp);
         
     case 'mouse_radiobutton'
-        set(handles.longitude_edit,'Enable','off')
-        set(handles.latitude_edit,'Enable','off')
-        set(handles.longitude_text,'Enable','off')
-        set(handles.latitude_text,'Enable','off') 
+%         set(handles.longitude_edit,'Enable','off')
+%         set(handles.latitude_edit,'Enable','off')
+%         set(handles.longitude_text,'Enable','off')
+%         set(handles.latitude_text,'Enable','off') 
         
         nodeplacetyp = 'Mouse Placement';
         setappdata(0, 'nodeplace_typ', nodeplacetyp);
@@ -754,6 +754,9 @@ pause
 c_info = getCursorInfo(dcm_obj);
 setappdata( 0, 'cursor_longi', c_info(1).Position(1))
 setappdata( 0, 'cursor_lati', c_info(1).Position(2))
+
+set(handles.longitude_edit, 'String', c_info(1).Position(1))
+set(handles.latitude_edit, 'String', c_info(1).Position(2))
 datacursormode off
 %gtext
 %ginput

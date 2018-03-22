@@ -143,7 +143,7 @@ for n = 1:size(index,1)
   
   % Specify datatip properties
 %  set(hDatatip{n},'Position',pos)
-  
+  set(hDatatip,'UpdateFcn',@myupdatefcn)
 end
 
 % Update all data cursors

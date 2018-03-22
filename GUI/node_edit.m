@@ -716,8 +716,8 @@ set(handles.node_location_edit, 'UserData', 1);
 switch eventdata.Source.SelectedObject.Tag
     
     case 'coordinates_edit_radiobutton'
-        set(handles.longitude_editing,'Enable','on')
-        set(handles.latitude_editing,'Enable','on') 
+%         set(handles.longitude_editing,'Enable','on')
+%         set(handles.latitude_editing,'Enable','on') 
 %         set(handles.longitude_text,'Enable','on')
 %         set(handles.latitude_text,'Enable','on') 
         
@@ -725,8 +725,8 @@ switch eventdata.Source.SelectedObject.Tag
         setappdata(0, 'nodeplace_typ', nodeplacetyp);
         
     case 'mouse_edit_radiobutton'
-        set(handles.longitude_editing,'Enable','off')
-        set(handles.latitude_editing,'Enable','off')
+%         set(handles.longitude_editing,'Enable','off')
+%         set(handles.latitude_editing,'Enable','off')
 %         set(handles.longitude_text,'Enable','off')
 %         set(handles.latitude_text,'Enable','off') 
         
@@ -806,6 +806,13 @@ pause
 c_info = getCursorInfo(dcm_obj);
 setappdata( 0, 'cursor_longi', c_info(1).Position(1))
 setappdata( 0, 'cursor_lati', c_info(1).Position(2))
+
+set(handles.longitude_editing, 'String', c_info(1).Position(2));
+setappdata(0, 'lat_itude', c_info(1).Position(2));
+
+set(handles.latitude_editing, 'String', c_info(1).Position(1));
+setappdata(0, 'long_itude', c_info(1).Position(1));
+
 datacursormode off
 
 

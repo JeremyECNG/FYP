@@ -443,7 +443,7 @@ end
 switch linktech
     case 'DSC'
 
-        bws = {'Select'};
+        bws = {'Select','2', '4', '6', '8', '12', '12'};
         set(handles.sys_bw_popupmenu, 'String', bws);
         set(handles.sys_bw_popupmenu, 'Value', 1);
 
@@ -457,7 +457,7 @@ switch linktech
         
     case 'NWR'
         
-        bws = {'Select'};
+        bws = {'Select','0.025'};
         set(handles.sys_bw_popupmenu, 'String', bws);
         set(handles.sys_bw_popupmenu, 'Value', 1);
         
@@ -652,9 +652,11 @@ contents = cellstr(get(hObject,'String'));
 nodetwo = contents{get(hObject,'Value')};
 setappdata(0, 'node_two', nodetwo);
 
-% node1_choice = getappdata(0, 'node_one');
-
-
+ node1_choice = getappdata(0, 'node_one');
+if strcmp(nodetwo ,node1_choice )
+    errordlg('Please select two distinct nodes', 'Node Conflict')
+    set(handles.node2_popupmenu, 'Value', 1);
+end
 % current_list =  getappdata(0, 'node_list');
 % % current_list =  handles.node1_popupmenu.String;
 % list_amt  = numel(current_list);
@@ -700,6 +702,8 @@ node2_choice = getappdata(0, 'node_two');
 
 if strcmp(nodeone ,node2_choice)
     errordlg('Please select two distinct nodes', 'Node Conflict')
+    set(handles.node1_popupmenu, 'Value', 1);
+end
 % current_list =  getappdata(0, 'node_list');
 % % current_list =  handles.node2_popupmenu.String;
 % 

@@ -443,7 +443,7 @@ end
 switch linktech
     case 'DSC'
 
-        bws = {'Select'};
+        bws = {'Select','2', '4', '6', '8', '12', '16'};
         set(handles.sys_bw_popupmenu, 'String', bws);
         set(handles.sys_bw_popupmenu, 'Value', 1);
 
@@ -457,7 +457,7 @@ switch linktech
         
     case 'NWR'
         
-        bws = {'Select'};
+        bws = {'Select','0.025'};
         set(handles.sys_bw_popupmenu, 'String', bws);
         set(handles.sys_bw_popupmenu, 'Value', 1);
         
