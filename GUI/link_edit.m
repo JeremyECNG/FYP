@@ -406,13 +406,13 @@ switch link_service_setting
 
     case 'Emergency Messaging Data'
         set(handles.service_edit_popupmenu, 'Value', 3);
-        ber = {'Select','10^-5','6x10^-8'};
+        ber = {'Select','10^-5','6x10^-8','10^-6'};
         set(handles.ber_edit_popupmenu, 'String', ber);
         set(handles.ber_edit_popupmenu, 'Value', 1);
 
     case 'Vessel Tracking Data (IoT)'
         set(handles.service_edit_popupmenu, 'Value', 4);
-        ber = {'Select','10^-5'};
+        ber = {'Select','10^-5','10^-6'};
         set(handles.ber_edit_popupmenu, 'String', ber);
         set(handles.ber_edit_popupmenu, 'Value', 1);
 
@@ -436,13 +436,13 @@ switch link_service_setting
 
     case 'Emergency Messaging Data'
 
-        ber = {'Select','10^-5','6x10^-8'};
+        ber = {'Select','10^-5','6x10^-8','10^-6'};
 
         set(handles.ber_edit_popupmenu, 'Value', find((strcmp(link_ber_setting, ber)),1));
 
     case 'Vessel Tracking Data (IoT)'
 
-        ber = {'Select','10^-5'};
+        ber = {'Select','10^-5','10^-6'};
 
         set(handles.ber_edit_popupmenu, 'Value', find((strcmp(link_ber_setting, ber)),1));
 
@@ -1162,13 +1162,15 @@ switch linkservice
 
         ber = {'Select','10^-2','10^-3'};
         set(handles.ber_edit_popupmenu, 'String', ber);
+        set(handles.ber_edit_popupmenu, 'Value', 1);
     case 'Emergency Messaging Data'
 
-        ber = {'Select','10^-5','6x10^-8'};
+        ber = {'Select','10^-5','6x10^-8','10^-6'};
         set(handles.ber_edit_popupmenu, 'String', ber);
+        set(handles.ber_edit_popupmenu, 'Value', 1);
     case 'Vessel Tracking Data (IoT)'
 
-        ber = {'Select','10^-5'};
+        ber = {'Select','10^-5','10^-6'};
         set(handles.ber_edit_popupmenu, 'String', ber);
         set(handles.ber_edit_popupmenu, 'Value', 1);
     otherwise

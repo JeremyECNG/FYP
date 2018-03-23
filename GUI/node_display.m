@@ -165,7 +165,7 @@ set(handles.latitude_text, 'String', node_con(item_num).node_location.longi);
 set(handles.technology_text, 'String', node_con(item_num).equipment_params.technology);
 set(handles.noise_fig_text, 'String', node_con(item_num).equipment_params.noise_fig);
 set(handles.tx_pwr_text, 'String', node_con(item_num).equipment_params.tx_pwr);
-set(handles.rx_pwr_text, 'String', node_con(item_num).equipment_params.rx_pwr);
+% set(handles.rx_pwr_text, 'String', node_con(item_num).equipment_params.rx_pwr);
 set(handles.tx_ant_gain_text, 'String', node_con(item_num).equipment_params.tx_ant_gain);
 set(handles.rx_ant_gain_text, 'String', node_con(item_num).equipment_params.rx_ant_gain);
 set(handles.tx_cable_losses_text, 'String', node_con(item_num).equipment_params.tx_cable_loss);

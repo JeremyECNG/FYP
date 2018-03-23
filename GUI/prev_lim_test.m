@@ -1,335 +1,70 @@
-function varargout = main_screen_v5(varargin)
-% MAIN_SCREEN_V5 MATLAB code for main_screen_v5.fig
-%      MAIN_SCREEN_V5, by itself, creates a new MAIN_SCREEN_V5 or raises the existing
-%      singleton*.
-%
-%      H = MAIN_SCREEN_V5 returns the handle to a new MAIN_SCREEN_V5 or the handle to
-%      the existing singleton*.
-%
-%      MAIN_SCREEN_V5('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in MAIN_SCREEN_V5.M with the given input arguments.
-%
-%      MAIN_SCREEN_V5('Property','Value',...) creates a new MAIN_SCREEN_V5 or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before main_screen_v5_OpeningFcn gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to main_screen_v5_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
-
-% Edit the above text to modify the response to help main_screen_v5
-
-% Last Modified by GUIDE v2.5 22-Mar-2018 11:45:47
-
-% Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
-gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @main_screen_v5_OpeningFcn, ...
-                   'gui_OutputFcn',  @main_screen_v5_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
-if nargin && ischar(varargin{1})
-    gui_State.gui_Callback = str2func(varargin{1});
-end
-
-if nargout
-    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
-else
-    gui_mainfcn(gui_State, varargin{:});
-end
-% End initialization code - DO NOT EDIT
-
-
-% --- Executes just before main_screen_v5 is made visible.
-function main_screen_v5_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to main_screen_v5 (see VARARGIN)
-
-% Choose default command line output for main_screen_v5
-handles.output = hObject;
-
-% set(handles.node_popupmenu,'Enable','on') 
-% set(handles.link_popupmenu,'Enable','off')
-
-% set(handles.prx_equip_radiobutton,'Enable','off') 
-% set(handles.prx_comp_radiobutton,'Enable','off') 
-% set(handles.prx_popupmenu,'Enable','off')
-% set(handles.prx_text,'Enable','off')
-     
-%Take this from here and use it buddy dont forget
-
-% if exist('nodesave.mat')
-%     load('nodesave.mat')
-%       node_choices= {node_con.node_name}; 
 % 
-% 
-% %     for nodein = 1:save_ind
-% %     node_choices(nodein + 1) = node_con(nodein).node_name;
-% %     end
-% %     node_choices(1) = 'Select';
-%     
-% % setappdata(0,'nodes_list',node_choices)
-% set(handles.node_popupmenu, 'String', node_choices);
-% set(handles.node_popupmenu, 'Value', 1);
-% end
-
-
-% if exist('linksave.mat')
-%     load('linksave.mat')
-%       link_choices= {link_con.link_name}; 
-% 
-% 
-% %     for nodein = 1:save_ind
-% %     node_choices(nodein + 1) = node_con(nodein).node_name;
-% %     end
-% %     node_choices(1) = 'Select';
-%     
-% % setappdata(0,'nodes_list',node_choices)
-% set(handles.link_popupmenu, 'String', link_choices);
-% set(handles.link_popupmenu, 'Value', 1);
-% end
-setappdata(0, 'user_node_selection', []);
-setappdata(0, 'user_link_selection', []);
-% setappdata(0, 'node_selec', 'Select');
-setappdata(0,'range_type',0)
-setappdata(0,'tput_on',0)
-setappdata(0,'throughput_flag',1)
-
-setappdata(0,'disp_flag',0)
-
-if exist('filter.mat')
-   load('filter.mat') 
-   filter_con.height_on = 0;
-   save('filter.mat','filter_con')
-end
-
-set(handles.pwr_lim_radiobutton,'Enable','off')
-set(handles.prev_lim_radiobutton,'Enable','off')
-
-% cursorMode = datacursormode(gcf)
-% datacursormode off
-
-% Update handles structure
-guidata(hObject, handles);
-
-% UIWAIT makes main_screen_v5 wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
-
-% --- Outputs from this function are returned to the command line.
-function varargout = main_screen_v5_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Get default command line output from handles structure
-varargout{1} = handles.output;
-
-
-% --- Executes on button press in run_pushbutton.
-function run_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to run_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
- 
-
-
-range_sel =      getappdata(0,'range_type');
-display_flag =  getappdata(0,'disp_flag');
-R = 6.378*(10^6); %Radius of the earth in meters
-
-switch display_flag %Variable for determining whether a node or link is to be displayed
-
- case 0 %Node is selected
-     
-     
-     %Obtain user selection 
-     user_n_sel = getappdata(0, 'user_node_selection');
-     if isempty(user_n_sel) 
-         errordlg('No node selected', 'Run')
-     end
-     
-     %Load saved node information and initialize index
-     if exist('nodesave.mat')
-         load('nodesave.mat') 
-         
-         for nodein = 1:save_ind
-             if strcmp(user_n_sel,node_con(nodein).node_name)
-                 nod_num = nodein;
-             end
-         end
-         
-     else
-         errordlg('No node information available', 'Run')
-     end
-     
-     set(handles.node_display_text, 'String',node_con(nod_num).node_name)
-     
-     
-     
-     switch range_sel %Variable for determining whether a LOS or Power Limited range is to be plotted
-         
-         case 0 %LOS
-             switch node_con(nod_num).node_type
-                 
-                 case 'Mobile at Sea' 
-                     
-                     h_ves = 2; %Vessel selected to be maximum 2m 
-                     
-                     d_losh = (sqrt(2*R*h_ves))/(10^3); %answer in km
-                     
-                      
-                     
-                     setappdata(0,'range_dist',d_losh)
-                     setappdata(0,'long_cordi',node_con(nod_num).node_location.longi); 
-                     setappdata(0,'lat_cordi',node_con(nod_num).node_location.lati );
-                     handles.losh_plot = range_plot(node_con(nod_num).node_location.longi  ,node_con(nod_num).node_location.lati  ,d_losh,handles.map);
-                     
-                     
-                     h = findobj('Tag','gmap');
-                     h = h(2);
-                     makedatatip(h,[node_con(nod_num).node_location.longi node_con(nod_num).node_location.lati])
-                     
-                 case 'Tower Mounted' 
-                     
-                     if exist('towers.mat')
-                         load('towers.mat')
-                         if exist('tower_tnt')
-                                
-                             maxi = numel(tower_tnt);
-                                
-                             tower_cords = zeros(maxi,2);
-                                
-                             for elements = 1:maxi
-                                    
-                                 tower_cords(elements,:) = [tower_tnt(elements).Lon,tower_tnt(elements).Lat];
-                                    
-                             end
-                             
-                             user_cords = [node_con(nod_num).node_location.longi  ,node_con(nod_num).node_location.lati];
-
-                             euclidean_distances = sqrt(sum(bsxfun(@minus, tower_cords, user_cords).^2,2));
-                             closest_tower = tower_cords(find(euclidean_distances==min(euclidean_distances)),:);
-
-                             h_bs = tower_tnt(find((ismember(tower_cords,closest_tower )),1)).AntennaHeight; %Height of Closest tower
-
-                             d_losh = (sqrt(2*R*h_bs))/(10^3); %answer in km
-                             setappdata(0,'range_dist',d_losh)                    
-                             setappdata(0,'long_cordi',closest_tower(:,1)); 
-                             setappdata(0,'lat_cordi',closest_tower(:,2));
-                            handles.losh_plot = range_plot(closest_tower(:,1)  ,closest_tower(:,2)  ,d_losh,handles.map);
-                            
-                            h = findobj('Tag','gmap');
-                            h = h(2);
-                            makedatatip(h,[closest_tower(:,1)  closest_tower(:,2)])
-
-                         end
-                     end
-                     
-             end
-             set(handles.range_display_text, 'String',d_losh)
-             set(handles.rx_sens_text, 'String','N/A')
-             set(handles.ber_display_text, 'String','N/A')
-             set(handles.node_display_text, 'String',node_con(nod_num).node_name)
-             set(handles.path_loss_disp_text, 'String', 'N/A');
-             
-             %set(handles.techno_disp_text, 'String',node_con(nod_num).equipment_params.technology )
-             set(handles.service_disp_text, 'String','N/A' )
-             set(handles.techno_disp_text, 'String','N/A' )
-             set(handles.throughput_display_text, 'String','N/A')
-             set(handles.freq_disp_text, 'String', 'N/A');
-             set(handles.interf_disp_text, 'String', 'N/A');
-             set(handles.fade_disp_text, 'String', 'N/A');
-             
-             %create legend
-             i_am_legend = legend(handles.map,[handles.losh_plot],{'Node LOSH'},'Location','best');
-             title(i_am_legend,'Line of Sight to Horizon Limit')
-             
-             
-             
-             
-         case 1 %Power Limited
-             
-             errordlg('Range and Throughput cannot be computed for this configuration', 'Run')
-             
-             
-         case 2 %Prevailing Limit
-             errordlg('Range and Throughput cannot be computed for this configuration', 'Run')
-                          
-     end
-     
-     
-
- case 1 %Link is selected
-          
-     if exist('nodesave.mat')
-         load('nodesave.mat') 
-     end
-     %Obtain user selection 
-     user_l_sel = getappdata(0, 'user_link_selection');
-     if isempty(user_l_sel) 
-         errordlg('No link selected', 'Run')
-     end    
-     
-     %Load saved link information and initialize index
-     if exist('linksave.mat')
-         load('linksave.mat') 
-         
-         for linkin = 1:save_ind_link
-             if strcmp(user_l_sel,link_con(linkin).link_name)
-                 link_num = linkin;
-             end
-         end
-         
-     else
-         errordlg('No link information available', 'Run')
-     end
-     
-     set(handles.node_display_text, 'String',link_con(link_num).link_name)
-     
-     %Determine if uplink or downlink
-     
-     switch link_con(link_num).system_params.link_direction
-         
-         case 'Downlink'
-             transmitter = link_con(link_num).node_selection.node1;
-             receiver = link_con(link_num).node_selection.node2;                       
-             
-         case 'Uplink'
-             transmitter = link_con(link_num).node_selection.node2;
-             receiver = link_con(link_num).node_selection.node1;
-             
-     end
-     
-     %Find receiver index and transmitter index
-     for nodein = 1:save_ind
-         if strcmp(transmitter,node_con(nodein).node_name)
-             tx_num = nodein;
-         end
-         
-         if strcmp(receiver,node_con(nodein).node_name)
-             rx_num = nodein;
-         end
-     end
-     
-     %Extract transmitter and receiver coordinates 
-     rx_cords = [node_con(rx_num).node_location.longi  ,node_con(rx_num).node_location.lati ];
-     tx_cords = [node_con(tx_num).node_location.longi  ,node_con(tx_num).node_location.lati ];
+%  case 1 %Link is selected
+%           
+%      if exist('nodesave.mat')
+%          load('nodesave.mat') 
+%      end
+%      %Obtain user selection 
+%      user_l_sel = getappdata(0, 'user_link_selection');
+%      if isempty(user_l_sel) 
+%          errordlg('No link selected', 'Run')
+%      end    
+%      
+%      %Load saved link information and initialize index
+%      if exist('linksave.mat')
+%          load('linksave.mat') 
+%          
+%          for linkin = 1:save_ind_link
+%              if strcmp(user_l_sel,link_con(linkin).link_name)
+%                  link_num = linkin;
+%              end
+%          end
+%          
+%      else
+%          errordlg('No link information available', 'Run')
+%      end
+%      
+%      set(handles.node_display_text, 'String',link_con(link_num).link_name)
+%      
+%      %Determine if uplink or downlink
+%      
+%      switch link_con(link_num).system_params.link_direction
+%          
+%          case 'Downlink'
+%              transmitter = link_con(link_num).node_selection.node1;
+%              receiver = link_con(link_num).node_selection.node2;                       
+%              
+%          case 'Uplink'
+%              transmitter = link_con(link_num).node_selection.node2;
+%              receiver = link_con(link_num).node_selection.node1;
+%              
+%      end
+%      
+%      %Find receiver index and transmitter index
+%      for nodein = 1:save_ind
+%          if strcmp(transmitter,node_con(nodein).node_name)
+%              tx_num = nodein;
+%          end
+%          
+%          if strcmp(receiver,node_con(nodein).node_name)
+%              rx_num = nodein;
+%          end
+%      end
+%      
+%      %Extract transmitter and receiver coordinates 
+%      rx_cords = [node_con(rx_num).node_location.longi  ,node_con(rx_num).node_location.lati ];
+%      tx_cords = [node_con(tx_num).node_location.longi  ,node_con(tx_num).node_location.lati ];
           
          
 
-      switch range_sel %Variable for determining whether a LOS or Power Limited range is to be plotted
-         
-         case 0 %LOS
+%       switch range_sel %Variable for determining whether a LOS or Power Limited range is to be plotted
+          
+          %**************************************************************************************************
+          %**************************************************************************************************
+           %**************************************************************************************************
+            %**************************************************************************************************
+            
+%          case 0 %LOS
              
              %Ascertain whether the transmitter is tower mounted or mobile at sea 
              switch node_con(tx_num).node_type
@@ -392,14 +127,16 @@ switch display_flag %Variable for determining whether a node or link is to be di
                      setappdata(0,'range_dist',d_losh)
                      setappdata(0,'long_cordi',node_con(tx_num).node_location.longi); 
                      setappdata(0,'lat_cordi',node_con(tx_num).node_location.lati);
-                     plotted_range = range_plot(node_con(tx_num).node_location.longi  ,node_con(tx_num).node_location.lati  ,d_losh,handles.map);
+                     dlosh_cords = [node_con(tx_num).node_location.longi  node_con(tx_num).node_location.lati];
+%                      plotted_range = range_plot(node_con(tx_num).node_location.longi  ,node_con(tx_num).node_location.lati  ,d_losh,handles.map);
+
 
                      euclidean_los = sqrt(sum(bsxfun(@minus, tx_cords, rx_cords).^2,2)); %find direct distance between tx and rx to find if rx is in range of tx by comparing the link lenght to the LOSH distance(radius)
                      if euclidean_los<d_losh
                          range_flag = 1;   %Signal if in range or out of range                      
                      end
 
-                     %Compute Throughput? 
+                     
                      
                  case 'Tower Mounted'
                      
@@ -430,7 +167,8 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                 setappdata(0,'range_dist',d_losh)
                                 setappdata(0,'long_cordi',closest_tower(:,1)); 
                                 setappdata(0,'lat_cordi',closest_tower(:,2));
-                                plotted_range = range_plot(closest_tower(:,1)  ,closest_tower(:,2)  ,d_losh,handles.map);
+                                dlosh_cords = [closest_tower(:,1)  closest_tower(:,2) ];
+%                                 plotted_range = range_plot(closest_tower(:,1)  ,closest_tower(:,2)  ,d_losh,handles.map);
                          end
                      end
                      
@@ -447,27 +185,14 @@ switch display_flag %Variable for determining whether a node or link is to be di
                      i_am_legend = legend(handles.map,[plotted_range],{'Link LOSH'},'Location','best');
                      title(i_am_legend,'Line of Sight to Horizon Limit')
                      
-                     set(handles.range_display_text, 'String',d_losh)
-                     set(handles.rx_sens_text, 'String','N/A')
-                     set(handles.ber_display_text, 'String','N/A')
-                     set(handles.node_display_text, 'String',link_con(link_num).link_name)
-                     set(handles.path_loss_disp_text, 'String', 'N/A');
                      
-                     %set(handles.techno_disp_text, 'String',node_con(nod_num).equipment_params.technology )
-                     set(handles.service_disp_text, 'String','N/A' )
-                     set(handles.techno_disp_text, 'String','N/A' )
-                     set(handles.throughput_display_text, 'String','N/A')
-                     set(handles.freq_disp_text, 'String', 'N/A');
-                     set(handles.interf_disp_text, 'String', 'N/A');
-                     set(handles.fade_disp_text, 'String', 'N/A');
                      
-                     %Compute Throughput
              end
              
-             set(handles.range_display_text, 'String',d_losh)
              
              
-         case 1 %Power Limited
+             
+%          case 1 %Power Limited
              
              switch node_con(tx_num).node_type
                  
@@ -803,54 +528,72 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                      case 'FSPL'
 
                                          tput_distance = 10^((PL_target-20*log10(freq)-32.44)/20);
+                                         
+                                         if dlosh > tput_distance(1)
 
                                          colour = 'b';
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance ,handles.map,colour);
                                          txt1 = [ num2str(dsc_throughput) ' bps' ' (FSK)']; 
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best');
                                          title(i_am_legend,'DSC Throuput per Mod. Sch.') 
                                          
                                          set(handles.range_display_text, 'String',tput_distance)
+                                         
+                                         end
 
 
                                      case '2-Ray'
+                                         
+                                         
 
                                          tput_distance = two_ray(PL_target, ht, hr, freq);
                                          tput_distance = tput_distance*10^-3;
+                                         
+                                         if dlosh > tput_distance(1)
 
                                          colour = 'b';
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance ,handles.map,colour);
                                          txt1 = [ num2str(dsc_throughput) ' bps' ' (FSK)']; 
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best');
                                          title(i_am_legend,'DSC Throuput per Mod. Sch.') 
                                          
                                          set(handles.range_display_text, 'String',tput_distance)
+                                         
+                                         end
 
 
                                      case '3-Ray'
                                          tput_distance = three_ray(PL_target, ht, hr, freq);
-                                         tput_distance = tput_distance*10^-3;                 
+                                         tput_distance = tput_distance*10^-3;   
+                                         
+                                         if dlosh > tput_distance(1)
 
                                          colour = 'b';
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance ,handles.map,colour);
                                          txt1 = [ num2str(dsc_throughput) ' bps' ' (FSK)']; 
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best');
                                          title(i_am_legend,'DSC Throuput per Mod. Sch.') 
                                          
                                          set(handles.range_display_text, 'String',tput_distance)
+                                         
+                                         end
 
 
                                      case 'Sea Radio-Wave Propagation Loss'
                                          tput_distance = srwpl(PL_target, ht, hr, freq);
-                                         tput_distance = tput_distance*10^-3;                 
+                                         tput_distance = tput_distance*10^-3;  
+                                         
+                                         if dlosh > tput_distance(1)
 
                                          colour = 'b';
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance ,handles.map,colour);
                                          txt1 = [ num2str(dsc_throughput) ' bps' ' (FSK)']; 
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best');
                                          title(i_am_legend,'DSC Throuput per Mod. Sch.') 
                                          
                                          set(handles.range_display_text, 'String',tput_distance)
+                                         
+                                         end
 
                          end
 
@@ -919,275 +662,7 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                          tput_distance = 10.^((PL_target-20*log10(freq)-32.44)/20);
                                          
-                                         set(handles.range_display_text, 'String',tput_distance(1)) 
-%                                          
-                                         colour = 'y'; 
-                                         %BPSK 1/2                                 
-                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
-                                         txt1 = [ num2str(phy_tput_frame(1)) ' Mbps' ' (BPSK 1/2)']; 
-                                         
-                                         
-                                         colour = [216/255 133/255 49/255]; 
-                                         %BPSK 3/4 
-                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
-                                         txt2 = [num2str(phy_tput_frame(2)) ' Mbps' ' (BPSK 3/4)'];
-
-                                         colour = [7/255 164/255 18/255]; 
-                                         %QPSK 1/2             
-                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
-                                         txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (QPSK 1/2)'];
-
-                                         colour = [116/255 11/255 128/255]; 
-                                         %QPSK 3/4                                 
-                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
-                                         txt4 = [num2str(phy_tput_frame(4)) ' Mbps' ' (QPSK 3/4)'];
-
-                                         colour = 'c'; 
-                                         %16QAM 1/2  
-                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
-                                         txt5 = [num2str(phy_tput_frame(5)) ' Mbps' ' (16QAM 1/2)'];
-
-                                         colour = 'b'; 
-                                         %16QAM 3/4               
-                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
-                                         txt6 = [num2str(phy_tput_frame(6)) ' Mbps' ' (16QAM 3/4)'];
-
-                                         colour = 'm'; 
-                                         %64QAM 1/2                                 
-                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
-                                         txt7 = [num2str(phy_tput_frame(7)) ' Mbps' ' (64QAM 1/2)'];
-
-                                         colour = 'g';
-                                         %64QAM 2/3 
-                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
-                                         txt8 = [num2str(phy_tput_frame(8)) ' Mbps' ' (64QAM 2/3)'];
-
-                                         colour = [243/255 197/255 91/255]; 
-                                         %64QAM 3/4                 
-                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
-                                         txt9 = [num2str(phy_tput_frame(9)) ' Mbps' ' (64QAM 3/4)'];
-
-                                         colour = [127/255 0/255 255/255];
-                                         %64QAM 5/6                 
-                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
-                                         txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
-                                     
-%                                          i_am_legend = legend(handles.map,[plotted_range,handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{'Power Limited Range','BPSK 1/2','BPSK 3/4','QPSK 1/2','QPSK 3/4','16QAM 1/2','16QAM 3/4','64QAM 1/2','64QAM 2/3','64QAM 3/4','64QAM 5/6'})
-                                         %i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{'BPSK 1/2','BPSK 3/4','QPSK 1/2','QPSK 3/4','16QAM 1/2','16QAM 3/4','64QAM 1/2','64QAM 2/3','64QAM 3/4','64QAM 5/6'})
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best')
-                                         title(i_am_legend,'LTE PHY Throuput per MCS')
-
-                                     case '2-Ray'
-
-                                         tput_distance = [two_ray(PL_target(1), ht, hr, freq),two_ray(PL_target(2), ht, hr, freq),two_ray(PL_target(3), ht, hr, freq),two_ray(PL_target(4), ht, hr, freq),two_ray(PL_target(5), ht, hr, freq),two_ray(PL_target(6), ht, hr, freq),two_ray(PL_target(7), ht, hr, freq),two_ray(PL_target(8), ht, hr, freq),two_ray(PL_target(9), ht, hr, freq),two_ray(PL_target(10), ht, hr, freq)];
-                                         tput_distance = tput_distance*10^-3;
-
-                                         set(handles.range_display_text, 'String',tput_distance(1)) 
-                                          
-                                         colour = 'y'; 
-                                         %BPSK 1/2                                 
-                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
-                                         txt1 = [ num2str(phy_tput_frame(1)) ' Mbps' ' (BPSK 1/2)']; 
-                                         
-                                         colour = [216/255 133/255 49/255]; 
-                                         %BPSK 3/4 
-                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
-                                         txt2 = [num2str(phy_tput_frame(2)) ' Mbps' ' (BPSK 3/4)'];
-
-                                         colour = [7/255 164/255 18/255]; 
-                                         %QPSK 1/2             
-                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
-                                         txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (QPSK 1/2)'];
-
-                                         colour = [116/255 11/255 128/255]; 
-                                         %QPSK 3/4                                 
-                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
-                                         txt4 = [num2str(phy_tput_frame(4)) ' Mbps' ' (QPSK 3/4)'];
-
-                                         colour = 'c'; 
-                                         %16QAM 1/2  
-                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
-                                         txt5 = [num2str(phy_tput_frame(5)) ' Mbps' ' (16QAM 1/2)'];
-
-                                         colour = 'b'; 
-                                         %16QAM 3/4               
-                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
-                                         txt6 = [num2str(phy_tput_frame(6)) ' Mbps' ' (16QAM 3/4)'];
-
-                                         colour = 'm'; 
-                                         %64QAM 1/2                                 
-                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
-                                         txt7 = [num2str(phy_tput_frame(7)) ' Mbps' ' (64QAM 1/2)'];
-
-                                         colour = 'g';
-                                         %64QAM 2/3 
-                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
-                                         txt8 = [num2str(phy_tput_frame(8)) ' Mbps' ' (64QAM 2/3)'];
-
-                                         colour = [243/255 197/255 91/255]; 
-                                         %64QAM 3/4                 
-                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
-                                         txt9 = [num2str(phy_tput_frame(9)) ' Mbps' ' (64QAM 3/4)'];
-
-                                         colour = [127/255 0/255 255/255];
-                                         %64QAM 5/6                 
-                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
-                                         txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
-                                     
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best')
-                                         title(i_am_legend,'LTE PHY Throuput per MCS')                                         
-
-                                     case '3-Ray'
-                                         tput_distance = [three_ray(PL_target(1), ht, hr, freq),three_ray(PL_target(2), ht, hr, freq),three_ray(PL_target(3), ht, hr, freq),three_ray(PL_target(4), ht, hr, freq),three_ray(PL_target(5), ht, hr, freq),three_ray(PL_target(6), ht, hr, freq),three_ray(PL_target(7), ht, hr, freq),three_ray(PL_target(8), ht, hr, freq),three_ray(PL_target(9), ht, hr, freq),three_ray(PL_target(10), ht, hr, freq)];
-                                         tput_distance = tput_distance*10^-3;                 
-
-                                         set(handles.range_display_text, 'String',tput_distance(1)) 
-                                         
-                                         colour = 'y'; 
-                                         %BPSK 1/2                                 
-                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
-                                         txt1 = [ num2str(phy_tput_frame(1)) ' Mbps' ' (BPSK 1/2)']; 
-                                         
-                                         colour = [216/255 133/255 49/255]; 
-                                         %BPSK 3/4 
-                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
-                                         txt2 = [num2str(phy_tput_frame(2)) ' Mbps' ' (BPSK 3/4)'];
-
-                                         colour = [7/255 164/255 18/255]; 
-                                         %QPSK 1/2             
-                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
-                                         txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (QPSK 1/2)'];
-
-                                         colour = [116/255 11/255 128/255]; 
-                                         %QPSK 3/4                                 
-                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
-                                         txt4 = [num2str(phy_tput_frame(4)) ' Mbps' ' (QPSK 3/4)'];
-
-                                         colour = 'c'; 
-                                         %16QAM 1/2  
-                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
-                                         txt5 = [num2str(phy_tput_frame(5)) ' Mbps' ' (16QAM 1/2)'];
-
-                                         colour = 'b'; 
-                                         %16QAM 3/4               
-                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
-                                         txt6 = [num2str(phy_tput_frame(6)) ' Mbps' ' (16QAM 3/4)'];
-
-                                         colour = 'm'; 
-                                         %64QAM 1/2                                 
-                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
-                                         txt7 = [num2str(phy_tput_frame(7)) ' Mbps' ' (64QAM 1/2)'];
-
-                                         colour = 'g';
-                                         %64QAM 2/3 
-                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
-                                         txt8 = [num2str(phy_tput_frame(8)) ' Mbps' ' (64QAM 2/3)'];
-
-                                         colour = [243/255 197/255 91/255]; 
-                                         %64QAM 3/4                 
-                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
-                                         txt9 = [num2str(phy_tput_frame(9)) ' Mbps' ' (64QAM 3/4)'];
-
-                                         colour = [127/255 0/255 255/255];
-                                         %64QAM 5/6                 
-                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
-                                         txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
-                                     
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best')
-                                         title(i_am_legend,'LTE PHY Throuput per MCS')                                         
-
-                                     case 'Sea Radio-Wave Propagation Loss'
-                                         tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq),srwpl(PL_target(4), ht, hr, freq),srwpl(PL_target(5), ht, hr, freq),srwpl(PL_target(6), ht, hr, freq),srwpl(PL_target(7), ht, hr, freq),srwpl(PL_target(8), ht, hr, freq),srwpl(PL_target(9), ht, hr, freq),srwpl(PL_target(10), ht, hr, freq)];
-                                         tput_distance = tput_distance*10^-3;                 
-
-                                         set(handles.range_display_text, 'String',tput_distance(1)) 
-                                         
-                                         colour = 'y'; 
-                                         %BPSK 1/2                                 
-                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
-                                         txt1 = [ num2str(phy_tput_frame(1)) ' Mbps' ' (BPSK 1/2)']; 
-                                         
-                                         colour = [216/255 133/255 49/255]; 
-                                         %BPSK 3/4 
-                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
-                                         txt2 = [num2str(phy_tput_frame(2)) ' Mbps' ' (BPSK 3/4)'];
-
-                                         colour = [7/255 164/255 18/255]; 
-                                         %QPSK 1/2             
-                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
-                                         txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (QPSK 1/2)'];
-
-                                         colour = [116/255 11/255 128/255]; 
-                                         %QPSK 3/4                                 
-                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
-                                         txt4 = [num2str(phy_tput_frame(4)) ' Mbps' ' (QPSK 3/4)'];
-
-                                         colour = 'c'; 
-                                         %16QAM 1/2  
-                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
-                                         txt5 = [num2str(phy_tput_frame(5)) ' Mbps' ' (16QAM 1/2)'];
-
-                                         colour = 'b'; 
-                                         %16QAM 3/4               
-                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
-                                         txt6 = [num2str(phy_tput_frame(6)) ' Mbps' ' (16QAM 3/4)'];
-
-                                         colour = 'm'; 
-                                         %64QAM 1/2                                 
-                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
-                                         txt7 = [num2str(phy_tput_frame(7)) ' Mbps' ' (64QAM 1/2)'];
-
-                                         colour = 'g';
-                                         %64QAM 2/3 
-                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
-                                         txt8 = [num2str(phy_tput_frame(8)) ' Mbps' ' (64QAM 2/3)'];
-
-                                         colour = [243/255 197/255 91/255]; 
-                                         %64QAM 3/4                 
-                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
-                                         txt9 = [num2str(phy_tput_frame(9)) ' Mbps' ' (64QAM 3/4)'];
-
-                                         colour = [127/255 0/255 255/255];
-                                         %64QAM 5/6                 
-                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
-                                         txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
-                                     
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best')
-                                         title(i_am_legend,'LTE PHY Throuput per MCS')                                         
-                                 end 
-                                 
-                             case '10^-6'
-                                 Qm = [1,1,2,2,4,4,6,6,6,6];
-                                 code = ["1/2","3/4","1/2","3/4","1/2","3/4","1/2","2/3","3/4","5/6"];
-                                 %Rb = ((RE_frame*Qm)/(10*10^-3)); 
-                                 %EbN0 = [EbN0_value(ber_target,'QPSK',channel_type),EbN0_value(ber_target,'16QAM',channel_type),EbN0_value(ber_target,'64QAM',channel_type)];
-
-                                 %SINR = EbN0.*(Rb/B_noise);         
-                                 %SINR_db = 10*log10(SINR); 
-                                 code_rate = [1/2,3/4,1/2,3/4,1/2,3/4,1/2,2/3,3/4,5/6];
-                                 phy_tput_frame = ((((PDSCH_RE_frame*Qm)/(10*10^-3))).*code_rate)/10^6; %Mbps
-                                 phy_tput_frame  = round(phy_tput_frame,2);
-                                 set(handles.throughput_display_text, 'String',phy_tput_frame(1))
-                                 
-                                 
-                                 switch channel_type
-                                     
-                                     case 'AWGN'
-                                         SINR_db = [1.5,5.7,4.5,8.7,12.5,15.4,16.1,19.3,20.1,20.9];
-                                     case 'Rayleigh'
-                                         SINR_db = [35,43.4,38,46.4,46,51.8,46.6,53,54.6,56.2];                                       
-                                 end
-                                 
-                                 Pr_min = SINR_db + Interf_Noise;        
-                                 PL_target = Ptx + G_ant - Cable_losses - Pr_min;                
-                                 x = ht_cords(1);          
-                                 y = ht_cords(2);
-
-                                 switch link_con(link_num).channel.path_loss_model
-
-                                     case 'FSPL'
-
-                                         tput_distance = 10.^((PL_target-20*log10(freq)-32.44)/20);
+                                         if dlosh > tput_distance(1)
                                          
                                          set(handles.range_display_text, 'String',tput_distance(1)) 
 %                                          
@@ -1244,13 +719,17 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                      
 %                                          i_am_legend = legend(handles.map,[plotted_range,handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{'Power Limited Range','BPSK 1/2','BPSK 3/4','QPSK 1/2','QPSK 3/4','16QAM 1/2','16QAM 3/4','64QAM 1/2','64QAM 2/3','64QAM 3/4','64QAM 5/6'})
                                          %i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{'BPSK 1/2','BPSK 3/4','QPSK 1/2','QPSK 3/4','16QAM 1/2','16QAM 3/4','64QAM 1/2','64QAM 2/3','64QAM 3/4','64QAM 5/6'})
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best');
                                          title(i_am_legend,'LTE PHY Throuput per MCS')
+                                         
+                                         end
 
                                      case '2-Ray'
 
                                          tput_distance = [two_ray(PL_target(1), ht, hr, freq),two_ray(PL_target(2), ht, hr, freq),two_ray(PL_target(3), ht, hr, freq),two_ray(PL_target(4), ht, hr, freq),two_ray(PL_target(5), ht, hr, freq),two_ray(PL_target(6), ht, hr, freq),two_ray(PL_target(7), ht, hr, freq),two_ray(PL_target(8), ht, hr, freq),two_ray(PL_target(9), ht, hr, freq),two_ray(PL_target(10), ht, hr, freq)];
                                          tput_distance = tput_distance*10^-3;
+                                         
+                                         if dlosh > tput_distance(1)
 
                                          set(handles.range_display_text, 'String',tput_distance(1)) 
                                           
@@ -1304,71 +783,16 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                          handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
                                          txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
                                      
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best')
-                                         title(i_am_legend,'LTE PHY Throuput per MCS')                                         
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best');
+                                         title(i_am_legend,'LTE PHY Throuput per MCS') 
+                                         
+                                         end
 
                                      case '3-Ray'
                                          tput_distance = [three_ray(PL_target(1), ht, hr, freq),three_ray(PL_target(2), ht, hr, freq),three_ray(PL_target(3), ht, hr, freq),three_ray(PL_target(4), ht, hr, freq),three_ray(PL_target(5), ht, hr, freq),three_ray(PL_target(6), ht, hr, freq),three_ray(PL_target(7), ht, hr, freq),three_ray(PL_target(8), ht, hr, freq),three_ray(PL_target(9), ht, hr, freq),three_ray(PL_target(10), ht, hr, freq)];
-                                         tput_distance = tput_distance*10^-3;                 
-
-                                         set(handles.range_display_text, 'String',tput_distance(1)) 
+                                         tput_distance = tput_distance*10^-3;      
                                          
-                                         colour = 'y'; 
-                                         %BPSK 1/2                                 
-                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
-                                         txt1 = [ num2str(phy_tput_frame(1)) ' Mbps' ' (BPSK 1/2)']; 
-                                         
-                                         colour = [216/255 133/255 49/255]; 
-                                         %BPSK 3/4 
-                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
-                                         txt2 = [num2str(phy_tput_frame(2)) ' Mbps' ' (BPSK 3/4)'];
-
-                                         colour = [7/255 164/255 18/255]; 
-                                         %QPSK 1/2             
-                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
-                                         txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (QPSK 1/2)'];
-
-                                         colour = [116/255 11/255 128/255]; 
-                                         %QPSK 3/4                                 
-                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
-                                         txt4 = [num2str(phy_tput_frame(4)) ' Mbps' ' (QPSK 3/4)'];
-
-                                         colour = 'c'; 
-                                         %16QAM 1/2  
-                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
-                                         txt5 = [num2str(phy_tput_frame(5)) ' Mbps' ' (16QAM 1/2)'];
-
-                                         colour = 'b'; 
-                                         %16QAM 3/4               
-                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
-                                         txt6 = [num2str(phy_tput_frame(6)) ' Mbps' ' (16QAM 3/4)'];
-
-                                         colour = 'm'; 
-                                         %64QAM 1/2                                 
-                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
-                                         txt7 = [num2str(phy_tput_frame(7)) ' Mbps' ' (64QAM 1/2)'];
-
-                                         colour = 'g';
-                                         %64QAM 2/3 
-                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
-                                         txt8 = [num2str(phy_tput_frame(8)) ' Mbps' ' (64QAM 2/3)'];
-
-                                         colour = [243/255 197/255 91/255]; 
-                                         %64QAM 3/4                 
-                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
-                                         txt9 = [num2str(phy_tput_frame(9)) ' Mbps' ' (64QAM 3/4)'];
-
-                                         colour = [127/255 0/255 255/255];
-                                         %64QAM 5/6                 
-                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
-                                         txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
-                                     
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best')
-                                         title(i_am_legend,'LTE PHY Throuput per MCS')                                         
-
-                                     case 'Sea Radio-Wave Propagation Loss'
-                                         tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq),srwpl(PL_target(4), ht, hr, freq),srwpl(PL_target(5), ht, hr, freq),srwpl(PL_target(6), ht, hr, freq),srwpl(PL_target(7), ht, hr, freq),srwpl(PL_target(8), ht, hr, freq),srwpl(PL_target(9), ht, hr, freq),srwpl(PL_target(10), ht, hr, freq)];
-                                         tput_distance = tput_distance*10^-3;                 
+                                         if dlosh > tput_distance(1)
 
                                          set(handles.range_display_text, 'String',tput_distance(1)) 
                                          
@@ -1423,7 +847,358 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                          txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
                                      
                                          i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best');
-                                         title(i_am_legend,'LTE PHY Throuput per MCS')                                         
+                                         title(i_am_legend,'LTE PHY Throuput per MCS')  
+                                         
+                                         end
+
+                                     case 'Sea Radio-Wave Propagation Loss'
+                                         tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq),srwpl(PL_target(4), ht, hr, freq),srwpl(PL_target(5), ht, hr, freq),srwpl(PL_target(6), ht, hr, freq),srwpl(PL_target(7), ht, hr, freq),srwpl(PL_target(8), ht, hr, freq),srwpl(PL_target(9), ht, hr, freq),srwpl(PL_target(10), ht, hr, freq)];
+                                         tput_distance = tput_distance*10^-3;       
+                                         
+                                         if dlosh > tput_distance(1)
+
+                                         set(handles.range_display_text, 'String',tput_distance(1)) 
+                                         
+                                         colour = 'y'; 
+                                         %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
+                                         txt1 = [ num2str(phy_tput_frame(1)) ' Mbps' ' (BPSK 1/2)']; 
+                                         
+                                         colour = [216/255 133/255 49/255]; 
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
+                                         txt2 = [num2str(phy_tput_frame(2)) ' Mbps' ' (BPSK 3/4)'];
+
+                                         colour = [7/255 164/255 18/255]; 
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
+                                         txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (QPSK 1/2)'];
+
+                                         colour = [116/255 11/255 128/255]; 
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
+                                         txt4 = [num2str(phy_tput_frame(4)) ' Mbps' ' (QPSK 3/4)'];
+
+                                         colour = 'c'; 
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
+                                         txt5 = [num2str(phy_tput_frame(5)) ' Mbps' ' (16QAM 1/2)'];
+
+                                         colour = 'b'; 
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
+                                         txt6 = [num2str(phy_tput_frame(6)) ' Mbps' ' (16QAM 3/4)'];
+
+                                         colour = 'm'; 
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
+                                         txt7 = [num2str(phy_tput_frame(7)) ' Mbps' ' (64QAM 1/2)'];
+
+                                         colour = 'g';
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
+                                         txt8 = [num2str(phy_tput_frame(8)) ' Mbps' ' (64QAM 2/3)'];
+
+                                         colour = [243/255 197/255 91/255]; 
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
+                                         txt9 = [num2str(phy_tput_frame(9)) ' Mbps' ' (64QAM 3/4)'];
+
+                                         colour = [127/255 0/255 255/255];
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
+                                         txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
+                                     
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best');
+                                         title(i_am_legend,'LTE PHY Throuput per MCS')  
+                                         
+                                         end
+                                 end 
+                                 
+                             case '10^-6'
+                                 Qm = [1,1,2,2,4,4,6,6,6,6];
+                                 code = ["1/2","3/4","1/2","3/4","1/2","3/4","1/2","2/3","3/4","5/6"];
+                                 %Rb = ((RE_frame*Qm)/(10*10^-3)); 
+                                 %EbN0 = [EbN0_value(ber_target,'QPSK',channel_type),EbN0_value(ber_target,'16QAM',channel_type),EbN0_value(ber_target,'64QAM',channel_type)];
+
+                                 %SINR = EbN0.*(Rb/B_noise);         
+                                 %SINR_db = 10*log10(SINR); 
+                                 code_rate = [1/2,3/4,1/2,3/4,1/2,3/4,1/2,2/3,3/4,5/6];
+                                 phy_tput_frame = ((((PDSCH_RE_frame*Qm)/(10*10^-3))).*code_rate)/10^6; %Mbps
+                                 phy_tput_frame  = round(phy_tput_frame,2);
+                                 set(handles.throughput_display_text, 'String',phy_tput_frame(1))
+                                 
+                                 
+                                 switch channel_type
+                                     
+                                     case 'AWGN'
+                                         SINR_db = [1.5,5.7,4.5,8.7,12.5,15.4,16.1,19.3,20.1,20.9];
+                                     case 'Rayleigh'
+                                         SINR_db = [35,43.4,38,46.4,46,51.8,46.6,53,54.6,56.2];                                       
+                                 end
+                                 
+                                 Pr_min = SINR_db + Interf_Noise;        
+                                 PL_target = Ptx + G_ant - Cable_losses - Pr_min;                
+                                 x = ht_cords(1);          
+                                 y = ht_cords(2);
+
+                                 switch link_con(link_num).channel.path_loss_model
+
+                                     case 'FSPL'
+
+                                         tput_distance = 10.^((PL_target-20*log10(freq)-32.44)/20);
+                                         
+                                         if dlosh > tput_distance(1)
+                                         
+                                         set(handles.range_display_text, 'String',tput_distance(1)) 
+%                                          
+                                         colour = 'y'; 
+                                         %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
+                                         txt1 = [ num2str(phy_tput_frame(1)) ' Mbps' ' (BPSK 1/2)']; 
+                                         
+                                         
+                                         colour = [216/255 133/255 49/255]; 
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
+                                         txt2 = [num2str(phy_tput_frame(2)) ' Mbps' ' (BPSK 3/4)'];
+
+                                         colour = [7/255 164/255 18/255]; 
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
+                                         txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (QPSK 1/2)'];
+
+                                         colour = [116/255 11/255 128/255]; 
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
+                                         txt4 = [num2str(phy_tput_frame(4)) ' Mbps' ' (QPSK 3/4)'];
+
+                                         colour = 'c'; 
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
+                                         txt5 = [num2str(phy_tput_frame(5)) ' Mbps' ' (16QAM 1/2)'];
+
+                                         colour = 'b'; 
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
+                                         txt6 = [num2str(phy_tput_frame(6)) ' Mbps' ' (16QAM 3/4)'];
+
+                                         colour = 'm'; 
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
+                                         txt7 = [num2str(phy_tput_frame(7)) ' Mbps' ' (64QAM 1/2)'];
+
+                                         colour = 'g';
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
+                                         txt8 = [num2str(phy_tput_frame(8)) ' Mbps' ' (64QAM 2/3)'];
+
+                                         colour = [243/255 197/255 91/255]; 
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
+                                         txt9 = [num2str(phy_tput_frame(9)) ' Mbps' ' (64QAM 3/4)'];
+
+                                         colour = [127/255 0/255 255/255];
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
+                                         txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
+                                     
+%                                          i_am_legend = legend(handles.map,[plotted_range,handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{'Power Limited Range','BPSK 1/2','BPSK 3/4','QPSK 1/2','QPSK 3/4','16QAM 1/2','16QAM 3/4','64QAM 1/2','64QAM 2/3','64QAM 3/4','64QAM 5/6'})
+                                         %i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{'BPSK 1/2','BPSK 3/4','QPSK 1/2','QPSK 3/4','16QAM 1/2','16QAM 3/4','64QAM 1/2','64QAM 2/3','64QAM 3/4','64QAM 5/6'})
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best');
+                                         title(i_am_legend,'LTE PHY Throuput per MCS')
+                                         
+                                         end
+
+                                     case '2-Ray'
+
+                                         tput_distance = [two_ray(PL_target(1), ht, hr, freq),two_ray(PL_target(2), ht, hr, freq),two_ray(PL_target(3), ht, hr, freq),two_ray(PL_target(4), ht, hr, freq),two_ray(PL_target(5), ht, hr, freq),two_ray(PL_target(6), ht, hr, freq),two_ray(PL_target(7), ht, hr, freq),two_ray(PL_target(8), ht, hr, freq),two_ray(PL_target(9), ht, hr, freq),two_ray(PL_target(10), ht, hr, freq)];
+                                         tput_distance = tput_distance*10^-3;
+                                         
+                                         if dlosh > tput_distance(1)
+
+                                         set(handles.range_display_text, 'String',tput_distance(1)) 
+                                          
+                                         colour = 'y'; 
+                                         %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
+                                         txt1 = [ num2str(phy_tput_frame(1)) ' Mbps' ' (BPSK 1/2)']; 
+                                         
+                                         colour = [216/255 133/255 49/255]; 
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
+                                         txt2 = [num2str(phy_tput_frame(2)) ' Mbps' ' (BPSK 3/4)'];
+
+                                         colour = [7/255 164/255 18/255]; 
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
+                                         txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (QPSK 1/2)'];
+
+                                         colour = [116/255 11/255 128/255]; 
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
+                                         txt4 = [num2str(phy_tput_frame(4)) ' Mbps' ' (QPSK 3/4)'];
+
+                                         colour = 'c'; 
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
+                                         txt5 = [num2str(phy_tput_frame(5)) ' Mbps' ' (16QAM 1/2)'];
+
+                                         colour = 'b'; 
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
+                                         txt6 = [num2str(phy_tput_frame(6)) ' Mbps' ' (16QAM 3/4)'];
+
+                                         colour = 'm'; 
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
+                                         txt7 = [num2str(phy_tput_frame(7)) ' Mbps' ' (64QAM 1/2)'];
+
+                                         colour = 'g';
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
+                                         txt8 = [num2str(phy_tput_frame(8)) ' Mbps' ' (64QAM 2/3)'];
+
+                                         colour = [243/255 197/255 91/255]; 
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
+                                         txt9 = [num2str(phy_tput_frame(9)) ' Mbps' ' (64QAM 3/4)'];
+
+                                         colour = [127/255 0/255 255/255];
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
+                                         txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
+                                     
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best');
+                                         title(i_am_legend,'LTE PHY Throuput per MCS')   
+                                         
+                                         end
+
+                                     case '3-Ray'
+                                         tput_distance = [three_ray(PL_target(1), ht, hr, freq),three_ray(PL_target(2), ht, hr, freq),three_ray(PL_target(3), ht, hr, freq),three_ray(PL_target(4), ht, hr, freq),three_ray(PL_target(5), ht, hr, freq),three_ray(PL_target(6), ht, hr, freq),three_ray(PL_target(7), ht, hr, freq),three_ray(PL_target(8), ht, hr, freq),three_ray(PL_target(9), ht, hr, freq),three_ray(PL_target(10), ht, hr, freq)];
+                                         tput_distance = tput_distance*10^-3;   
+                                         
+                                         if dlosh > tput_distance(1)
+
+                                         set(handles.range_display_text, 'String',tput_distance(1)) 
+                                         
+                                         colour = 'y'; 
+                                         %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
+                                         txt1 = [ num2str(phy_tput_frame(1)) ' Mbps' ' (BPSK 1/2)']; 
+                                         
+                                         colour = [216/255 133/255 49/255]; 
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
+                                         txt2 = [num2str(phy_tput_frame(2)) ' Mbps' ' (BPSK 3/4)'];
+
+                                         colour = [7/255 164/255 18/255]; 
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
+                                         txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (QPSK 1/2)'];
+
+                                         colour = [116/255 11/255 128/255]; 
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
+                                         txt4 = [num2str(phy_tput_frame(4)) ' Mbps' ' (QPSK 3/4)'];
+
+                                         colour = 'c'; 
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
+                                         txt5 = [num2str(phy_tput_frame(5)) ' Mbps' ' (16QAM 1/2)'];
+
+                                         colour = 'b'; 
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
+                                         txt6 = [num2str(phy_tput_frame(6)) ' Mbps' ' (16QAM 3/4)'];
+
+                                         colour = 'm'; 
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
+                                         txt7 = [num2str(phy_tput_frame(7)) ' Mbps' ' (64QAM 1/2)'];
+
+                                         colour = 'g';
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
+                                         txt8 = [num2str(phy_tput_frame(8)) ' Mbps' ' (64QAM 2/3)'];
+
+                                         colour = [243/255 197/255 91/255]; 
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
+                                         txt9 = [num2str(phy_tput_frame(9)) ' Mbps' ' (64QAM 3/4)'];
+
+                                         colour = [127/255 0/255 255/255];
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
+                                         txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
+                                     
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best');
+                                         title(i_am_legend,'LTE PHY Throuput per MCS')     
+                                         
+                                         end
+
+                                     case 'Sea Radio-Wave Propagation Loss'
+                                         tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq),srwpl(PL_target(4), ht, hr, freq),srwpl(PL_target(5), ht, hr, freq),srwpl(PL_target(6), ht, hr, freq),srwpl(PL_target(7), ht, hr, freq),srwpl(PL_target(8), ht, hr, freq),srwpl(PL_target(9), ht, hr, freq),srwpl(PL_target(10), ht, hr, freq)];
+                                         tput_distance = tput_distance*10^-3;   
+                                         
+                                         if dlosh > tput_distance(1)
+
+                                         set(handles.range_display_text, 'String',tput_distance(1)) 
+                                         
+                                         colour = 'y'; 
+                                         %BPSK 1/2                                 
+                                         handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
+                                         txt1 = [ num2str(phy_tput_frame(1)) ' Mbps' ' (BPSK 1/2)']; 
+                                         
+                                         colour = [216/255 133/255 49/255]; 
+                                         %BPSK 3/4 
+                                         handles.tput_plot2 = tput_plot(x,y,tput_distance(2) ,handles.map,colour);
+                                         txt2 = [num2str(phy_tput_frame(2)) ' Mbps' ' (BPSK 3/4)'];
+
+                                         colour = [7/255 164/255 18/255]; 
+                                         %QPSK 1/2             
+                                         handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
+                                         txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (QPSK 1/2)'];
+
+                                         colour = [116/255 11/255 128/255]; 
+                                         %QPSK 3/4                                 
+                                         handles.tput_plot4 = tput_plot(x,y,tput_distance(4) ,handles.map,colour);
+                                         txt4 = [num2str(phy_tput_frame(4)) ' Mbps' ' (QPSK 3/4)'];
+
+                                         colour = 'c'; 
+                                         %16QAM 1/2  
+                                         handles.tput_plot5 = tput_plot(x,y,tput_distance(5) ,handles.map,colour);
+                                         txt5 = [num2str(phy_tput_frame(5)) ' Mbps' ' (16QAM 1/2)'];
+
+                                         colour = 'b'; 
+                                         %16QAM 3/4               
+                                         handles.tput_plot6= tput_plot(x,y,tput_distance(6) ,handles.map,colour);
+                                         txt6 = [num2str(phy_tput_frame(6)) ' Mbps' ' (16QAM 3/4)'];
+
+                                         colour = 'm'; 
+                                         %64QAM 1/2                                 
+                                         handles.tput_plot7 = tput_plot(x,y,tput_distance(7) ,handles.map,colour); 
+                                         txt7 = [num2str(phy_tput_frame(7)) ' Mbps' ' (64QAM 1/2)'];
+
+                                         colour = 'g';
+                                         %64QAM 2/3 
+                                         handles.tput_plot8 = tput_plot(x,y,tput_distance(8) ,handles.map,colour);
+                                         txt8 = [num2str(phy_tput_frame(8)) ' Mbps' ' (64QAM 2/3)'];
+
+                                         colour = [243/255 197/255 91/255]; 
+                                         %64QAM 3/4                 
+                                         handles.tput_plot9= tput_plot(x,y,tput_distance(9) ,handles.map,colour);
+                                         txt9 = [num2str(phy_tput_frame(9)) ' Mbps' ' (64QAM 3/4)'];
+
+                                         colour = [127/255 0/255 255/255];
+                                         %64QAM 5/6                 
+                                         handles.tput_plot10= tput_plot(x,y,tput_distance(10) ,handles.map,colour);
+                                         txt10 = [num2str(phy_tput_frame(10)) ' Mbps' ' (64QAM 5/6)'];
+                                     
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3,handles.tput_plot4,handles.tput_plot5,handles.tput_plot6,handles.tput_plot7,handles.tput_plot8,handles.tput_plot9,handles.tput_plot10],{txt1,txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10},'Location','best');
+                                         title(i_am_legend,'LTE PHY Throuput per MCS') 
+                                         
+                                         end
                                  end 
                                  
                                  
@@ -1451,6 +1226,8 @@ switch display_flag %Variable for determining whether a node or link is to be di
 
                                          tput_distance = 10.^((PL_target-20*log10(freq)-32.44)/20);
                                          
+                                         if dlosh > tput_distance(1)
+                                         
                                          set(handles.range_display_text, 'String',tput_distance(1)) 
 
                                          colour = 'y'; 
@@ -1468,14 +1245,18 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
                                          txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (64QAM)'];
                                          
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best');
                                          title(i_am_legend,'LTE PHY Throuput per Mod. Sch.')
+                                         
+                                         end
                                          
                                      case '2-Ray'
 
                                          tput_distance = [two_ray(PL_target(1), ht, hr, freq),two_ray(PL_target(2), ht, hr, freq),two_ray(PL_target(3), ht, hr, freq)];
                                          tput_distance = tput_distance*10^-3;
                                          
+                                         if dlosh > tput_distance(1)
+                                         
                                          set(handles.range_display_text, 'String',tput_distance(1)) 
 
                                          colour = 'y'; 
@@ -1493,13 +1274,17 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
                                          txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (64QAM)'];
                                          
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best');
                                          title(i_am_legend,'LTE PHY Throuput per Mod. Sch.')
+                                         
+                                         end
                                          
                                      case '3-Ray'
                                          tput_distance = [three_ray(PL_target(1), ht, hr, freq),three_ray(PL_target(2), ht, hr, freq),three_ray(PL_target(3), ht, hr, freq)];
                                          tput_distance = tput_distance*10^-3;   
                                          
+                                         if dlosh > tput_distance(1)
+                                         
                                          set(handles.range_display_text, 'String',tput_distance(1)) 
 
                                          colour = 'y'; 
@@ -1517,13 +1302,17 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
                                          txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (64QAM)'];
                                          
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best');
                                          title(i_am_legend,'LTE PHY Throuput per Mod. Sch.')
+                                         
+                                         end
 
                                      case 'Sea Radio-Wave Propagation Loss'
                                          tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq)];
                                          tput_distance = tput_distance*10^-3; 
                                          
+                                         if dlosh > tput_distance(1)
+                                         
                                          set(handles.range_display_text, 'String',tput_distance(1)) 
 
                                          colour = 'y'; 
@@ -1541,8 +1330,10 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                          handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
                                          txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (64QAM)'];
                                          
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best')
-                                         title(i_am_legend,'LTE PHY Throuput per Mod. Sch.')                                
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best');
+                                         title(i_am_legend,'LTE PHY Throuput per Mod. Sch.')  
+                                         
+                                         end
                                  end                
                          end
 
@@ -1573,53 +1364,69 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                      case 'FSPL'
 
                                          tput_distance = 10^((PL_target-20*log10(freq)-32.44)/20);
+                                         
+                                         if dlosh > tput_distance(1)
 
 
                                          colour = 'b';
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance ,handles.map,colour);
                                          txt1 = [ num2str(nwr_throughput) ' bps' ' (FSK)']; 
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best');
                                          title(i_am_legend,'NWR Throuput per Mod. Sch.') 
                                          
                                          set(handles.range_display_text, 'String',tput_distance)
+                                         
+                                         end
 
 
                                      case '2-Ray'
 
                                          tput_distance = two_ray(PL_target, ht, hr, freq);
                                          tput_distance = tput_distance*10^-3;
+                                         
+                                         if dlosh > tput_distance(1)
 
                                          colour = 'b';
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance ,handles.map,colour);
                                          txt1 = [ num2str(nwr_throughput) ' bps' ' (FSK)']; 
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best');
                                          title(i_am_legend,'NWR Throuput per Mod. Sch.') 
                                          
                                          set(handles.range_display_text, 'String',tput_distance)
                                          
+                                         end
+                                         
                                      case '3-Ray'
                                          tput_distance = three_ray(PL_target, ht, hr, freq);
-                                         tput_distance = tput_distance*10^-3;                 
+                                         tput_distance = tput_distance*10^-3;    
+                                         
+                                         if dlosh > tput_distance(1)
 
                                          colour = 'b';
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance ,handles.map,colour);
                                          txt1 = [ num2str(nwr_throughput) ' bps' ' (FSK)']; 
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best');
                                          title(i_am_legend,'LTE PHY Throuput per Mod. Sch.') 
                                          
                                          set(handles.range_display_text, 'String',tput_distance)
                                          
+                                         end
+                                         
                                      case 'Sea Radio-Wave Propagation Loss'
                                          tput_distance = srwpl(PL_target, ht, hr, freq);
-                                         tput_distance = tput_distance*10^-3;                 
+                                         tput_distance = tput_distance*10^-3;     
+                                         
+                                         if dlosh > tput_distance(1)
 
                                          colour = 'b';
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance ,handles.map,colour);
                                          txt1 = [ num2str(nwr_throughput) ' bps' ' (FSK)']; 
-                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best')
+                                         i_am_legend = legend(handles.map,[handles.tput_plot1],{txt1},'Location','best');
                                          title(i_am_legend,'NWR Throuput per Mod. Sch.') 
                                          
                                          set(handles.range_display_text, 'String',tput_distance)
+                                         
+                                         end
                          end
 
 
@@ -1648,6 +1455,8 @@ switch display_flag %Variable for determining whether a node or link is to be di
                              case 'FSPL'
 
                                  tput_distance = 10.^((PL_target-20*log10(freq)-32.44)/20);
+                                 
+                                 if dlosh > tput_distance(1)
 
                                                 
                                  colour = 'y'; 
@@ -1665,13 +1474,17 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                  handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
                                  txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (64QAM)'];
 
-                                 i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best')
-                                 title(i_am_legend,'Generic Throuput per Mod. Sch.')  
+                                 i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best');
+                                 title(i_am_legend,'Generic Throuput per Mod. Sch.') 
+                                 
+                                 end
 
                              case '2-Ray'
 
                                  tput_distance = [two_ray(PL_target(1), ht, hr, freq),two_ray(PL_target(2), ht, hr, freq),two_ray(PL_target(3), ht, hr, freq)];
                                  tput_distance = tput_distance*10^-3;
+                                 
+                                 if dlosh > tput_distance(1)
 
                                  colour = 'y'; 
                                  %QPSK                                  
@@ -1688,12 +1501,16 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                  handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
                                  txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (64QAM)'];
 
-                                 i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best')
+                                 i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best');
                                  title(i_am_legend,'Generic Throuput per Mod. Sch.') 
+                                 
+                                 end
                                  
                              case '3-Ray'
                                  tput_distance = [three_ray(PL_target(1), ht, hr, freq),three_ray(PL_target(2), ht, hr, freq),three_ray(PL_target(3), ht, hr, freq)];
-                                 tput_distance = tput_distance*10^-3;                 
+                                 tput_distance = tput_distance*10^-3;   
+                                 
+                                 if dlosh > tput_distance(1)
 
                                  colour = 'y'; 
                                  %QPSK                                  
@@ -1710,12 +1527,16 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                  handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
                                  txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (64QAM)'];
 
-                                 i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best')
+                                 i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best');
                                  title(i_am_legend,'Generic Throuput per Mod. Sch.') 
+                                 
+                                 end
                                  
                              case 'Sea Radio-Wave Propagation Loss'
                                  tput_distance = [srwpl(PL_target(1), ht, hr, freq),srwpl(PL_target(2), ht, hr, freq),srwpl(PL_target(3), ht, hr, freq)];
-                                 tput_distance = tput_distance*10^-3;                 
+                                 tput_distance = tput_distance*10^-3;   
+                                 
+                                 if dlosh > tput_distance(1)
 
                                  colour = 'y'; 
                                  %QPSK                                  
@@ -1732,18 +1553,41 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                  handles.tput_plot3= tput_plot(x,y,tput_distance(3) ,handles.map,colour);
                                  txt3 = [num2str(phy_tput_frame(3)) ' Mbps' ' (64QAM)'];
 
-                                 i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best')
+                                 i_am_legend = legend(handles.map,[handles.tput_plot1,handles.tput_plot2,handles.tput_plot3],{txt1,txt2,txt3},'Location','best');
                                  title(i_am_legend,'Generic Throuput per Mod. Sch.') 
+                                 
+                                 end
                          end
 
-                     otherwise
 
-
-                 end
-
-             case 2 %Prevailing Limit
+                end
+                
+                if dlosh > tput_distance(1)
                  
-                 %LOSH Computation
+                    set(handles.range_display_text, 'String',tput_distance(1))
+                     
+                     
+                else
+                    %Plot LOSH
+                    plotted_range = range_plot(dlosh_cords(1)  ,dlosh_cords(2)  ,d_losh,handles.map);
+                    
+                    set(handles.range_display_text, 'String',dlosh)
+                    set(handles.rx_sens_text, 'String','N/A')
+                    set(handles.ber_display_text, 'String','N/A')
+                    set(handles.node_display_text, 'String',link_con(link_num).link_name)
+                    set(handles.path_loss_disp_text, 'String', 'N/A');
+                    
+                    %set(handles.techno_disp_text, 'String',node_con(nod_num).equipment_params.technology )
+                    set(handles.service_disp_text, 'String','N/A' )
+                    set(handles.techno_disp_text, 'String','N/A' )
+                    set(handles.throughput_display_text, 'String','N/A')
+                    set(handles.freq_disp_text, 'String', 'N/A');
+                    set(handles.interf_disp_text, 'String', 'N/A');
+                    set(handles.fade_disp_text, 'String', 'N/A');
+                    
+                end
+                %%
+                %LOSH Computation
                 %Ascertain whether the transmitter is tower mounted or mobile at sea 
              switch node_con(tx_num).node_type
                  
@@ -1859,7 +1703,11 @@ switch display_flag %Variable for determining whether a node or link is to be di
                      h = h(2);
                      makedatatip(h,[closest_tower(:,1)  closest_tower(:,2)])
                      
-                     dlosh = d_losh;
+                     %create legend
+                     i_am_legend = legend(handles.map,[plotted_range],{'Link LOSH'},'Location','best');
+                     title(i_am_legend,'Line of Sight to Horizon Limit')
+                     
+                     
                      
              end
              
@@ -2322,7 +2170,7 @@ switch display_flag %Variable for determining whether a node or link is to be di
                                          if dlosh > tput_distance(1)
                                          
                                          set(handles.range_display_text, 'String',tput_distance(1)) 
-                                          
+%                                          
                                          colour = 'y'; 
                                          %BPSK 1/2                                 
                                          handles.tput_plot1 = tput_plot(x,y,tput_distance(1) ,handles.map,colour);
@@ -3220,10 +3068,6 @@ switch display_flag %Variable for determining whether a node or link is to be di
                     %Plot LOSH
                     plotted_range = range_plot(dlosh_cords(1)  ,dlosh_cords(2)  ,d_losh,handles.map);
                     
-                    %create legend
-                    i_am_legend = legend(handles.map,[plotted_range],{'Link LOSH'},'Location','best');
-                    title(i_am_legend,'Line of Sight to Horizon Limit')
-                    
                     set(handles.range_display_text, 'String',dlosh)
                     set(handles.rx_sens_text, 'String','N/A')
                     set(handles.ber_display_text, 'String','N/A')
@@ -3238,1356 +3082,4 @@ switch display_flag %Variable for determining whether a node or link is to be di
                     set(handles.interf_disp_text, 'String', 'N/A');
                     set(handles.fade_disp_text, 'String', 'N/A');
                     
-                end  
-                 
-      end
-     
-%     otherwise
-%      errordlg('No configuration selected', 'Run')
-end
-
-
-function pl_2ray = two_ray(PL_target, ht, hr, freq)
-
-%2-Ray Path Loss
-
-lambda = physconst('LightSpeed')/(freq*10^6);
-d_init = 0.001; %11.132; %d in meters
-d = d_init;
-
-
-R = 6.378*(10^6);
-d_losh = (sqrt(2*(R)*(ht))+sqrt(2*(R)*(hr)));
-
-fin_flag = 0;
-
-while (fin_flag == 0)
-    
-    if d == d_init
-        
-        PL_res = -10*log10(((lambda/(4*pi*d))^2)*(2*sin((2*pi*hr*ht)/(lambda*d)))^2);
-        
-        value_check = PL_res - PL_target;
-        value_sign = sign(value_check);
-        
-        d = 1;
-       
-    end
-       
-    %For graphing
-%     PL_res(d) = -10*log10(((lambda/(4*pi*d))^2)*(2*sin((2*pi*hr*ht)/(lambda*d)))^2);
-   
-    PL_res = -10*log10(((lambda/(4*pi*d))^2)*(2*sin((2*pi*hr*ht)/(lambda*d)))^2);
-
-    value_check = PL_res - PL_target;
-    new_sign = sign(value_check);
-    
-    if new_sign == value_sign       
-        d = d+1;
-    else
-        if d ==1
-            narrow_d = d_init:(d_init/10):d;
-            
-            
-            loop_max = numel(narrow_d);
-            for ind = 1:loop_max
-                d = narrow_d(ind);
-                
-                PL_res(ind) = -10*log10(((lambda/(4*pi*d))^2)*(2*sin((2*pi*hr*ht)/(lambda*d)))^2);
-            end
-            
-            [~,i] = min(abs(PL_res-PL_target));
-            d = narrow_d(i);
-            
-            fin_flag = 1;
-            
-            
-        else
-            
-            narrow_d = (d-1):0.01:d;
-            
-            loop_max = numel(narrow_d);
-            for ind = 1:loop_max
-                d = narrow_d(ind);
-                PL_res(ind) = -10*log10(((lambda/(4*pi*d))^2)*(2*sin((2*pi*hr*ht)/(lambda*d)))^2);
-            end
-            
-            [~,i] = min(abs(PL_res-PL_target));
-            d = narrow_d(i);
-            
-            fin_flag = 1;
-        
-        end        
-    end
-    
-    if d == round(d_losh)
-        fin_flag = 1;
-    end
-end
-
-pl_2ray = d;
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function pl_3ray = three_ray(PL_target, ht, hr, freq)
-
-%3-Ray Path Loss
-
-lambda = physconst('LightSpeed')/(freq*10^6);
-d_init = 0.001; %11.132; %d in meters
-d = d_init;
-he = 30.5;
-d_break = (4*hr*ht)/lambda;
-
-
-R = 6.378*(10^6);
-d_losh = (sqrt(2*(R)*(ht))+sqrt(2*(R)*(hr)));
-
-fin_flag = 0;
-
-while (fin_flag == 0)
-    
-    if d == d_init
-        
-        if (d < d_break || d == d_break)
-    
-            PL_res = -10*log10(((lambda/(4*pi*d))^2)*(2*sin((2*pi*hr*ht)/(lambda*d)))^2);
-
-        elseif (d > d_break)
-   
-            delta = 2*sin((2*pi*hr*ht)/(lambda*d)) *2*sin((2*pi*(he-hr)*(he-ht))/(lambda*d));
-            PL_res = -10*log10(((lambda/(4*pi*d))^2)*(2*(1+delta))^2);    
-        end
-        
-        value_check = PL_res - PL_target;
-        value_sign = sign(value_check);
-        
-        d = 1;
-       
-    end
-    
-%     %For graphing
-%     if (d < d_break || d == d_break)
-% 
-%         PL_res(d) = -10*log10(((lambda/(4*pi*d))^2)*(2*sin((2*pi*hr*ht)/(lambda*d)))^2);
-% 
-%     elseif (d > d_break)
-% 
-%         delta = 2*sin((2*pi*hr*ht)/(lambda*d)) *2*sin((2*pi*(he-hr)*(he-ht))/(lambda*d));
-%         PL_res(d) = -10*log10(((lambda/(4*pi*d))^2)*(2*(1+delta))^2);    
-%     end
-   
-
-    if (d < d_break || d == d_break)
-
-        PL_res = -10*log10(((lambda/(4*pi*d))^2)*(2*sin((2*pi*hr*ht)/(lambda*d)))^2);
-
-    elseif (d > d_break)
-
-        delta = 2*sin((2*pi*hr*ht)/(lambda*d)) *2*sin((2*pi*(he-hr)*(he-ht))/(lambda*d));
-        PL_res = -10*log10(((lambda/(4*pi*d))^2)*(2*(1+delta))^2);    
-    end
-
-    value_check = PL_res - PL_target;
-    new_sign = sign(value_check);
-    
-    if new_sign == value_sign       
-        d = d+1;
-    else
-        if d ==1
-            narrow_d = d_init:(d_init/10):d;
-            
-            
-            loop_max = numel(narrow_d);
-            for ind = 1:loop_max
-                d = narrow_d(ind);
-                
-                if (d < d_break || d == d_break)
-
-                    PL_res(ind) = -10*log10(((lambda/(4*pi*d))^2)*(2*sin((2*pi*hr*ht)/(lambda*d)))^2);
-
-                elseif (d > d_break)
-
-                    delta = 2*sin((2*pi*hr*ht)/(lambda*d)) *2*sin((2*pi*(he-hr)*(he-ht))/(lambda*d));
-                    PL_res(ind) = -10*log10(((lambda/(4*pi*d))^2)*(2*(1+delta))^2);    
                 end
-            end
-            
-            [~,i] = min(abs(PL_res-PL_target));
-            d = narrow_d(i);
-            
-            fin_flag = 1;
-            
-            
-        else
-            
-            narrow_d = (d-1):0.01:d;
-            
-            loop_max = numel(narrow_d);
-            for ind = 1:loop_max
-                d = narrow_d(ind);
-                if (d < d_break || d == d_break)
-
-                    PL_res(ind) = -10*log10(((lambda/(4*pi*d))^2)*(2*sin((2*pi*hr*ht)/(lambda*d)))^2);
-
-                elseif (d > d_break)
-
-                    delta = 2*sin((2*pi*hr*ht)/(lambda*d)) *2*sin((2*pi*(he-hr)*(he-ht))/(lambda*d));
-                    PL_res(ind) = -10*log10(((lambda/(4*pi*d))^2)*(2*(1+delta))^2);    
-                end
-            end
-            
-            [~,i] = min(abs(PL_res-PL_target));
-            d = narrow_d(i);
-            
-            fin_flag = 1;
-        
-        end        
-    end
-    
-    if d == round(d_losh)
-        fin_flag = 1;
-    end
-end
-
-pl_3ray = d;
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function pl_srwpl = srwpl(PL_target, ht, hr, freq)
-
-
-lambda = physconst('LightSpeed')/(freq*10^6);
-d_init = 0.001; %11.132;
-d = d_init;
-
-FSPL = 20*log10(d*10^-3)+ 20*log10(freq)+32.44; % f(MHz)  & d(km)
-PL_0 = FSPL;
-PL_1 = 10*log10(4*sin((2*pi*hr*ht)/(lambda*d))^2);
-PL_boat = 10;
-PL_earth = 0;
-alpha = 5;
-
-R = 6.378*(10^6);
-d_losh = (sqrt(2*(R)*(ht))+sqrt(2*(R)*(hr)));
-
-fin_flag = 0;
-
-while (fin_flag == 0)
-    
-    if d == d_init
-        PL_res = 20*log10(d*10^-3)+ 20*log10(freq)+32.44 + 10*log10(4*sin((2*pi*hr*ht)/(lambda*d))^2) + PL_boat + PL_earth + alpha;
-        
-        value_check = PL_res - PL_target;
-        value_sign = sign(value_check);
-        
-        d = 1;
-       
-    end
-    
-%    PL_res(d) = 20*log10(d*10^-3)+ 20*log10(freq)+32.44 + 10*log10(4*sin((2*pi*hr*ht)/(lambda*d))^2) + PL_boat + PL_earth + alpha;
-    PL_res = 20*log10(d*10^-3)+ 20*log10(freq)+32.44 + 10*log10(4*sin((2*pi*hr*ht)/(lambda*d))^2) + PL_boat + PL_earth + alpha;
-
-    value_check = PL_res - PL_target;
-    new_sign = sign(value_check);
-    
-    if new_sign == value_sign
-        
-        d = d+1;
-    else
-        if d ==1
-            narrow_d = d_init:(d_init/10):d;
-                        
-            loop_max = numel(narrow_d);
-            for ind = 1:loop_max
-                d = narrow_d(ind);
-                PL_res(ind) = 20*log10(d*10^-3)+ 20*log10(freq)+32.44 + 10*log10(4*sin((2*pi*hr*ht)/(lambda*d))^2) + PL_boat + PL_earth + alpha;
-            end
-            
-            [~,i] = min(abs(PL_res-PL_target));
-            d = narrow_d(i);
-            
-            fin_flag = 1;            
-            
-        else
-            
-            narrow_d = (d-1):0.01:d;
-            
-            loop_max = numel(narrow_d);
-            for ind = 1:loop_max
-                d = narrow_d(ind);
-                PL_res(ind) = 20*log10(d)+ 20*log10(freq)+32.44 + 10*log10(4*sin((2*pi*hr*ht)/(lambda*d))^2) + PL_boat + PL_earth + alpha;
-            end
-            
-            [~,i] = min(abs(PL_res-PL_target));
-            d = narrow_d(i);
-            
-            fin_flag = 1;
-        
-        end        
-    end
-    
-    if d == round(d_losh)
-        fin_flag = 1;
-    end
-end
-pl_srwpl = d;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function ebno_out = EbN0_value(ber_target,mod_sch,channel_type)
-
-switch channel_type
-    
-    case 'AWGN'
-        switch mod_sch
-    
-            case 'QPSK'
-               
-                EbN0_range =0:0.001:30; %EbN0 in db
-                M = 4;
-
-                ber = berawgn(EbN0_range,'psk',M,'nondiff'); %returns the BER of uncoded QAM over an AWGN channel with coherent demodulation. The alphabet size, M, must be at least 4. 
-
-                [~,i] = min(abs(ber-ber_target));
-                EbN0_dB = EbN0_range(i);
-                ebno_out = 10^(EbN0_dB/10); % linear output 
-        
-            case '16QAM'
-        
-                EbN0_range =0:0.001:35;
-                M = 16;
-
-                ber = berawgn(EbN0_range,'qam',M);
-
-                [~,i] = min(abs(ber-ber_target));
-                EbN0_dB = EbN0_range(i);
-                ebno_out = 10^(EbN0_dB/10);
-        
-            case '64QAM'
-                EbN0_range =0:0.001:40;
-                M = 64;
-
-                ber = berawgn(EbN0_range,'qam',M);
-
-                [~,i] = min(abs(ber-ber_target));
-                EbN0_dB = EbN0_range(i);
-                ebno_out = 10^(EbN0_dB/10);
-        
-        
-            case 'FSK'  
-        
-                EbN0_range =0:0.01:31;
-                M = 2;
-
-                ber = berawgn(EbN0_range,'fsk',M,'coherent');%returns the BER of orthogonal uncoded FSK modulation over an AWGN channel. coherence is either 'coherent' for coherent demodulation or 'noncoherent' for noncoherent demodulation. M must be no greater than 64 for 'noncoherent'
-
-                [~,i] = min(abs(ber-ber_target));
-                EbN0_dB = EbN0_range(i);
-                ebno_out = 10^(EbN0_dB/10);
-         
-        end
-        
-    case 'Rayleigh'
-        switch mod_sch
-    
-            case 'QPSK'
-                EbN0_range =0:1:75; %EbN0 in db
-                M = 4;
-                divorder = 1;
-
-                ber = berfading(EbN0_range,'psk',M,divorder); %returns the BER of uncoded QAM over an AWGN channel with coherent demodulation. The alphabet size, M, must be at least 4. 
-
-                [~,i] = min(abs(ber-ber_target));
-                EbN0_dB = EbN0_range(i);
-                ebno_out = 10^(EbN0_dB/10);
-
-        
-            case '16QAM'
-                EbN0_range =0:1:80;
-                M = 16;
-                divorder = 1;
-
-                ber = berfading(EbN0_range,'qam',M,divorder);
-
-                [~,i] = min(abs(ber-ber_target));
-                EbN0_dB = EbN0_range(i);
-                ebno_out = 10^(EbN0_dB/10);
-        
-        
-            case '64QAM'
-                EbN0_range =0:1:85;
-                M = 64;
-                divorder = 1;
-
-                ber = berfading(EbN0_range,'qam',M,divorder);
-
-                [~,i] = min(abs(ber-ber_target));
-                EbN0_dB = EbN0_range(i);
-                ebno_out = 10^(EbN0_dB/10);
-
-        
-        
-            case 'FSK'  
-                EbN0_range =0:1:80;
-                M = 2;
-                divorder = 1;
-
-                ber = berfading(EbN0_range,'fsk',M,divorder,'coherent');%returns the BER of orthogonal uncoded FSK modulation over an AWGN channel. coherence is either 'coherent' for coherent demodulation or 'noncoherent' for noncoherent demodulation. M must be no greater than 64 for 'noncoherent'
-
-                [~,i] = min(abs(ber-ber_target));
-                EbN0_dB = EbN0_range(i);
-                ebno_out = 10^(EbN0_dB/10);
-                
-        end
-        
-end
-        
-
-
-
-function circ = range_plot(x,y,r,ax)
-
-ang = 0:pi/50:2*pi;
-% xunit = ((r/1.1132)*0.01) * cos(ang) + x;
-% yunit = ((r/1.1132)*0.01) * sin(ang) + y;
-xunit = ((r/0.011132)*0.0001) * cos(ang) + x; %decimal coordinates to four decimal places 
-yunit = ((r/0.011132)*0.0001) * sin(ang) + y; %decimal coordinates to four decimal places 
-circ = plot(ax,xunit, yunit, 'r', 'LineWidth',3); 
-
-hold (ax, 'on')
-% legend(ax,'Range')
-% hold off
-
-function circl = tput_plot(x,y,r,ax,colour)
-
-ang = 0:pi/50:2*pi;
-% xunit = ((r/1.1132)*0.01) * cos(ang) + x;
-% yunit = ((r/1.1132)*0.01) * sin(ang) + y;
-xunit = ((r/0.011132)*0.0001) * cos(ang) + x; %decimal coordinates to four decimal places 
-yunit = ((r/0.011132)*0.0001) * sin(ang) + y; %decimal coordinates to four decimal places 
-circl = plot(ax,xunit, yunit,'Color',colour, 'LineWidth',2); 
-
-hold (ax, 'on')
-%legend(ax,label) %,label,colour
-% hold off
-
-% --- Executes on button press in configure_pushbutton.
-function configure_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to configure_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-newnode = (get(handles.new_node_radiobutton, 'Value'));
-newlink = (get(handles.new_link_radiobutton, 'Value'));
-
-if (1 == newlink )
-%     link_config('main_screen_v5',handles.figure1)
-        link_config
-elseif (1 == newnode) 
-%      node_config('main_screen_v5',handles.figure1)
-        node_config
-end
-
-guidata(handles.figure1, handles);
-
-
-
-% --- Executes on button press in new_node_radiobutton.
-function new_node_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to new_node_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of new_node_radiobutton
-
-%set(handles.new_node_radiobutton, 'UserData', handles.new_node_radiobutton.Value);
-
-% --- Executes on button press in new_link_radiobutton.
-function new_link_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to new_link_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of new_link_radiobutton
-
-
-% --- Executes on selection change in country_popupmenu.
-function country_popupmenu_Callback(hObject, eventdata, handles)
-% hObject    handle to country_popupmenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns country_popupmenu contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from country_popupmenu
-
-contents = cellstr(get(hObject,'String'));
-country = contents{get(hObject,'Value')};
-set(handles.country_popupmenu, 'UserData', country);
-
-guidata(handles.figure1, handles);
-
-
-% --- Executes during object creation, after setting all properties.
-function country_popupmenu_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to country_popupmenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in map_pushbutton.
-function map_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to map_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-country = (get(handles.country_popupmenu, 'UserData'));
-if (isempty(country))
-    country = 'Grenada';
-end
-grenada = 'Grenada';
-dominica = 'Dominica';
-stlucia = 'St. Lucia';
-stvincent = 'St. Vincent';
-stkitts = 'St. Kitts';
-trinidad = 'Trinidad & Tobago'; 
-
-if (strcmp(grenada,country))
-     sel = 1;
-elseif (strcmp(dominica,country))
-     sel = 2;
-elseif (strcmp(stlucia,country))
-    sel = 3;
-elseif (strcmp(stvincent,country))
-    sel = 4;
-elseif (strcmp(stkitts,country))
-    sel = 5;
-elseif (strcmp(trinidad,country))
-    sel = 6;
-else 
-    sel = 7;
-end
-
-handles.datacursor = datacursormode;
-datacursormode off
-
-switch sel
-    case 1 
-
-        set(handles.map, 'XLim', [-62.2,-61.2]);
-        set(handles.map, 'YLim', [11.7,12.5]);
-    case 2
-
-        set(handles.map, 'XLim', [-62,-60.8]);
-        set(handles.map, 'YLim', [14.9,15.8]);
-    case 3
-
-        set(handles.map, 'XLim', [-61.6,-60.3]);
-        set(handles.map, 'YLim', [13.4,14.4]);
-    case 4
-
-        set(handles.map, 'XLim', [-61.8,-60.6]);
-        set(handles.map, 'YLim', [12.8,13.7]);
-    case 5
-
-        set(handles.map, 'XLim', [-63.2,-62.3]);
-        set(handles.map, 'YLim', [17,17.8]);
-    case 6
-
-        set(handles.map, 'XLim', [-62.5,-60]);
-        set(handles.map, 'YLim', [9.5,12]);
-    otherwise
-        errordlg('Country not Found', 'Country Error')
-        return;
-end
-
-xlabel(handles.map,'Longitude')
-ylabel(handles.map,'Latitude')
-grid(handles.map,'on')
-plot_google_map('Axis',handles.map,'maptype','satellite');
-hold (handles.map, 'on')
-guidata(handles.output, handles);
-
-% --- Executes on selection change in link_popupmenu.
-function link_popupmenu_Callback(hObject, eventdata, handles)
-% hObject    handle to link_popupmenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns link_popupmenu contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from link_popupmenu
-% contents = cellstr(get(hObject,'String'));
-% linkselec = contents{get(hObject,'Value')};
-% setappdata(0, 'link_selec', linkselec);
-
-
-% --- Executes during object creation, after setting all properties.
-function link_popupmenu_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to link_popupmenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on selection change in node_popupmenu.
-function node_popupmenu_Callback(hObject, eventdata, handles)
-% hObject    handle to node_popupmenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns node_popupmenu contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from node_popupmenu
-
-% contents = cellstr(get(hObject,'String'));
-% nodeselec = contents{get(hObject,'Value')};
-% setappdata(0, 'node_selec', nodeselec);
-
-   %sindisnd
-   
-% function setnodepop()
-%         
-% if exist('nodesave.mat')
-%     load('nodesave.mat')
-%      node_choices= {node_con.node_name}   ;   
-% %     for nodein = 1:save_ind
-% %     node_choices(nodein) = node_con(nodein).node_name;
-% %     end
-% set(handles.node_popupmenu, 'String', node_choices);
-% set(handles.node_popupmenu, 'Value', 1);
-% end
-        
-
-% 
-% if exist('nodesave.mat')
-%     load('nodesave.mat')
-%             
-%     for nodein = 1:save_ind
-%     node_choices(save_ind) = node_con(save_ind).node_name;
-%     end
-% set(handles.node_popupmenu, 'String', node_choices);
-% end
-
-
-
-
-% --- Executes during object creation, after setting all properties.
-function node_popupmenu_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to node_popupmenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in load_node_radiobutton.
-function load_node_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to load_node_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of load_node_radiobutton
-
-% set(handles.node_popupmenu,'Enable','on') 
-% set(handles.link_popupmenu,'Enable','off')
-% 
-% guidata(handles.figure1, handles);
-
-
-
-
-
-
-% --- Executes on button press in load_link_radiobutton.
-function load_link_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to load_link_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of load_link_radiobutton
-
-% set(handles.link_popupmenu,'Enable','on')
-% set(handles.node_popupmenu,'Enable','off') 
-%  
-% guidata(handles.figure1, handles);
-
-% --- Executes on button press in towers_checkbox.
-function towers_checkbox_Callback(hObject, eventdata, handles)
-% hObject    handle to towers_checkbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of towers_checkbox
-towers_on = get(hObject,'Value');
-
-if exist('filter.mat')
-   load('filter.mat') 
-   filter_on = filter_con.height_on;
-%    towers_selected = getappdata(0,'towers_selection');
-end
-
-
-if (0 == filter_on && 1 == towers_on) 
-    if exist('towers.mat')
-        load('towers.mat')
-        if exist('tower_tnt')
-            
-            if isfield(handles,'tower_plot_all')
-                set(handles.tower_plot_all, 'Visible', 'on')
-                if isfield(handles,'tower_plot_sel')
-                set(handles.tower_plot_sel, 'Visible', 'off')
-                end
-            else
-
-            lon_var = [tower_tnt.Lon];
-            lat_var = [tower_tnt.Lat];
-            handles.tower_plot_all = plot(handles.map,lon_var,lat_var,'r*','DisplayName','Cellular Tower');
-            hold (handles.map, 'on')
-            end
- 
-% geoshow(tower_tnt.Lat,tower_tnt.Lon,'DisplayType', 'surface') 
-% plotm(tower_tnt.Lat,tower_tnt.Lon)   
- %scatterplot(tower_tnt.Lat,tower_tnt.Lon) 
-%   scatter(tower_tnt.Lat,tower_tnt.Lon) 
-%plot(tower_tnt.Lat,tower_tnt.Lon,'*')
-        end
-
-    else
-        errordlg('No Tower Data Found', 'Tower Data Set Selection')
-        return;
-    end
-    
-elseif (1 == filter_on && 1 == towers_on) 
-    
-    if exist('filter.mat')
-       load('filter.mat') 
-       towers_selected = tower_sel;
-%    towers_selected = getappdata(0,'towers_selection');
-    end
-    
-    cng_flag = getappdata(0,'filter_change_flag');
-            if (isfield(handles,'tower_plot_sel') && (cng_flag==0))
-                set(handles.tower_plot_sel, 'Visible', 'on')
-                if isfield(handles,'tower_plot_all')
-                set(handles.tower_plot_all, 'Visible', 'off')
-                end
-            else
-
-            lon_var = [towers_selected.Lon];
-            lat_var = [towers_selected.Lat];
-            handles.tower_plot_sel = plot(handles.map,lon_var,lat_var,'y*','DisplayName','Filtered Cellular Tower');
-            hold (handles.map, 'on')
-            end
-
-
-    setappdata(0,'filter_change_flag',0)
-else 
-    
-    
-if isfield(handles,'tower_plot_sel')
-set(handles.tower_plot_sel, 'Visible', 'off')
-end
-if isfield(handles,'tower_plot_all')
-set(handles.tower_plot_all, 'Visible', 'off')
-end
-
-% set(handles.tower_plot,'Visible','off')
-
-%clear(handles.tower_plot)
-end
-
-guidata(handles.figure1, handles);
-
-% --- Executes on button press in gmdss_checkbox.
-function gmdss_checkbox_Callback(hObject, eventdata, handles)
-% hObject    handle to gmdss_checkbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of gmdss_checkbox
-
-
-% --- Executes on button press in fish_zones_checkbox.
-function fish_zones_checkbox_Callback(hObject, eventdata, handles)
-% hObject    handle to fish_zones_checkbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of fish_zones_checkbox
-
-
-% --- Executes on button press in econ_zones_checkbox.
-function econ_zones_checkbox_Callback(hObject, eventdata, handles)
-% hObject    handle to econ_zones_checkbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of econ_zones_checkbox
-econ_on = get(hObject,'Value');
-
-if 1 == econ_on 
-    if exist('geodata.mat')
-        load('geodata.mat')
-        if exist('eez')
-
-lon_var = [eez.Lon(1:40)];
-lat_var = [eez.Lat(1:40)];
-handles.econ_plot1 = plot(handles.map,lon_var,lat_var,'--w','LineWidth',2,'DisplayName','Economic Zone(Outer)');
-hold (handles.map, 'on')
-
-lon_var = [eez.Lon(41:456)];
-lat_var = [eez.Lat(41:456)];
-handles.econ_plot2 = plot(handles.map,lon_var,lat_var,'--w','LineWidth',2,'DisplayName','Economic Zone(Tobago)');
-hold (handles.map, 'on')
-
-lon_var = [eez.Lon(457:1508)];
-lat_var = [eez.Lat(457:1508)];
-handles.econ_plot3 = plot(handles.map,lon_var,lat_var,'--w','LineWidth',2,'DisplayName','Economic Zone(Trinidad)');
-hold (handles.map, 'on')
-%fill(handles.map,lon_var,lat_var,'w')
-
-        end
-
-    else
-        errordlg('No Economic Zone Data Found', 'Data Set Selection')
-        return;
-    end
-    
-else 
-    delete (handles.econ_plot1)
-    delete (handles.econ_plot2)
-    delete (handles.econ_plot3)
-end
-
-guidata(handles.figure1, handles);
-
-% --- Executes on button press in cont_zones_checkbox.
-function cont_zones_checkbox_Callback(hObject, eventdata, handles)
-% hObject    handle to cont_zones_checkbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of cont_zones_checkbox
-contig_on = get(hObject,'Value');
-
-if 1 == contig_on 
-    if exist('geodata.mat')
-        load('geodata.mat')
-        if exist('con')
-
-lon_var = [con.Lon];
-lat_var = [con.Lat];
-handles.contig_plot = plot(handles.map,lon_var,lat_var,'--y','LineWidth',2,'DisplayName','Contiguous Zone');
-hold (handles.map, 'on')
-%fill(handles.map,lon_var,lat_var,'y') 
-
-
-        end
-
-    else
-        errordlg('No Contiguous Zone Data Found', 'Data Set Selection')
-        return;
-    end
-    
-else 
-    delete (handles.contig_plot)
-end
-
-guidata(handles.figure1, handles);
-
-% --- Executes on button press in terr_waters_checkbox.
-function terr_waters_checkbox_Callback(hObject, eventdata, handles)
-% hObject    handle to terr_waters_checkbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of terr_waters_checkbox
-terri_on = get(hObject,'Value');
-
-if 1 == terri_on 
-    if exist('geodata.mat')
-        load('geodata.mat')
-        if exist('ter')
-
-lon_var = [ter.Lon];
-lat_var = [ter.Lat];
-handles.terri_plot = plot(handles.map,lon_var,lat_var,'--m','LineWidth',2,'DisplayName','Territorial Waters');
-hold (handles.map, 'on')
-%fill(handles.map,lon_var,lat_var,'m')
-
-        end
-
-    else
-        errordlg('No Territorial Waters Data Found', 'Data Set Selection')
-        return;
-    end
-    
-else 
-    delete (handles.terri_plot)
-end
-
-guidata(handles.figure1, handles);
-
-% --- Executes on button press in tower_filter_pushbutton.
-function tower_filter_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to tower_filter_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-data_filter
-%close(node_config)
-% datacursormode toggle
-
-% dcm_obj = datacursormode(handles.figure1);
-% set(dcm_obj,'DisplayStyle','datatip',...
-%     'SnapToDataVertex','off','Enable','on','UpdateFcn',@myupdatefcn)
-% 
-% text(-62,11.8,'Click on desired node location, then press Return.')
-% % Wait while the user does this.
-% pause 
-% 
-% c_info = getCursorInfo(dcm_obj);
-% 
-% showndoec(hObject,eventdata)
-
-guidata(handles.figure1, handles);
-
-% function showndoec(hObject,eventdata)
-% h_nodec = findobj('Tag','figure_node');
-% if (isempty(h_nodec))
-%   % Display Error MEssage 
-% else
-%   figure(h_nodec);
-% end
-
-% --- Executes on button press in ber_checkbox.
-function ber_checkbox_Callback(hObject, eventdata, handles)
-% hObject    handle to ber_checkbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of ber_checkbox
-
-
-% --- Executes on button press in throughput_checkbox.
-function throughput_checkbox_Callback(hObject, eventdata, handles)
-% hObject    handle to throughput_checkbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of throughput_checkbox
-throughput_on = get(hObject,'Value');
-
-setappdata(0,'tput_on',1)
-
-% --- Executes on button press in full_radiobutton.
-function full_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to full_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of full_radiobutton
-
-
-% --- Executes on button press in three_quarter_radiobutton.
-function three_quarter_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to three_quarter_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of three_quarter_radiobutton
-
-
-% --- Executes on button press in half_radiobutton.
-function half_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to half_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of half_radiobutton
-
-
-% --- Executes on button press in quarter_radiobutton.
-function quarter_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to quarter_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of quarter_radiobutton
-
-
-% --- Executes on button press in range_checkbox.
-function range_checkbox_Callback(hObject, eventdata, handles)
-% hObject    handle to range_checkbox (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of range_checkbox
-
-
-% --- Executes on button press in pwr_lim_radiobutton.
-function pwr_lim_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to pwr_lim_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of pwr_lim_radiobutton
-
-
-% --- Executes on button press in los_radiobutton.
-function los_radiobutton_Callback(hObject, eventdata, handles)
-% hObject    handle to los_radiobutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of los_radiobutton
-
-
-% --- Executes on selection change in prx_popupmenu.
-function prx_popupmenu_Callback(hObject, eventdata, handles)
-% hObject    handle to prx_popupmenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns prx_popupmenu contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from prx_popupmenu
-
-
-% --- Executes during object creation, after setting all properties.
-function prx_popupmenu_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to prx_popupmenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes when selected object is changed in load_selection.
-function load_selection_SelectionChangedFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in load_selection 
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-switch eventdata.Source.SelectedObject.Tag
-    
-    case 'load_link_radiobutton'
-%         set(handles.link_popupmenu,'Enable','on')
-%         set(handles.node_popupmenu,'Enable','off')
-        setappdata(0,'disp_flag',1)        
-        set(handles.pwr_lim_radiobutton,'Enable','on')
-        set(handles.prev_lim_radiobutton,'Enable','on')
-        
-    case 'load_node_radiobutton'
-%         set(handles.node_popupmenu,'Enable','on') 
-%         set(handles.link_popupmenu,'Enable','off')
-        setappdata(0,'disp_flag',0)
-        set(handles.pwr_lim_radiobutton,'Enable','off')
-        set(handles.prev_lim_radiobutton,'Enable','off')
-        setappdata(0,'range_type',0)
-        set(handles.los_radiobutton,'Value',1)
-        
-    otherwise
-        errordlg('Error Selecting Loading Source', 'Load Selection')
-    return;
-end
-        
-
-guidata(handles.figure1, handles);
-
-
-% --- Executes when selected object is changed in range_selection.
-function range_selection_SelectionChangedFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in range_selection 
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-switch eventdata.Source.SelectedObject.Tag
-    
-    case 'los_radiobutton'
-%         set(handles.prx_equip_radiobutton,'Enable','off') 
-%         set(handles.prx_comp_radiobutton,'Enable','off') 
-%         set(handles.prx_popupmenu,'Enable','off')
-%         set(handles.prx_text,'Enable','off')
-
-    case 'pwr_lim_radiobutton'
-%         set(handles.prx_equip_radiobutton,'Enable','on') 
-%         set(handles.prx_comp_radiobutton,'Enable','on') 
-%         set(handles.prx_popupmenu,'Enable','on')
-%         set(handles.prx_text,'Enable','on')
-    otherwise
-        errordlg('Error Selecting Range Type', 'Range Selection')
-    return;
-end
-        
-
-guidata(handles.figure1, handles);
-
-
-% --- Executes on button press in display_pushbutton.
-function display_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to display_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
- display_flag =  getappdata(0,'disp_flag');
- 
- switch display_flag
-    
-    case 0 %node
-        
-        node_display 
-
-
-        
-    case 1 %link
-        
-        link_display
- end
-
-% 
-% switch display_flag
-%     
-%     case 0
-%         
-%         nodesel = getappdata(0, 'node_selec');
-% 
-%         switch  nodesel
-% 
-%             case 'Select'
-% 
-%             errordlg('No Node Selected', 'Node Edit')
-%             return;
-% 
-%             otherwise
-% 
-%              node_display   
-% 
-%         end
-%         
-%     case 1
-%         
-%                 linksel = getappdata(0, 'link_selec');
-% 
-%         switch  linksel
-% 
-%             case 'Select'
-% 
-%             errordlg('No Link Selected', 'Link Edit')
-%             return;
-% 
-%             otherwise
-% 
-%                 link_display
-% 
-%         end
-% end
-
-% --- Executes on button press in edit_pushbutton.
-function edit_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-edit_flag =  getappdata(0,'disp_flag');
- 
- switch edit_flag
-    
-    case 0 %node
-        
-        node_edit
-
-
-        
-    case 1 %link
-        
-        link_edit
- end
-
-% nodesel = getappdata(0, 'node_selec');
-% 
-% switch  nodesel
-%     
-%     case 'Select'
-%         
-%     errordlg('No Node Selected', 'Node Edit')
-%     return;
-%         
-%     otherwise
-%         
-%         node_edit
-%         
-% end
-
-% --- If Enable == 'on', executes on mouse press in 5 pixel border.
-% --- Otherwise, executes on mouse press in 5 pixel border or over node_popupmenu.
-function node_popupmenu_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to node_popupmenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-
-% --- Executes on key press with focus on node_popupmenu and none of its controls.
-function node_popupmenu_KeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to node_popupmenu (see GCBO)
-% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.UICONTROL)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
-
-
-
-% --- Executes when selected object is changed in range_uibuttongroup.
-function range_uibuttongroup_SelectionChangedFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in range_uibuttongroup 
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-switch eventdata.Source.SelectedObject.Tag
-    
-    case 'los_radiobutton'
-%         set(handles.link_popupmenu,'Enable','on')
-%         set(handles.node_popupmenu,'Enable','off')
-        setappdata(0,'range_type',0)
-    case 'pwr_lim_radiobutton'
-%         set(handles.node_popupmenu,'Enable','on') 
-%         set(handles.link_popupmenu,'Enable','off')
-        setappdata(0,'range_type',1)
-        
-    case 'prev_lim_radiobutton'
-
-        setappdata(0,'range_type',2)
-        
-    otherwise
-        errordlg('Error Selecting Range Type', 'Range Type Selection')
-    return;
-end
-
-% --- Executes when selected object is changed in throughput_uibuttongroup.
-function throughput_uibuttongroup_SelectionChangedFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in throughput_uibuttongroup 
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-switch eventdata.Source.SelectedObject.Tag
-    
-    case 'full_radiobutton'
-
-        setappdata(0,'throughput_flag',1)
-        
-    case 'three_quarter_radiobutton'
-
-        setappdata(0,'throughput_flag',2)
-        
-    case 'half_radiobutton'
-
-        setappdata(0,'throughput_flag',3)
-        
-    case 'quarter_radiobutton'
-
-        setappdata(0,'throughput_flag',4)
-        
-
-    otherwise
-        errordlg('Error Selecting Range', 'Throughput Range Selection')
-    return;
-end
-
-
-% --- Executes on button press in select_pushbutton.
-function select_pushbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to select_pushbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
- display_flag =  getappdata(0,'disp_flag');
- 
- switch display_flag
-    
-    case 0 %node
-        
-        node_select 
-
-
-        
-    case 1 %link
-        
-        link_select
- end
-
-
-% --------------------------------------------------------------------
-function data_cursor_uitoggletool_OnCallback(hObject, eventdata, handles)
-% hObject    handle to data_cursor_uitoggletool (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% upd = get(event_obj, 'UpdateFcn') 
-
-%  set(event_obj,'UpdateFcn',@myupdatefcn)
-
-
-% --------------------------------------------------------------------
-function data_cursor_uitoggletool_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to data_cursor_uitoggletool (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on mouse press over axes background.
-function map_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to map (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-function output_txt = myfunction(~,data_cursor_uitoggletool)
-% ~            Currently not used (empty)
-% event_obj    Object containing event data structure
-% output_txt   Data cursor text
-
-
-% --- Executes when user attempts to close figure1.
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: delete(hObject) closes the figure
-delete(hObject);
-
-% close(node_config)
-% close(link_config)
-% close(node_edit)
-% close(link_edit)
-% close(data_filter)
-% close(node_select)
-% close (link_select)
-% close(node_display)
-% close(link_display)
-
-
-% --------------------------------------------------------------------
-function uitoggletool5_OnCallback(hObject, eventdata, handles)
-% hObject    handle to uitoggletool5 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)

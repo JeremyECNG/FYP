@@ -292,11 +292,11 @@ switch linkservice
         set(handles.ber_popupmenu, 'String', ber);
     case 'Emergency Messaging Data'
 %         ber = {10^-5,6*10^-8};
-        ber = {'Select','10^-5','6x10^-8'};
+        ber = {'Select','10^-5','6x10^-8','10^-6'};
         set(handles.ber_popupmenu, 'String', ber);
     case 'Vessel Tracking Data (IoT)'
 %         ber = {10^-5};
-        ber = {'Select','10^-5'};
+        ber = {'Select','10^-5','10^-6'};
         set(handles.ber_popupmenu, 'String', ber);
         set(handles.ber_popupmenu, 'Value', 1);
     otherwise
