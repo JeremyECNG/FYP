@@ -443,7 +443,8 @@ end
 switch linktech
     case 'DSC'
 
-        bws = {'Select','2', '4', '6', '8', '12', '16'};
+        bws = {'Select','0.025'};
+        %bws = {'Select','2', '4', '6', '8', '12', '16'};
         set(handles.sys_bw_popupmenu, 'String', bws);
         set(handles.sys_bw_popupmenu, 'Value', 1);
 
@@ -802,13 +803,14 @@ else
 end
 
 
-    
+if exist('linksave.mat')    
 for name_ind = 1:save_slots_used
     if strcmp(getappdata(0,'link_nam'), link_con(name_ind).link_name)
         name_conflict_flag = 1;
         setappdata(0,'linknameflag',name_conflict_flag)
         %errordlg('A node of this name already exists please change the name of your entry', 'Name Conflict')
     end  
+end
 end
 
 if  getappdata(0,'linknameflag') == 1

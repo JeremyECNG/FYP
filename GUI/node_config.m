@@ -490,7 +490,9 @@ set(handles.node_location_selection, 'UserData', 0);
 %  
 %  %showmain(hObject,eventdata)
   h = h(2);
- makedatatip(h,[sav_node_con.node_location.longi sav_node_con.node_location.lati])
+ if exist('nodesave.mat')
+ makedatatip(h,[sav_node_con.node_location.longi sav_node_con.node_location.lati]);
+ end
 %  
  end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -498,6 +500,7 @@ set(handles.node_location_selection, 'UserData', 0);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if exist('nodesave.mat')
 save_slots_used = numel(node_con);
     
 for name_ind = 1:save_slots_used
@@ -507,6 +510,7 @@ for name_ind = 1:save_slots_used
         %errordlg('A node of this name already exists please change the name of your entry', 'Name Conflict')
     end  
 end
+end 
 
 if  getappdata(0,'nameflag') == 1
    
@@ -749,7 +753,7 @@ set(dcm_obj,'DisplayStyle','datatip',...
 
 msgbox('Click on desired node location, then press Enter otherwise press Enter to cancel');
 
-pause 
+ pause 
 
 c_info = getCursorInfo(dcm_obj);
 setappdata( 0, 'cursor_longi', c_info(1).Position(1))

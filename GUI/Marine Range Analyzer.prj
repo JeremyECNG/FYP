@@ -1,0 +1,111 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="3725707679" file="C:\Users\jerem\OneDrive - The University of the West Indies, St. Augustine\Final Year Project\MATLAB\GUI\Marine Range Analyzer.prj" location="C:\Users\jerem\OneDrive - The University of the West Indies, St. Augustine\Final Year Project\MATLAB\GUI" name="Marine Range Analyzer" target="target.mlapps" target-name="Package App">
+    <param.appname>Marine Range Analyzer</param.appname>
+    <param.authnamewatermark>Jeremy Jack</param.authnamewatermark>
+    <param.email />
+    <param.company />
+    <param.icon />
+    <param.icons />
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>C:\Users\jerem\OneDrive - The University of the West Indies, St. Augustine\Final Year Project\MATLAB\PackagedApp</param.output>
+    <param.guid>2a85e2cd-756f-45d5-a98d-33e804a8240c</param.guid>
+    <unset>
+      <param.email />
+      <param.company />
+      <param.icon />
+      <param.icons />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\main_screen_v5.m</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\data_filter.fig</file>
+      <file>${PROJECT_ROOT}\data_filter.m</file>
+      <file>${PROJECT_ROOT}\filter.mat</file>
+      <file>${PROJECT_ROOT}\geodata.mat</file>
+      <file>${PROJECT_ROOT}\link_config.fig</file>
+      <file>${PROJECT_ROOT}\link_config.m</file>
+      <file>${PROJECT_ROOT}\link_display.fig</file>
+      <file>${PROJECT_ROOT}\link_display.m</file>
+      <file>${PROJECT_ROOT}\link_edit.fig</file>
+      <file>${PROJECT_ROOT}\link_edit.m</file>
+      <file>${PROJECT_ROOT}\link_select.fig</file>
+      <file>${PROJECT_ROOT}\link_select.m</file>
+      <file>${PROJECT_ROOT}\linksave.mat</file>
+      <file>${PROJECT_ROOT}\main_screen_v5.fig</file>
+      <file>${PROJECT_ROOT}\makedatatip.m</file>
+      <file>${PROJECT_ROOT}\myupdatefcn.m</file>
+      <file>${PROJECT_ROOT}\node_config.fig</file>
+      <file>${PROJECT_ROOT}\node_config.m</file>
+      <file>${PROJECT_ROOT}\node_display.fig</file>
+      <file>${PROJECT_ROOT}\node_display.m</file>
+      <file>${PROJECT_ROOT}\node_edit.fig</file>
+      <file>${PROJECT_ROOT}\node_edit.m</file>
+      <file>${PROJECT_ROOT}\node_select.fig</file>
+      <file>${PROJECT_ROOT}\node_select.m</file>
+      <file>${PROJECT_ROOT}\nodesave.mat</file>
+      <file>${PROJECT_ROOT}\plot_google_map.m</file>
+      <file>${PROJECT_ROOT}\topogr.m</file>
+      <file>${PROJECT_ROOT}\towers.mat</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\Users\jerem\OneDrive - The University of the West Indies, St. Augustine\Final Year Project\MATLAB" name="PackagedApp" optional="false">C:\Users\jerem\OneDrive - The University of the West Indies, St. Augustine\Final Year Project\MATLAB\PackagedApp</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2017a</root>
+      <toolboxes>
+        <toolbox name="fixedpoint" />
+        <toolbox name="matlabcoder" />
+        <toolbox name="matlabhdlcoder" />
+      </toolboxes>
+      <toolbox>
+        <fixedpoint>
+          <enabled>true</enabled>
+        </fixedpoint>
+      </toolbox>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <matlabhdlcoder>
+          <enabled>true</enabled>
+        </matlabhdlcoder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.2</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

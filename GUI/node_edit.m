@@ -606,12 +606,11 @@ switch node_loca_setting
 end
 
 
-set(handles.longitude_editing, 'String', node_con(item_num).node_location.lati);
-setappdata(0, 'lat_itude', node_con(item_num).node_location.lati);
-
-set(handles.latitude_editing, 'String', node_con(item_num).node_location.longi);
+set(handles.longitude_editing, 'String', node_con(item_num).node_location.longi);
 setappdata(0, 'long_itude', node_con(item_num).node_location.longi);
 
+set(handles.latitude_editing, 'String', node_con(item_num).node_location.lati);
+setappdata(0, 'lat_itude', node_con(item_num).node_location.lati);
 %
 node_tech_setting = node_con(item_num).equipment_params.technology;
 setappdata(0, 'node_tech', node_con(item_num).equipment_params.technology);
@@ -781,6 +780,7 @@ function mouse_edit_radiobutton_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of mouse_edit_radiobutton
 showmain(hObject,eventdata)
 
+set(handles.node_location_edit, 'UserData', 1);
 
 % get the handle of Gui1
  h = findobj('Tag','figure1');

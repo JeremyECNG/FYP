@@ -522,14 +522,14 @@ end
 % end
 
 
-link_sysbw_setting = link_con(item_num).system_params.system_bandwidth;
+link_sysbw_setting = num2str(link_con(item_num).system_params.system_bandwidth);
 %set(handles.modulation_text, 'String',link_con(item_num).system_params.mod_sch);
 setappdata(0, 'link_sys_bw', link_con(item_num).system_params.system_bandwidth);
 
 switch link_tech_setting
     case 'DSC'
 
-        bws = {'Select'};
+        bws = {'Select','0.025'};
         set(handles.system_bw_edit_popupmenu, 'String', bws);
         set(handles.system_bw_edit_popupmenu, 'Value', find((strcmp(link_sysbw_setting, bws)),1));
 
@@ -543,7 +543,7 @@ switch link_tech_setting
         
     case 'NWR'
 
-        bws = {'Select'};
+        bws = {'Select','0.025'};
         set(handles.system_bw_edit_popupmenu, 'String', bws);
         set(handles.system_bw_edit_popupmenu, 'Value', find((strcmp(link_sysbw_setting, bws)),1));
   
@@ -720,7 +720,7 @@ else
 %     set(handles.code_text,'Enable','on')
     set(handles.node1_edit_popupmenu,'Enable','on')
     set(handles.node2_edit_popupmenu,'Enable','on')
-    set(handles.sys_bw_edit_popupmenu,'Enable','on')
+    %set(handles.system_bw_edit_popupmenu,'Enable','on')
 end
 
 if exist('nodesave.mat')

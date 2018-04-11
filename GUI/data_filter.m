@@ -310,10 +310,10 @@ if (height_filt == 1)
 operation = getappdata(0,'operator');
     switch operation
         
-        case 'equal'
+        case 'less'
             iter_2 = 0;
             for iter = 1:maxi
-                if (tower_tnt(iter).AntennaHeight==val)
+                if (tower_tnt(iter).AntennaHeight<val)
                     iter_2 = iter_2 +1;
                 tower_sel(iter_2) = tower_tnt(iter);
                 end
@@ -334,6 +334,7 @@ operation = getappdata(0,'operator');
     filter_con.operator = operation;
     filter_con.height_on = height_filt;
     filter_con.val = get(handles.height_edit,'String');
+
     save('filter.mat','filter_con','tower_sel')
 else 
     if exist('filter.mat')
@@ -346,6 +347,33 @@ end
 
 
 setappdata(0,'filter_change_flag',1)
+
+% twr_on = getappdata(0,'tower_on_flag');
+% 
+% if twr_on ==1 && handles.filter_height_checkbox.Value == 1
+%     
+%     h = findobj('Tag','figure1');
+%     % if exists (not empty)
+%     if ~isempty(h)
+%         % get handles and other user-defined data associated to Gui1
+%         g1data = guidata(h);
+%         
+%     end
+%     
+%     if isfield(handles,'tower_plot_all')
+%         delete (handles.tower_plot_all)
+%     end
+%     
+%     if exist('filter.mat')
+%         load('filter.mat')
+%         towers_selected = tower_sel;
+%         
+%         lon_var = [towers_selected.Lon];
+%         lat_var = [towers_selected.Lat];
+%         handles.tower_plot_sel = plot(g1data.map,lon_var,lat_var,'y*','DisplayName','Filtered Cellular Tower');
+%         
+%     end
+% end
 
 close(data_filter)
 
@@ -422,7 +450,7 @@ switch eventdata.Source.SelectedObject.Tag
         setappdata(0,'operator','greater')
         
     case 'height_equal_radiobutton'
-        setappdata(0,'operator','equal')
+        setappdata(0,'operator','less')
 
     otherwise
         errordlg('Error Selecting Filter Type', 'Filter Selection')
